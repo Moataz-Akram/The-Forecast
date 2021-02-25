@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/today">
+
+    <fragment
+        android:id="@+id/today"
+        android:name="com.mad41ismailia.weatherforcast.ui.today.Today"
+        android:label="today_fragment"
+        tools:layout="@layout/today_fragment" />
+    <fragment
+        android:id="@+id/sevenDays"
+        android:name="com.mad41ismailia.weatherforcast.ui.sevenDays.SevenDays"
+        android:label="seven_days_fragment"
+        tools:layout="@layout/seven_days_fragment" />
+    <fragment
+        android:id="@+id/location"
+        android:name="com.mad41ismailia.weatherforcast.ui.location.Location"
+        android:label="location_fragment"
+        tools:layout="@layout/location_fragment" />
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.mad41ismailia.weatherforcast.ui.settings.Settings"
+        android:label="settings_fragment"
+        tools:layout="@layout/settings_fragment" />
+    <activity
+        android:id="@+id/setting"
+        android:name="com.mad41ismailia.weatherforcast.ui.Setting"
+        android:label="activity_setting"
+        tools:layout="@layout/activity_setting" />
+    <activity
+        android:id="@+id/alarm"
+        android:name="com.mad41ismailia.weatherforcast.ui.Alarm"
+        android:label="activity_alarm"
+        tools:layout="@layout/activity_alarm" />
+    <fragment
+        android:id="@+id/alarmf"
+        android:name="com.mad41ismailia.weatherforcast.ui.Alarmf"
+        android:label="alarmf_fragment"
+        tools:layout="@layout/alarmf_fragment" />
+</navigation>

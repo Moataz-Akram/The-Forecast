@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/today"
+        android:icon="@drawable/ic_baseline_today_24"
+        android:menuCategory="secondary"
+        android:title="@string/today" />
+    <item
+        android:id="@+id/sevenDays"
+        android:icon="@drawable/ic_baseline_calendar_today_24"
+        android:menuCategory="secondary"
+        android:title="@string/sevenDays" />
+    <item
+        android:id="@+id/location"
+        android:icon="@drawable/ic_baseline_edit_location_alt_24"
+        android:menuCategory="secondary"
+        android:title="@string/location" />
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:menuCategory="secondary"
+        android:title="@string/settings" />
+
+    <item
+        android:id="@+id/alarmf"
+        android:icon="@drawable/ic_baseline_alarm_24"
+        android:menuCategory="secondary"
+        android:title="@string/alarm" />
+
+</menu>

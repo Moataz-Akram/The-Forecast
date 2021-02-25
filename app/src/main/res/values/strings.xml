@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Weather Forcast</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="today">Today</string>
+    <string name="sevenDays">7 Days</string>
+    <string name="location">Location</string>
+    <string name="alarm">Alarm</string>
+    <string name="api_key">AIzaSyA7dH75J8SZ0-GkeHqHANbflPhdpbfU5yI</string>
+</resources>
