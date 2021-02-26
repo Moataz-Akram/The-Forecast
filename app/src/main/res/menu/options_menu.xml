@@ -8,9 +8,9 @@
         android:menuCategory="secondary"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/alarm"
-        android:menuCategory="secondary"
-        android:title="@string/alarm"
-        app:showAsAction="never" />
+<!--    <item-->
+<!--        android:id=""-->
+<!--        android:menuCategory="secondary"-->
+<!--        android:title="@string/alarm"-->
+<!--        app:showAsAction="never" />-->
 </menu>

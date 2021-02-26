@@ -1,6 +1,6 @@
 package com.mad41ismailia.weatherforcast.repo.retrofit
 
-import com.mad41ismailia.weatherforcast.entity.WeatherData
+import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
 import com.mad41ismailia.weatherforcast.entity3.alerts.AlertData
 import com.mad41ismailia.weatherforcast.entity3.daily.DailyData
 import com.mad41ismailia.weatherforcast.entity3.hourly.HourlyData

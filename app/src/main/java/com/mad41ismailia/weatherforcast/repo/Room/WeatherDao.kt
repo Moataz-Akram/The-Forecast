@@ -4,9 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.mad41ismailia.weatherforcast.entity.AlertDatabase
-import com.mad41ismailia.weatherforcast.entity.DailyDatabase
-import com.mad41ismailia.weatherforcast.entity.HourlyDatabase
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlertDatabase
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
 
 @Dao
 interface WeatherDao {

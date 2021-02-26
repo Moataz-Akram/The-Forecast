@@ -15,9 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherForcast">
-        <activity android:name=".ui.Alarm"></activity>
         <activity android:name=".ui.Setting" />
-        <activity android:name=".repo.MainActivity">
+        <activity android:name=".ui.mainActivity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
