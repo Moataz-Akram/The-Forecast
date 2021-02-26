@@ -1,9 +1,22 @@
 package com.mad41ismailia.weatherforcast.entity
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+
 data class Alert(
-    val description: String,
-    val end: Int,
-    val event: String,
-    val sender_name: String,
-    val start: Int
-)
+        @ColumnInfo
+        val description: String,
+        @ColumnInfo
+        val end: Int,
+        @ColumnInfo
+        val event: String,
+        @ColumnInfo
+        val sender_name: String,
+        @ColumnInfo
+        val start: Int
+){
+        @PrimaryKey(autoGenerate = true)
+        lateinit var id:Integer
+}

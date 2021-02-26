@@ -5,7 +5,4 @@ import retrofit2.Call
 
 class UseRetrofit {
     val retrofitInterfaceObject = Retrofit.myRetrofit.create(NetworkQueries::class.java)
-//    fun getData(): Call<DailyData> {
-//        return retrofitInterfaceObject.getDaily2()
-//    }
 }
