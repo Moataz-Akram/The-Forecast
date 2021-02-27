@@ -9,14 +9,16 @@ import com.mad41ismailia.weatherforcast.repo.Repository
 class TodayViewModel(application: Application) : AndroidViewModel(application){
     // TODO: Implement the ViewModel
     val repo = Repository.getRepoObject()
-
+    var flag = false
     suspend fun fetchData(lat:Double,lon:Double){
-        checkCall()
-        repo.getWeatherData(lat,lon)
+        if(!checkCall()){
+            flag = true
+            repo.getWeatherData(lat,lon)
+        }
     }
 
-    private fun checkCall() {
-        
+    private fun checkCall(): Boolean {
+        return flag
     }
 
     fun getDaily(): LiveData<List<DailyDatabase>> {

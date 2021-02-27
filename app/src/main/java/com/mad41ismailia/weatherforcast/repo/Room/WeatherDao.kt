@@ -21,11 +21,11 @@ interface WeatherDao {
     suspend fun addAlert(alert: List<AlertDatabase>)
 
     @Query("Delete from Hourly")
-    suspend fun deleteHourly()
+    fun deleteHourly()
     @Query("Delete from Daily")
-    suspend fun deleteDaily()
-    @Query("Delete from `Alert Table`")
-    suspend fun deleteAlert()
+    fun deleteDaily()
+    @Query("Delete from Alert")
+    fun deleteAlert()
 
     @Query("SELECT * From Daily")
     fun getDaily():LiveData<List<DailyDatabase>>

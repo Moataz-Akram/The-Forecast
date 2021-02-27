@@ -3,14 +3,16 @@ package com.mad41ismailia.weatherforcast.ui.mainActivity
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.location.Address
 import android.location.Geocoder
+import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
-import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -20,24 +22,13 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import androidx.room.Room
 import com.google.android.gms.location.*
-import com.google.android.libraries.places.api.Places
-import com.mad41ismailia.weatherforcast.API_KEY
+import com.mad41ismailia.weatherforcast.PREF_NAME
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.ActivityMainBinding
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlertDatabase
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
-import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
 import com.mad41ismailia.weatherforcast.repo.Repository
-import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
-import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
-import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.IOException
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -51,6 +42,11 @@ class MainActivity : AppCompatActivity() {
     private var longt = 0.0
     private var lat = 0.0
     private val PERMISSION_ID = 3
+
+    var sharedPreferences: SharedPreferences? = null
+    var editor: SharedPreferences.Editor? = null
+
+
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
@@ -78,8 +74,21 @@ class MainActivity : AppCompatActivity() {
         )
         binding.bottomNavBar.setupWithNavController(navController)
 
+        //check GPS, location
         fusedLocation = LocationServices.getFusedLocationProviderClient(this)
         getAddress()
+//        getCurrentLocation()
+        //sharedPreference
+        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
+        editor = sharedPreferences!!.edit()
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getCurrentLocation() {
+        fusedLocation.lastLocation.addOnSuccessListener { location: Location? ->
+                    
+        }
     }
 
     fun checkPermissions():Boolean{
@@ -106,7 +115,6 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         locationRequest = LocationRequest()
-        fusedLocation = LocationServices.getFusedLocationProviderClient(this)
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 0
         locationRequest.numUpdates = 1
@@ -121,7 +129,7 @@ class MainActivity : AppCompatActivity() {
 //            Log.i("city",""+addresses[0])
             if (addresses.size > 0) {
                 var address = addresses[0].getAddressLine(0).toString()
-                binding.textView4.setText(address)
+//                binding.textView4.setText(address)
             }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -132,13 +140,26 @@ class MainActivity : AppCompatActivity() {
     private fun getLastLocation() {
         if (checkPermissions()) {
             if (gpsEnabled()) {
+
+//                val geocoder = Geocoder(this, Locale.getDefault())
+//                runBlocking {
+//                    val addresses: List<Address> = geocoder.getFromLocation(29.3132, 30.8508, 1)
+//                    Log.i("comingdata", "coming list" + addresses.toString())
+//                    Toast.makeText(applicationContext, "${addresses[0].locality}", Toast.LENGTH_LONG).show()
+//                }
+
+                requestNewLocationData()
                 fusedLocation.lastLocation.addOnCompleteListener { task ->
                     val location = task.result
-                    requestNewLocationData()
                     longt = location.longitude
                     lat = location.latitude
-                    binding.textView4.setText("""Long: ${location.longitude}Lat:${location.latitude}""")
+                    val geocoder = Geocoder(this, Locale.getDefault())
+                    val addresses: List<Address> = geocoder.getFromLocation(lat, longt, 1)
+
+                    Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()
                 }
+
+
             } else {
                 requestGpsEnable()
             }

@@ -4,27 +4,27 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mad41ismailia.weatherforcast.entity.comingData.Hourly
-import com.mad41ismailia.weatherforcast.entity.comingData.WeatherXX
+import com.mad41ismailia.weatherforcast.entity.comingData.Weather
 
 
 @Entity(tableName = "Hourly")
 class HourlyDatabase(
-        val lat: Double,
-        val lon: Double,
-        val clouds: Int,
-        val dew_point: Double,
-        val dt: Int,
-        val feels_like: Double,
-        val humidity: Int,
-        val pop: Double,
-        val pressure: Int,
-        val temp: Double,
-        val uvi: Double,
-        val visibility: Int,
-        @Embedded(prefix = "Weather_")
-        val weather: WeatherXX,
-        val wind_deg: Int,
-        val wind_speed: Double
+    val lat: Double,
+    val lon: Double,
+    val clouds: Int,
+    val dew_point: Double,
+    val dt: Int,
+    val feels_like: Double,
+    val humidity: Int,
+    val pop: Double,
+    val pressure: Int,
+    val temp: Double,
+    val uvi: Double,
+    val visibility: Int,
+    @Embedded(prefix = "Weather_")
+    val weather: Weather,
+    val wind_deg: Int,
+    val wind_speed: Double
 ){
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

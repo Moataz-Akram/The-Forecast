@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 
 class Repository private constructor(application: Application) {
 
-    private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather7Database").build()
+    private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather9Database").build()
     private val weatherDao = db.WeatherDao()
 //    private val data = UseRetrofit()
 

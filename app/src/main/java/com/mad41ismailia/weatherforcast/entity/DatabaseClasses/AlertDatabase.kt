@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mad41ismailia.weatherforcast.entity.comingData.Alert
 
-@Entity(tableName = "Alert Table")
+@Entity(tableName = "Alert")
 data class AlertDatabase(
         val lat: Double,
         val lon: Double,

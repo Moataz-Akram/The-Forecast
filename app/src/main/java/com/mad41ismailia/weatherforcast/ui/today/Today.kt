@@ -45,7 +45,7 @@ class Today : Fragment(R.layout.today_fragment) {
         Log.i("comingdata ","")
 
         CoroutineScope(Dispatchers.IO).launch {
-            viewModel.fetchData(29.3132 , 30.8508)
+            viewModel.fetchData(55.755825 , 37.617298)
         }
 
         viewModel.getDaily().observe(viewLifecycleOwner,{

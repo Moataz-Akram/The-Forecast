@@ -1,32 +1,29 @@
 package com.mad41ismailia.weatherforcast.entity.DatabaseClasses
 
 import androidx.room.*
-import com.mad41ismailia.weatherforcast.entity.comingData.Daily
-import com.mad41ismailia.weatherforcast.entity.comingData.FeelsLike
-import com.mad41ismailia.weatherforcast.entity.comingData.Temp
-import com.mad41ismailia.weatherforcast.entity.comingData.WeatherX
+import com.mad41ismailia.weatherforcast.entity.comingData.*
 
 @Entity(tableName = "Daily")
 data class DailyDatabase(
-        val lat: Double,
-        val lon: Double,
-        val clouds: Int,
-        val dew_point: Double,
-        val dt: Int,
-        @Embedded(prefix = "FeelsLike_")
-        val feels_like: FeelsLike,
-        val humidity: Int,
-        val pop: Double,
-        val pressure: Int,
-        val sunrise: Int,
-        val sunset: Int,
-        @Embedded(prefix = "Weather_")
-        val temp: Temp,
-        val uvi: Double,
-        @Embedded(prefix = "Weather_")
-        val weather: WeatherX,
-        val wind_deg: Int,
-        val wind_speed: Double
+    val lat: Double,
+    val lon: Double,
+    val clouds: Int,
+    val dew_point: Double,
+    val dt: Int,
+    @Embedded(prefix = "FeelsLike_")
+    val feels_like: FeelsLike,
+    val humidity: Int,
+    val pop: Double,
+    val pressure: Int,
+    val sunrise: Int,
+    val sunset: Int,
+    @Embedded(prefix = "Temp_")
+    val temp: Temp,
+    val uvi: Double,
+    @Embedded(prefix = "Weather_")
+    val weather: Weather,
+    val wind_deg: Int,
+    val wind_speed: Double
 ){
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

@@ -17,10 +17,7 @@ class SevenDays : Fragment(R.layout.seven_days_fragment) {
 
     private lateinit var viewModel: SevenDaysViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = SevenDaysFragmentBinding.inflate(inflater,container,false)
         val view = binding.root
 
