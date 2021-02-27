@@ -1,5 +1,6 @@
 package com.mad41ismailia.weatherforcast.repo.Room
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,13 +12,13 @@ import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
 @Dao
 interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addHourly(hourly: List<HourlyDatabase>)
+    suspend fun addHourly(hourly: List<HourlyDatabase>)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addDaily(daily: List<DailyDatabase>)
+    suspend fun addDaily(daily: List<DailyDatabase>)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addDaily1(daily: DailyDatabase)
+    suspend fun addDaily1(daily: DailyDatabase)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addAlert(alert: List<AlertDatabase>)
+    suspend fun addAlert(alert: List<AlertDatabase>)
 
     @Query("Delete from Hourly")
     suspend fun deleteHourly()
@@ -25,5 +26,8 @@ interface WeatherDao {
     suspend fun deleteDaily()
     @Query("Delete from `Alert Table`")
     suspend fun deleteAlert()
+
+    @Query("SELECT * From Daily")
+    fun getDaily():LiveData<List<DailyDatabase>>
 
 }

@@ -16,17 +16,9 @@ import com.mad41ismailia.weatherforcast.databinding.LocationFragmentBinding
 
 class Location : Fragment(R.layout.location_fragment) {
     private lateinit var binding:LocationFragmentBinding
-
-    companion object {
-        fun newInstance() = Location()
-    }
-
     private lateinit var viewModel: LocationViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = LocationFragmentBinding.inflate(inflater,container,false)
         val view = binding.root
 
@@ -42,13 +34,10 @@ class Location : Fragment(R.layout.location_fragment) {
     }
 
     private fun addLocation() {
-
         // Initialize the AutocompleteSupportFragment.
         val autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
-
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
-
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
@@ -56,12 +45,14 @@ class Location : Fragment(R.layout.location_fragment) {
                 Log.i("TAG", "Place: ${place.name}, ${place.id}")
                 binding.textView3.text = place.name
             }
-
             override fun onError(status: Status) {
                 // TODO: Handle the error.
                 Log.i("TAG", "An error occurred: $status")
             }
         })
+    }
+    companion object {
+        fun newInstance() = Location()
     }
 
 }

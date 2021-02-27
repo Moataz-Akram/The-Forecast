@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/today"
-        android:name="com.mad41ismailia.weatherforcast.ui.fragments.today.Today"
+        android:name="com.mad41ismailia.weatherforcast.ui.today.Today"
         android:label="today_fragment"
         tools:layout="@layout/today_fragment" />
     <fragment

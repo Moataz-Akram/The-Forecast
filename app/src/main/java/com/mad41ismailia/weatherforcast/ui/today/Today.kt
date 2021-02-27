@@ -1,13 +1,17 @@
-package com.mad41ismailia.weatherforcast.ui.fragments.today
+package com.mad41ismailia.weatherforcast.ui.today
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.libraries.places.api.Places
+import com.mad41ismailia.weatherforcast.API_KEY
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.TodayFragmentBinding
+import kotlinx.coroutines.*
 
 
 class Today : Fragment(R.layout.today_fragment) {
@@ -33,9 +37,21 @@ class Today : Fragment(R.layout.today_fragment) {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TodayViewModel::class.java)
-        // TODO: Use the ViewModel
+        //initialize for the autoComplete
+        Places.initialize(requireActivity().applicationContext, API_KEY)
 
+        viewModel = ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)).get(TodayViewModel::class.java)
+        // TODO: Use the ViewModel
+        Log.i("comingdata ","")
+
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.fetchData(29.3132 , 30.8508)
+        }
+
+        viewModel.getDaily().observe(viewLifecycleOwner,{
+            Log.i("comingdata", it.toString())
+            binding.textView.text = it.toString()
+        })
 
     }
 
