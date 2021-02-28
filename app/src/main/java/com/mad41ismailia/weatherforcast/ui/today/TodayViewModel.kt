@@ -25,5 +25,13 @@ class TodayViewModel(application: Application) : AndroidViewModel(application){
         return repo.getDaily()
     }
 
+    fun checkCities():Boolean{
+        val current = repo.getCurrentLocation()
+        val cityList = repo.loadCities()
+        if(current!==null|| cityList.size!=0){
+            return true
+        }
+        return false
+    }
 
 }

@@ -4,17 +4,20 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Room
+import com.mad41ismailia.weatherforcast.CITIES_LIST
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlertDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
 import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
 import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
+import com.mad41ismailia.weatherforcast.repo.sharedPreference.SharedPreference
 import kotlinx.coroutines.delay
 
 class Repository private constructor(application: Application) {
 
     private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather9Database").build()
     private val weatherDao = db.WeatherDao()
+    private val sharedPreference = SharedPreference(application)
 //    private val data = UseRetrofit()
 
     companion object{
@@ -48,12 +51,12 @@ class Repository private constructor(application: Application) {
         }
         addHourly(hourlyList)
         if(list6!==null) {
-                            for (i in list6) {
-                                val m = AlertDatabase(lat, lon, i)
-                                alertList.add(m)
-                            }
-                            addAlert(alertList)
-                        }
+            for (i in list6) {
+                val m = AlertDatabase(lat, lon, i)
+                alertList.add(m)
+            }
+            addAlert(alertList)
+        }
     }
 
     fun getDaily(): LiveData<List<DailyDatabase>> {
@@ -73,6 +76,22 @@ class Repository private constructor(application: Application) {
     suspend fun addHourly(list:List<HourlyDatabase>){
         weatherDao.deleteHourly()
         weatherDao.addHourly(list)
+    }
+
+    fun getCurrentLocation():String?{
+        return sharedPreference.getCurrentLocation()
+    }
+
+    fun setCurrentLocation(currentLocation:String){
+        sharedPreference.setCurrentLocation(currentLocation)
+    }
+
+    fun loadCities(): ArrayList<String?> {
+        return sharedPreference.loadCities()
+    }
+
+    fun saveCity(city:String) {
+        sharedPreference.saveCity(city)
     }
 
 }

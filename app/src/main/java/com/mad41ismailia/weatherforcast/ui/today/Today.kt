@@ -44,14 +44,18 @@ class Today : Fragment(R.layout.today_fragment) {
         // TODO: Use the ViewModel
         Log.i("comingdata ","")
 
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.fetchData(55.755825 , 37.617298)
-        }
+        if(viewModel.checkCities()){
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.fetchData(55.755825 , 37.617298)
+            }
 
-        viewModel.getDaily().observe(viewLifecycleOwner,{
-            Log.i("comingdata", it.toString())
-            binding.textView.text = it.toString()
-        })
+            viewModel.getDaily().observe(viewLifecycleOwner,{
+                Log.i("comingdata", it.toString())
+                binding.textView.text = it.toString()
+            })
+        }else{
+            binding.textView.text = "Please check you GPS and internet connection or add a favourite place"
+        }
 
     }
 

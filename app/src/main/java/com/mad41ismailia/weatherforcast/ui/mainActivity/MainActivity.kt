@@ -42,11 +42,6 @@ class MainActivity : AppCompatActivity() {
     private var longt = 0.0
     private var lat = 0.0
     private val PERMISSION_ID = 3
-
-    var sharedPreferences: SharedPreferences? = null
-    var editor: SharedPreferences.Editor? = null
-
-
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
@@ -76,12 +71,11 @@ class MainActivity : AppCompatActivity() {
 
         //check GPS, location
         fusedLocation = LocationServices.getFusedLocationProviderClient(this)
-        getAddress()
+        val current = getAddress()
+        if(current!==null){
+            viewModel.setCurrentLocation(current)
+        }
 //        getCurrentLocation()
-        //sharedPreference
-        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
-        editor = sharedPreferences!!.edit()
-
     }
 
     @SuppressLint("MissingPermission")
@@ -121,45 +115,30 @@ class MainActivity : AppCompatActivity() {
         fusedLocation.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
     }
 
-    fun getAddress() {
+    fun getAddress(): String? {
         getLastLocation()
         val geocoder = Geocoder(this)
-        try {
-            val addresses = geocoder.getFromLocation(longt, lat, 3)
-//            Log.i("city",""+addresses[0])
-            if (addresses.size > 0) {
-                var address = addresses[0].getAddressLine(0).toString()
-//                binding.textView4.setText(address)
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
+        val addresses = geocoder.getFromLocation(longt, lat, 1)
+        if (addresses.isEmpty()){
+            return null
         }
+        return addresses[0]?.locality
     }
 
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
         if (checkPermissions()) {
             if (gpsEnabled()) {
-
-//                val geocoder = Geocoder(this, Locale.getDefault())
-//                runBlocking {
-//                    val addresses: List<Address> = geocoder.getFromLocation(29.3132, 30.8508, 1)
-//                    Log.i("comingdata", "coming list" + addresses.toString())
-//                    Toast.makeText(applicationContext, "${addresses[0].locality}", Toast.LENGTH_LONG).show()
-//                }
-
                 requestNewLocationData()
                 fusedLocation.lastLocation.addOnCompleteListener { task ->
                     val location = task.result
                     longt = location.longitude
                     lat = location.latitude
+                    //not need but left for toast
                     val geocoder = Geocoder(this, Locale.getDefault())
                     val addresses: List<Address> = geocoder.getFromLocation(lat, longt, 1)
-
                     Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()
                 }
-
-
             } else {
                 requestGpsEnable()
             }

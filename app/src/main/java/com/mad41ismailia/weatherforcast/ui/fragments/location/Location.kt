@@ -1,5 +1,6 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.location
 
+import android.location.Geocoder
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -18,11 +19,15 @@ import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.LocationFragmentBinding
 //import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragment
+import java.util.*
+import kotlin.collections.ArrayList
+
 //import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListener
 
 class Location : Fragment(R.layout.location_fragment) {
     private lateinit var binding:LocationFragmentBinding
     private lateinit var viewModel: LocationViewModel
+    private lateinit var list:ArrayList<String?>
 //    private lateinit var autocompleteFragment: PlaceAutocompleteFragment
 //    private var transaction : FragmentTransaction? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,6 +41,7 @@ class Location : Fragment(R.layout.location_fragment) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(LocationViewModel::class.java)
         // TODO: Use the ViewModel
+        list = viewModel.loadCities()
 
 //        //initialize mapBox
 //        if (savedInstanceState == null) {
@@ -80,7 +86,13 @@ class Location : Fragment(R.layout.location_fragment) {
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 // TODO: Get info about the selected place.
-                Log.i("TAG", "Place: ${place.name}, ${place.id}")
+                val latlon = place.address
+                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                val latlong = geocoder.getFromLocationName(place.name,1)
+                latlong[0].latitude
+
+                Log.i("comingdata", "Place: ${place.name}, ${place.id}, ${latlon.toString()}")
+                Log.i("comingdata", "Place: ${latlong[0].latitude}, ${latlong[0].longitude}, ${latlong.toString()}")
                 binding.textView3.text = place.name
             }
             override fun onError(status: Status) {
