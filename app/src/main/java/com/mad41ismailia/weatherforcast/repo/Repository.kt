@@ -32,9 +32,9 @@ class Repository private constructor(application: Application) {
         }
     }
 
-    suspend fun getWeatherData(lat:Double,lon:Double){
+    suspend fun getWeatherData(lat:Double,lon:Double,units:String, lang:String){
         Log.i("comingdata ","new request")
-        val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather2(lat , lon)
+        val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather2(lat , lon, units, lang)
         val dailyList = ArrayList<DailyDatabase>()
         val hourlyList = ArrayList<HourlyDatabase>()
         val alertList = ArrayList<AlertDatabase>()
@@ -79,7 +79,7 @@ class Repository private constructor(application: Application) {
         weatherDao.addHourly(list)
     }
 
-    fun getCurrentLocation():String?{
+    fun getCurrentLocationSharedPref():String?{
         return sharedPreference.getCurrentLocation()
     }
 

@@ -3,13 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/today">
+    app:startDestination="@id/location">
 
     <fragment
         android:id="@+id/today"
         android:name="com.mad41ismailia.weatherforcast.ui.today.Today"
         android:label="today_fragment"
-        tools:layout="@layout/today_fragment" />
+        tools:layout="@layout/today_fragment" >
+        <action
+            android:id="@+id/action_today_to_location"
+            app:destination="@id/location"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
     <fragment
         android:id="@+id/sevenDays"
         android:name="com.mad41ismailia.weatherforcast.ui.fragments.sevenDays.SevenDays"
@@ -21,18 +29,12 @@
         android:label="location_fragment"
         tools:layout="@layout/location_fragment" />
     <fragment
-        android:id="@+id/settings"
-        android:name="com.mad41ismailia.weatherforcast.ui.fragments.settings.Settings"
-        android:label="settings_fragment"
-        tools:layout="@layout/settings_fragment" />
-    <activity
-        android:id="@+id/setting"
-        android:name="com.mad41ismailia.weatherforcast.ui.Setting"
-        android:label="activity_setting"
-        tools:layout="@layout/activity_setting" />
-    <fragment
         android:id="@+id/alarmf"
         android:name="com.mad41ismailia.weatherforcast.ui.fragments.alert.Alarmf"
         android:label="alarmf_fragment"
         tools:layout="@layout/alarmf_fragment" />
+    <fragment
+        android:id="@+id/settings2"
+        android:name="com.mad41ismailia.weatherforcast.ui.fragments.settings.Settings"
+        android:label="Settings" />
 </navigation>

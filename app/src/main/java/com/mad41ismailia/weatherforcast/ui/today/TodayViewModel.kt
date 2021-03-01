@@ -11,10 +11,10 @@ class TodayViewModel(application: Application) : AndroidViewModel(application){
     // TODO: Implement the ViewModel
     val repo = Repository.getRepoObject()
     var flag = false
-    suspend fun fetchData(lat:Double,lon:Double){
+    suspend fun fetchData(lat:Double,lon:Double, units:String, lang:String){
         if(!checkCall()){
             flag = true
-            repo.getWeatherData(lat,lon)
+            repo.getWeatherData(lat,lon,units,lang)
         }
     }
 
@@ -26,15 +26,19 @@ class TodayViewModel(application: Application) : AndroidViewModel(application){
         return repo.getDaily()
     }
 
-    fun checkCities():Boolean{
-        val current = repo.getCurrentLocation()
-        val cityList = repo.loadCities()
-        Log.i("comingdata from here","${cityList.size }")
-        Log.i("comingdata from here","${current }")
-        if(current!==null|| cityList.size>1){
-            return true
-        }
-        return false
+    suspend fun checkCities():Boolean{
+//        val current = repo.getCurrentLocation(1)
+//        val myCity = current.cityAddress
+//        //shared pref list not database list
+//        val cityList = repo.loadCities()
+//
+//        val cityListDb = repo.getLocations()
+////        Log.i("comingdata","today check ${cityListDb.size }")
+//        Log.i("comingdata","today check ${current }")
+//        if(myCity!==null){
+//            return true
+//        }
+        return true
     }
 
 }

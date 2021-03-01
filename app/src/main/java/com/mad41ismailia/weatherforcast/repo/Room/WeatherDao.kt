@@ -40,6 +40,9 @@ interface WeatherDao {
     fun getDaily():LiveData<List<DailyDatabase>>
 
     @Query("SELECT * From Locations")
+    fun getLocationsList():List<Locations>
+
+    @Query("SELECT * From Locations")
     fun getLocations():LiveData<List<Locations>>
 
     @Query("SELECT * From Locations where id=:id")

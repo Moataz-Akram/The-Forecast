@@ -2,6 +2,7 @@ package com.mad41ismailia.weatherforcast.ui.mainActivity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -24,13 +25,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.location.*
-import com.mad41ismailia.weatherforcast.PREF_NAME
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.mad41ismailia.weatherforcast.*
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.ActivityMainBinding
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
 import com.mad41ismailia.weatherforcast.repo.Repository
 import kotlinx.coroutines.*
 import java.io.IOException
+import java.lang.reflect.Type
 import java.util.*
 
 
@@ -46,6 +50,8 @@ class MainActivity : AppCompatActivity() {
     private var longt = 0.0
     private var lat = 0.0
     private val PERMISSION_ID = 3
+
+
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
@@ -69,23 +75,44 @@ class MainActivity : AppCompatActivity() {
         val  navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
         navController = navHostFragment.findNavController()
         appBarConfiguration = AppBarConfiguration(
-                setOf(R.id.today, R.id.sevenDays, R.id.location, R.id.settings)
+                setOf(R.id.today, R.id.sevenDays, R.id.location, R.id.settings2,R.id.alarmf)
         )
         binding.bottomNavBar.setupWithNavController(navController)
 
         //check GPS, location
         fusedLocation = LocationServices.getFusedLocationProviderClient(this)
 
-        runBlocking { getLastLocation() }
 
 
         Log.i("comingdata","before check"+currentLocation.toString())
 
-        if(currentLocation!==null){
-            Log.i("comingdata","inside check")
+//        CoroutineScope(Dispatchers.Main).launch {
+            getLastLocation()
+            Log.i("comingdata","after get last location")
+//            if(currentLocation!==null){
+//                Log.i("comingdata","inside check")
+//                delay(3000)
+//                //should move to inside fused location and in check in no internet connection
+//                viewModel.setCurrentLocation(currentLocation!!)
+//            }
+//        }
 
-            viewModel.setCurrentLocation(currentLocation!!)
-        }
+
+
+
+//        val sharedPreferences: SharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+//        val editor = sharedPreferences.edit()
+//        val typeString: Type = object : TypeToken<String>() {}.type
+//        val gson = Gson()
+//
+//        editor.putString(LANGUAGE, "FN")
+//        editor.apply()
+//
+//        val json = sharedPreferences.getString( LANGUAGE, "EN")
+//        Log.i("comingdata","coming lang"+json)
+
+
+
     }
 
     @SuppressLint("MissingPermission")
@@ -143,9 +170,11 @@ class MainActivity : AppCompatActivity() {
             if (gpsEnabled()) {
                 requestNewLocationData()
                 fusedLocation.lastLocation.addOnCompleteListener { task ->
+
                     val location = task.result
-                    longt = location.longitude
-                    lat = location.latitude
+                    Log.i("comingdata","coming fused location "+location.toString())
+                    longt = location.longitude ?: 29.351
+                    lat = location.latitude ?: 30.265
                     //not need but left for toast
                     val geocoder = Geocoder(this, Locale.getDefault())
                     val addresses: List<Address> = geocoder.getFromLocation(lat, longt, 1)
@@ -153,23 +182,16 @@ class MainActivity : AppCompatActivity() {
                     Log.i("comingdata",currentLocation.toString())
                     viewModel.setCurrentLocation(addresses[0].locality)
                     val loc = Locations(addresses[0].locality,lat,longt)
+
                     loc.id = 1
                     CoroutineScope(Dispatchers.Default).launch {
+                        //update current in database
                         viewModel.addLocation(loc)
-                        delay(1000)
                         val r= viewModel.getCurrentLocation(1)
-                        delay(3000)
-                        val loc2 = Locations(null,555.5555555,555.55555)
-                        loc2.id = 1
-                        viewModel.addLocation(loc2)
-                        val loc3 = viewModel.getCurrentLocation(1)
-                        Log.i("comingdata","coming location address = null"+loc3.cityAddress)
-
 //                        Toast.makeText(applicationContext, "city: ${r.cityAddress}\n Lat: ${r.lat}\n id:${r.id}", Toast.LENGTH_LONG).show()
-                        Log.i("comingdata","coming location"+r.toString())
-                        Log.i("comingdata","coming location"+r.cityAddress+" "+r.id+" "+r.lat+" "+r.lon)
+                        Log.i("comingdata","coming location "+r.toString())
+                        Log.i("comingdata","coming location "+r.cityAddress+" "+r.id+" "+r.lat+" "+r.lon)
                     }
-
                     Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()
                 }
             } else {

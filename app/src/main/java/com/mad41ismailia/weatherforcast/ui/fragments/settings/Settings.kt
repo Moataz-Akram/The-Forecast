@@ -1,30 +1,35 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.settings
 
-import androidx.lifecycle.ViewModelProvider
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
+import androidx.preference.PreferenceFragmentCompat
 import com.mad41ismailia.weatherforcast.R
 
-class Settings : Fragment() {
+class Settings : PreferenceFragmentCompat() {
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor:SharedPreferences.Editor
 
-    companion object {
-        fun newInstance() = Settings()
-    }
-
-    private lateinit var viewModel: SettingsViewModel
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.settings_fragment, container, false)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.root_preferences, rootKey)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
-        // TODO: Use the ViewModel
+        sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        editor = sharedPreferences.edit()
     }
 
+    override fun onPause() {
+        super.onPause()
+        val lang: ListPreference? = findPreference("lang")
+        val units: ListPreference? = findPreference("units")
+        editor.putString("lang",lang?.value)
+        editor.putString("units",units?.value)
+        editor.commit()
+        Log.i("comingdata ","setting saved lang = "+lang?.value)
+    }
 }

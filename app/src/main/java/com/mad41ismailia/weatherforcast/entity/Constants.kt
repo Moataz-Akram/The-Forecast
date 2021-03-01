@@ -7,3 +7,5 @@ package com.mad41ismailia.weatherforcast
    const val PREF_NAME = "SHARED_PREFERENCE"
    const val CITIES_LIST = "CITIES_LIST"
    const val CURRENT_LOCATION = "CURRENT_LOCATION"
+   const val LANGUAGE = "LANGUAGE"
+

@@ -21,8 +21,8 @@ class SharedPreference(application: Application) {
 
     private val sharedPreferences: SharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     private val editor = sharedPreferences.edit()
-    val gson = Gson()
-    val typeList: Type = object : TypeToken<ArrayList<String>?>() {}.type
+    private val gson = Gson()
+    private val typeList: Type = object : TypeToken<ArrayList<String>?>() {}.type
     val typeString: Type = object : TypeToken<String>() {}.type
 
 

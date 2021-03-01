@@ -17,7 +17,7 @@
         android:menuCategory="secondary"
         android:title="@string/location" />
     <item
-        android:id="@+id/settings"
+        android:id="@+id/settings2"
         android:icon="@drawable/ic_baseline_settings_24"
         android:menuCategory="secondary"
         android:title="@string/settings" />

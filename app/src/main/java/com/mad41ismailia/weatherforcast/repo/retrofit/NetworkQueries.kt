@@ -9,6 +9,7 @@ interface NetworkQueries {
     @GET("/data/2.5/onecall?units=metric&exclude=minutely&appid=2793471ee23491bf4da5d081017f8163")
     fun getWeather(@Query("lat") lat:Double, @Query("lon") lon:Double): Call<WeatherData>
 
-    @GET("/data/2.5/onecall?units=metric&exclude=minutely&appid=2793471ee23491bf4da5d081017f8163")
-    suspend fun getWeather2(@Query("lat") lat:Double, @Query("lon") lon:Double): WeatherData
+    @GET("/data/2.5/onecall?&exclude=minutely&appid=2793471ee23491bf4da5d081017f8163")
+    suspend fun getWeather2(@Query("lat") lat:Double, @Query("lon") lon:Double,
+                            @Query("units")units:String, @Query("lang")lang:String): WeatherData
 }
