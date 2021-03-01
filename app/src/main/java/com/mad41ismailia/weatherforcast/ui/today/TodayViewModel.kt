@@ -1,6 +1,7 @@
 package com.mad41ismailia.weatherforcast.ui.today
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
@@ -28,7 +29,9 @@ class TodayViewModel(application: Application) : AndroidViewModel(application){
     fun checkCities():Boolean{
         val current = repo.getCurrentLocation()
         val cityList = repo.loadCities()
-        if(current!==null|| cityList.size!=0){
+        Log.i("comingdata from here","${cityList.size }")
+        Log.i("comingdata from here","${current }")
+        if(current!==null|| cityList.size>1){
             return true
         }
         return false

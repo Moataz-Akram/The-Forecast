@@ -12,6 +12,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -26,7 +27,9 @@ import com.google.android.gms.location.*
 import com.mad41ismailia.weatherforcast.PREF_NAME
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.ActivityMainBinding
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
 import com.mad41ismailia.weatherforcast.repo.Repository
+import kotlinx.coroutines.*
 import java.io.IOException
 import java.util.*
 
@@ -36,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var viewModel: MainActivityViewModel
+    private var currentLocation: String? = null
 
     private lateinit var locationRequest: LocationRequest
     private lateinit var fusedLocation: FusedLocationProviderClient
@@ -71,11 +75,17 @@ class MainActivity : AppCompatActivity() {
 
         //check GPS, location
         fusedLocation = LocationServices.getFusedLocationProviderClient(this)
-        val current = getAddress()
-        if(current!==null){
-            viewModel.setCurrentLocation(current)
+
+        runBlocking { getLastLocation() }
+
+
+        Log.i("comingdata","before check"+currentLocation.toString())
+
+        if(currentLocation!==null){
+            Log.i("comingdata","inside check")
+
+            viewModel.setCurrentLocation(currentLocation!!)
         }
-//        getCurrentLocation()
     }
 
     @SuppressLint("MissingPermission")
@@ -119,6 +129,8 @@ class MainActivity : AppCompatActivity() {
         getLastLocation()
         val geocoder = Geocoder(this)
         val addresses = geocoder.getFromLocation(longt, lat, 1)
+        Log.i("comingdata",addresses[0]?.locality.toString())
+
         if (addresses.isEmpty()){
             return null
         }
@@ -137,6 +149,27 @@ class MainActivity : AppCompatActivity() {
                     //not need but left for toast
                     val geocoder = Geocoder(this, Locale.getDefault())
                     val addresses: List<Address> = geocoder.getFromLocation(lat, longt, 1)
+                    currentLocation = addresses[0].locality
+                    Log.i("comingdata",currentLocation.toString())
+                    viewModel.setCurrentLocation(addresses[0].locality)
+                    val loc = Locations(addresses[0].locality,lat,longt)
+                    loc.id = 1
+                    CoroutineScope(Dispatchers.Default).launch {
+                        viewModel.addLocation(loc)
+                        delay(1000)
+                        val r= viewModel.getCurrentLocation(1)
+                        delay(3000)
+                        val loc2 = Locations(null,555.5555555,555.55555)
+                        loc2.id = 1
+                        viewModel.addLocation(loc2)
+                        val loc3 = viewModel.getCurrentLocation(1)
+                        Log.i("comingdata","coming location address = null"+loc3.cityAddress)
+
+//                        Toast.makeText(applicationContext, "city: ${r.cityAddress}\n Lat: ${r.lat}\n id:${r.id}", Toast.LENGTH_LONG).show()
+                        Log.i("comingdata","coming location"+r.toString())
+                        Log.i("comingdata","coming location"+r.cityAddress+" "+r.id+" "+r.lat+" "+r.lon)
+                    }
+
                     Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()
                 }
             } else {

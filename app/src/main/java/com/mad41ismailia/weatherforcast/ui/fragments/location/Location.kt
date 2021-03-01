@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 //import androidx.fragment.app.FragmentTransaction
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.model.Place
@@ -17,8 +18,12 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.mad41ismailia.weatherforcast.MAPBOX_API_KEY
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.LocationFragmentBinding
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
 //import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,7 +33,10 @@ class Location : Fragment(R.layout.location_fragment) {
     private lateinit var binding:LocationFragmentBinding
     private lateinit var viewModel: LocationViewModel
     private lateinit var list:ArrayList<String?>
-//    private lateinit var autocompleteFragment: PlaceAutocompleteFragment
+
+    lateinit var adapter : LocationAdapter
+
+    //    private lateinit var autocompleteFragment: PlaceAutocompleteFragment
 //    private var transaction : FragmentTransaction? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = LocationFragmentBinding.inflate(inflater,container,false)
@@ -39,9 +47,20 @@ class Location : Fragment(R.layout.location_fragment) {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(LocationViewModel::class.java)
+        viewModel = ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application))
+            .get(LocationViewModel::class.java)
+        var layoutManager = LinearLayoutManager(requireContext())
+
+        binding.locationRecycler.layoutManager = layoutManager
+        binding.locationRecycler.setHasFixedSize(true)
+        CoroutineScope(Dispatchers.Main).launch {
+            viewModel.getLocations().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                adapter = LocationAdapter(it)
+                binding.locationRecycler.adapter = adapter
+            })
+        }
         // TODO: Use the ViewModel
-        list = viewModel.loadCities()
+//        list = viewModel.loadCities()
 
 //        //initialize mapBox
 //        if (savedInstanceState == null) {
@@ -90,10 +109,12 @@ class Location : Fragment(R.layout.location_fragment) {
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 val latlong = geocoder.getFromLocationName(place.name,1)
                 latlong[0].latitude
-
+                val loc = Locations(place.name!!,latlong[0].latitude,latlong[0].longitude)
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewModel.addLocation(loc)
+                }
                 Log.i("comingdata", "Place: ${place.name}, ${place.id}, ${latlon.toString()}")
                 Log.i("comingdata", "Place: ${latlong[0].latitude}, ${latlong[0].longitude}, ${latlong.toString()}")
-                binding.textView3.text = place.name
             }
             override fun onError(status: Status) {
                 // TODO: Handle the error.

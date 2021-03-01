@@ -8,6 +8,7 @@ import com.mad41ismailia.weatherforcast.CITIES_LIST
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlertDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
 import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
 import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
 import com.mad41ismailia.weatherforcast.repo.sharedPreference.SharedPreference
@@ -15,7 +16,7 @@ import kotlinx.coroutines.delay
 
 class Repository private constructor(application: Application) {
 
-    private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather9Database").build()
+    private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather Database").build()
     private val weatherDao = db.WeatherDao()
     private val sharedPreference = SharedPreference(application)
 //    private val data = UseRetrofit()
@@ -93,5 +94,19 @@ class Repository private constructor(application: Application) {
     fun saveCity(city:String) {
         sharedPreference.saveCity(city)
     }
+
+    suspend fun addLocation(location:Locations){
+        weatherDao.addLocation(location)
+    }
+
+    suspend fun getCurrentLocation(id:Int): Locations {
+        return weatherDao.getCurrentLocation(id)
+    }
+
+    suspend fun getLocations(): LiveData<List<Locations>> {
+        return weatherDao.getLocations()
+    }
+
+
 
 }

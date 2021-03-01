@@ -3,6 +3,7 @@ package com.mad41ismailia.weatherforcast.repo.sharedPreference
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.JsonReader
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -45,15 +46,18 @@ class SharedPreference(application: Application) {
     }
 
     fun getCurrentLocation(): String? {
-        map.put("sd",(2.2 to 2.2))
-        Log.i("comingdata",map.toString())
-        val json = sharedPreferences.getString( CURRENT_LOCATION, null)
-        current = gson.fromJson(json, typeString)
+//        map.put("sd",(2.2 to 2.2))
+//        Log.i("comingdata",map.toString())
+//        var json = sharedPreferences.getString( CURRENT_LOCATION, null)
+//        Log.i("comingdata","load current")
+//        current = gson.fromJson(json, typeString)
         return current
     }
 
     fun setCurrentLocation(currentLocation:String){
         editor.putString(CURRENT_LOCATION, currentLocation)
+        Log.i("comingdata","save current")
+
         editor.apply()
     }
 
