@@ -12,7 +12,7 @@ class MyContextWrapper(base: Context) : ContextWrapper(base) {
     companion object {
 
         @Suppress("DEPRECATION")
-        fun wrap(ctx: Context, language: String): ContextWrapper {
+        fun wrap(ctx: Context, language: String="ar"): ContextWrapper {
             var context = ctx
             val config = context.resources.configuration
             val sysLocale: Locale? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

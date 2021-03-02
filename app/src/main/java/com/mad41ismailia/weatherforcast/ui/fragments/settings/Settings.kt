@@ -1,6 +1,8 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +12,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.mad41ismailia.weatherforcast.PREF_NAME
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.repo.Repository
+import com.mad41ismailia.weatherforcast.ui.mainActivity.MainActivity
 import com.mad41ismailia.weatherforcast.ui.mainActivity.MyPreference
 
 class Settings : PreferenceFragmentCompat() {
@@ -25,21 +28,26 @@ class Settings : PreferenceFragmentCompat() {
         super.onActivityCreated(savedInstanceState)
         sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
-        myPreference = MyPreference(requireContext())
+        myPreference = MyPreference(requireActivity())
     }
 
+    @SuppressLint("LogNotTimber")// for the log print
     override fun onPause() {
         val lang: ListPreference? = findPreference("lang")
         val units: ListPreference? = findPreference("units")
+        val oldLang = Repository.getRepoObject().getLang()
         lang?.value?.let { Repository.getRepoObject().setLang(it) }
         units?.value?.let { Repository.getRepoObject().setUnits(it) }
-
-//        val oldLang = sharedPreferences.getString("lang","en")
-//        if(lang?.value.equals(oldLang)){
-//            editor.putBoolean("restartactivity",false)
-//        }else{editor.putBoolean("restartactivity",true)}
-
+        lang?.value?.let { myPreference.setLoginCount(it) }
+        val langString = lang?.value.toString()
+        if(langString!=oldLang){
+            Log.i("languageRestart inside","not equals old lang is '$oldLang' new lang is '${lang?.value}'")
+            val refresh = Intent(activity, MainActivity::class.java)
+            startActivity(refresh)
+            requireActivity().finish()
+        }else{
+            Log.i("languageRestart outside","equals old lang is '$oldLang' new lang is '${lang?.value}'")
+        }
         super.onPause()
-
     }
 }

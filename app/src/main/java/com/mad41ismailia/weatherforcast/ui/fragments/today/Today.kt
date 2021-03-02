@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.libraries.places.api.Places
@@ -52,8 +53,7 @@ class Today : Fragment(R.layout.today_fragment) {
         })
 
 
-
-
+        Toast.makeText(context,"${Locale.getDefault().language}", Toast.LENGTH_LONG).show()
 //        val cityListViewPager = viewModel.loadCities()
         binding.viewPager.adapter = ViewPagerAdapter(viewModel.loadCities())
         val indicator = binding.indicatior

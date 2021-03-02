@@ -62,14 +62,15 @@ class TodayViewModel : ViewModel(){
     //to be removed to sharedPref
     fun checkLanguage(activity: Activity) {
         val sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE)
-        val lang = sharedPreferences.getString("lang", "en")
+        var lang = repo.getLang()
+        lang = "ar"
         val currentLang = Locale.getDefault().language
         Log.i("comingdata", "SP lang $lang")
         Log.i("comingdata", "device lang$currentLang")
         Thread.sleep(1000)
         locale = Locale(lang)
-        if(sharedPreferences.getBoolean("restartactivity",false)){
-            sharedPreferences.edit().putBoolean("restartactivity",false)
+//        if(sharedPreferences.getBoolean("restartactivity",false)){
+//            sharedPreferences.edit().putBoolean("restartactivity",false)
         //language
         val res = activity.resources
         val dm = res.displayMetrics
@@ -77,8 +78,9 @@ class TodayViewModel : ViewModel(){
         conf.setLocale(locale)
 //                requireActivity().baseContext.createConfigurationContext(conf)
         res.updateConfiguration(conf, dm)
+
         val refresh = Intent(activity, MainActivity::class.java)
         activity.startActivity(refresh)
-        }
+//        }
     }
 }

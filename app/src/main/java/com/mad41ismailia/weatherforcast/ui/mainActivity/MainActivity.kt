@@ -76,14 +76,28 @@ class MainActivity : AppCompatActivity() {
         fusedLocation = LocationServices.getFusedLocationProviderClient(this)
         Log.i("comingdata","before check"+currentLocation.toString())
         getLastLocation()
+
+
+        //check for local language
+//        val sharedPreferences: SharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+//        val editor = sharedPreferences.edit()
+//        val restart = sharedPreferences.getInt("restart",1)
+//        if(restart===0){
+//            viewModel.checkLanguage(this)
+//            editor.putInt("restart",1)
+//            editor.commit()
+//        }else if(restart===1){
+//            editor.putInt("restart",2)
+//            editor.commit()
+//        }
     }
 
 
-//    override fun attachBaseContext(newBase: Context?) {
-//        val myPreference = MyPreference(newBase!!)
-//        val lang = myPreference.getLoginCount()
-//        super.attachBaseContext(MyContextWrapper.wrap(newBase!!,lang!!))
-//    }
+    override fun attachBaseContext(newBase: Context?) {
+        val myPreference = MyPreference(newBase!!)
+        val lang = myPreference.getLoginCount()
+        super.attachBaseContext(MyContextWrapper.wrap(newBase!!,lang!!))
+    }
 
 
     @SuppressLint("MissingPermission")
@@ -198,8 +212,11 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
 //        val sharedPreferences: SharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 //        val editor = sharedPreferences.edit()
-//        editor.putBoolean("restartactivity",true)
-//        editor.commit()
+//        val restart = sharedPreferences.getInt("restart",1)
+//        if(restart===2){
+//            editor.putInt("restart",0)
+//            editor.commit()
+//        }
         super.onStop()
     }
 
