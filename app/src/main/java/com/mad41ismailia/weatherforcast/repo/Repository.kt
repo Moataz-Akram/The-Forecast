@@ -72,7 +72,7 @@ class Repository private constructor(application: Application) {
         weatherDao.deleteHourly()
         weatherDao.addHourly(list)
     }
-    //location view model
+    //location view model -> to be deleted
     suspend fun addCityDB(location:Locations){
         weatherDao.addCityDB(location)
     }

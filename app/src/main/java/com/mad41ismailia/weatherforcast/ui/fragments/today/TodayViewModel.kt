@@ -34,6 +34,11 @@ class TodayViewModel : ViewModel(){
         return repo.getUnits()
     }
 
+    fun loadCities(): ArrayList<String?> {
+        return repo.loadCities()
+    }
+
+
     //to be done, check if i need to send a new api or not -> change current location, add new place, after 12AM
     private fun checkCall(): Boolean {
         return flag

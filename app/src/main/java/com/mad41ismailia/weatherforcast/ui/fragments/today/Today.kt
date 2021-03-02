@@ -50,6 +50,16 @@ class Today : Fragment(R.layout.today_fragment) {
             Log.i("comingdata", it.toString())
             binding.textView.text = it.toString()
         })
+
+
+
+
+//        val cityListViewPager = viewModel.loadCities()
+        binding.viewPager.adapter = ViewPagerAdapter(viewModel.loadCities())
+        val indicator = binding.indicatior
+        indicator.setViewPager(binding.viewPager)
+
+
         //        viewModel.checkLanguage(requireActivity())
 
         sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
