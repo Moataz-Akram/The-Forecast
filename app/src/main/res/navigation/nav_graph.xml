@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/location">
+    app:startDestination="@id/today">
 
     <fragment
         android:id="@+id/today"
-        android:name="com.mad41ismailia.weatherforcast.ui.today.Today"
+        android:name="com.mad41ismailia.weatherforcast.ui.fragments.today.Today"
         android:label="today_fragment"
         tools:layout="@layout/today_fragment" >
         <action

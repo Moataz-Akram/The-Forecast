@@ -24,7 +24,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.datatransport.runtime.scheduling.SchedulingConfigModule_ConfigFactory
 import com.google.android.gms.location.*
+import com.google.android.libraries.places.api.Places
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.mad41ismailia.weatherforcast.*
@@ -43,32 +45,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var viewModel: MainActivityViewModel
-    private var currentLocation: String? = null
 
+    private var currentLocation: String? = null
     private lateinit var locationRequest: LocationRequest
     private lateinit var fusedLocation: FusedLocationProviderClient
     private var longt = 0.0
     private var lat = 0.0
     private val PERMISSION_ID = 3
 
-
-    private val locationCallback: LocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            super.onLocationResult(locationResult)
-            val location = locationResult.lastLocation
-            longt = location.longitude
-            lat = location.latitude
-        }
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //createRepo & database
         Repository.createObject(application)
+        //initialize for the autoComplete
+        Places.initialize(this, API_KEY)
         //viewModel
         viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(application))
-                .get(MainActivityViewModel::class.java)
+                            .get(MainActivityViewModel::class.java)
         //dataBinding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         //bottomNavBar
@@ -81,39 +74,17 @@ class MainActivity : AppCompatActivity() {
 
         //check GPS, location
         fusedLocation = LocationServices.getFusedLocationProviderClient(this)
-
-
-
         Log.i("comingdata","before check"+currentLocation.toString())
-
-//        CoroutineScope(Dispatchers.Main).launch {
-            getLastLocation()
-            Log.i("comingdata","after get last location")
-//            if(currentLocation!==null){
-//                Log.i("comingdata","inside check")
-//                delay(3000)
-//                //should move to inside fused location and in check in no internet connection
-//                viewModel.setCurrentLocation(currentLocation!!)
-//            }
-//        }
-
-
-
-
-//        val sharedPreferences: SharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-//        val editor = sharedPreferences.edit()
-//        val typeString: Type = object : TypeToken<String>() {}.type
-//        val gson = Gson()
-//
-//        editor.putString(LANGUAGE, "FN")
-//        editor.apply()
-//
-//        val json = sharedPreferences.getString( LANGUAGE, "EN")
-//        Log.i("comingdata","coming lang"+json)
-
-
-
+        getLastLocation()
     }
+
+
+//    override fun attachBaseContext(newBase: Context?) {
+//        val myPreference = MyPreference(newBase!!)
+//        val lang = myPreference.getLoginCount()
+//        super.attachBaseContext(MyContextWrapper.wrap(newBase!!,lang!!))
+//    }
+
 
     @SuppressLint("MissingPermission")
     private fun getCurrentLocation() {
@@ -149,7 +120,16 @@ class MainActivity : AppCompatActivity() {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 0
         locationRequest.numUpdates = 1
-        fusedLocation.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+        fusedLocation.requestLocationUpdates(locationRequest,
+                                            object : LocationCallback() {
+                                                override fun onLocationResult(locationResult: LocationResult) {
+                                                    super.onLocationResult(locationResult)
+                                                    val location = locationResult.lastLocation
+                                                    longt = location.longitude
+                                                    lat = location.latitude
+                                                }
+                                            }
+                                            , Looper.myLooper())
     }
 
     fun getAddress(): String? {
@@ -167,30 +147,34 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
         if (checkPermissions()) {
+            //add check in local not null don't ask
             if (gpsEnabled()) {
                 requestNewLocationData()
                 fusedLocation.lastLocation.addOnCompleteListener { task ->
-
                     val location = task.result
                     Log.i("comingdata","coming fused location "+location.toString())
-                    longt = location.longitude ?: 29.351
-                    lat = location.latitude ?: 30.265
+                    longt = location.longitude ?: 0.0
+                    lat = location.latitude ?: 0.0
                     //not need but left for toast
                     val geocoder = Geocoder(this, Locale.getDefault())
                     val addresses: List<Address> = geocoder.getFromLocation(lat, longt, 1)
                     currentLocation = addresses[0].locality
                     Log.i("comingdata",currentLocation.toString())
-                    viewModel.setCurrentLocation(addresses[0].locality)
-                    val loc = Locations(addresses[0].locality,lat,longt)
 
+                    //in shared preference
+                    viewModel.setCurrentLocation(addresses[0].locality)
+
+                    //need to change table to a list in shared pref
+                    val loc = Locations(addresses[0].locality,lat,longt)
                     loc.id = 1
+
                     CoroutineScope(Dispatchers.Default).launch {
                         //update current in database
                         viewModel.addLocation(loc)
                         val r= viewModel.getCurrentLocation(1)
 //                        Toast.makeText(applicationContext, "city: ${r.cityAddress}\n Lat: ${r.lat}\n id:${r.id}", Toast.LENGTH_LONG).show()
-                        Log.i("comingdata","coming location "+r.toString())
-                        Log.i("comingdata","coming location "+r.cityAddress+" "+r.id+" "+r.lat+" "+r.lon)
+//                        Log.i("comingdata", "coming location $r")
+//                        Log.i("comingdata","coming location "+r.cityAddress+" "+r.id+" "+r.lat+" "+r.lon)
                     }
                     Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()
                 }
@@ -205,10 +189,18 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_ID) {
-            if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation()
             }
         }
+    }
+
+    override fun onStop() {
+//        val sharedPreferences: SharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+//        val editor = sharedPreferences.edit()
+//        editor.putBoolean("restartactivity",true)
+//        editor.commit()
+        super.onStop()
     }
 
 }

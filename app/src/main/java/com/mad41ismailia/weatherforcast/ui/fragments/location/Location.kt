@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,65 +35,33 @@ import java.util.*
 class Location : Fragment(R.layout.location_fragment) {
     private lateinit var binding:LocationFragmentBinding
     private lateinit var viewModel: LocationViewModel
-    private val cityList:ArrayList<String?> = arrayListOf()
-
-
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var editor:SharedPreferences.Editor
-    var gson = Gson()
-    val typeList: Type = object : TypeToken<ArrayList<String?>>() {}.type
-
+    private var cityList:ArrayList<String?> = arrayListOf()
     lateinit var adapter : LocationAdapter
 
-    //    private lateinit var autocompleteFragment: PlaceAutocompleteFragment
+    private lateinit var sharedPreferences: SharedPreferences//delete
+    private lateinit var editor:SharedPreferences.Editor//delete
+    var gson = Gson()//delete
+    val typeList: Type = object : TypeToken<ArrayList<String?>>() {}.type//delete
+
+//    private lateinit var autocompleteFragment: PlaceAutocompleteFragment
 //    private var transaction : FragmentTransaction? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = LocationFragmentBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        return view
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application))
-            .get(LocationViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(LocationViewModel::class.java)
         var layoutManager = LinearLayoutManager(requireContext())
-
         binding.locationRecycler.layoutManager = layoutManager
         binding.locationRecycler.setHasFixedSize(true)
-        CoroutineScope(Dispatchers.Main).launch {
-            viewModel.getLocations().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                adapter = LocationAdapter(it)
-                binding.locationRecycler.adapter = adapter
-            })
-        }
-        // TODO: Use the ViewModel
-//        list = viewModel.loadCities()
 
+        cityList = viewModel.loadCities()
+        adapter = LocationAdapter(cityList)
+        binding.locationRecycler.adapter = adapter
 
-
-
-
-        sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        editor = sharedPreferences.edit()
-        val lang = sharedPreferences.getString("lang", "en")
-        val units = sharedPreferences.getString("units", "metric")
-        Log.i("comingdata ", "location lang = " + lang)
-        Log.i("comingdata ", "location units = " + units)
-        cityList.add("Fayoum")
-        cityList.add("Cairo")
-        cityList.add("Ismailia")
-
-//        cityList.add(place.name)
-        val json = gson.toJson(cityList)
-        Log.i("comingdata", "list to string $json")
-        editor.putString("list",json)
-        editor.commit()
-
-
-
-
+        addLocation()
 //        //initialize mapBox
 //        if (savedInstanceState == null) {
 //            autocompleteFragment = PlaceAutocompleteFragment.newInstance(MAPBOX_API_KEY)
@@ -103,7 +72,6 @@ class Location : Fragment(R.layout.location_fragment) {
 //            autocompleteFragment = requireActivity().supportFragmentManager.findFragmentByTag("SEARCH") as PlaceAutocompleteFragment
 //        }
 
-        addLocation()
 //        autocompleteMapbox()
     }
 
@@ -124,9 +92,6 @@ class Location : Fragment(R.layout.location_fragment) {
 //        })
 //}
 
-
-
-
     private fun addLocation() {
         // Initialize the AutocompleteSupportFragment.
         val autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
@@ -140,21 +105,11 @@ class Location : Fragment(R.layout.location_fragment) {
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 val latlong = geocoder.getFromLocationName(place.name, 1)
 
-                //cities list on shared pref
-//                cityList.add(place.name)
-//                val json = gson.toJson(cityList)
-//                Log.i("comingdata", "$json")
-//                editor.putString("list",json)
-//                editor.commit()
-
-
-                latlong[0].latitude
                 val loc = Locations(place.name!!, latlong[0].latitude, latlong[0].longitude)
+                viewModel.saveCity(place.name!!)
                 CoroutineScope(Dispatchers.IO).launch {
-                    viewModel.addLocation(loc)
+                    viewModel.addCityDB(loc)
                 }
-                Log.i("comingdata", "Place: ${place.name}, ${place.id}, ${latlon.toString()}")
-                Log.i("comingdata", "Place: ${latlong[0].latitude}, ${latlong[0].longitude}, ${latlong.toString()}")
             }
 
             override fun onError(status: Status) {

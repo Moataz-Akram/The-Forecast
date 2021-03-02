@@ -4,18 +4,18 @@
     <PreferenceCategory app:title="@string/settings">
 
         <ListPreference
-            android:defaultValue="EN"
-            android:entries="@array/language_values"
-            android:entryValues="@array/language_values"
-            android:key="lang"
-            android:title="@string/language"
-            app:useSimpleSummaryProvider="true"/>
-        <ListPreference
             android:defaultValue="metric"
             android:entries="@array/units_entries"
             android:entryValues="@array/units_values"
             android:key="units"
             android:title="@string/units"
+            app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            android:defaultValue="EN"
+            android:entries="@array/language_values"
+            android:entryValues="@array/language_values"
+            android:key="lang"
+            android:title="@string/language"
             app:useSimpleSummaryProvider="true"/>
 
     </PreferenceCategory>

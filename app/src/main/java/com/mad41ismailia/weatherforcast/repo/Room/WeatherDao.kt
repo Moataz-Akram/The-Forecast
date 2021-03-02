@@ -14,16 +14,14 @@ import retrofit2.http.Path
 @Dao
 interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addHourly(hourly: List<HourlyDatabase>)
+    fun addHourly(hourly: List<HourlyDatabase>)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addDaily(daily: List<DailyDatabase>)
+    fun addDaily(daily: List<DailyDatabase>)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addDaily1(daily: DailyDatabase)
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addAlert(alert: List<AlertDatabase>)
+    fun addAlert(alert: List<AlertDatabase>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addLocation(daily: Locations)
+    fun addCityDB(daily: Locations)
 
 
     @Query("Delete from Hourly")
@@ -32,24 +30,21 @@ interface WeatherDao {
     fun deleteDaily()
     @Query("Delete from Alert")
     fun deleteAlert()
+
     @Query("Delete from Locations where cityAddress=:address")
     fun deleteLocation( address:String)
 
 
     @Query("SELECT * From Daily")
     fun getDaily():LiveData<List<DailyDatabase>>
+    @Query("SELECT * From Hourly")
+    fun getHourly():LiveData<List<HourlyDatabase>>
+    @Query("SELECT * From Alert")
+    fun getAlert():LiveData<List<AlertDatabase>>
 
-    @Query("SELECT * From Locations")
-    fun getLocationsList():List<Locations>
 
     @Query("SELECT * From Locations")
     fun getLocations():LiveData<List<Locations>>
-
     @Query("SELECT * From Locations where id=:id")
     fun getCurrentLocation( id:Int):Locations
-
-
-
-
-
 }

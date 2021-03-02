@@ -1,10 +1,8 @@
 package com.mad41ismailia.weatherforcast.repo
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Room
-import com.mad41ismailia.weatherforcast.CITIES_LIST
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlertDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
@@ -12,14 +10,12 @@ import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
 import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
 import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
 import com.mad41ismailia.weatherforcast.repo.sharedPreference.SharedPreference
-import kotlinx.coroutines.delay
 
 class Repository private constructor(application: Application) {
 
     private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather Database").build()
     private val weatherDao = db.WeatherDao()
     private val sharedPreference = SharedPreference(application)
-//    private val data = UseRetrofit()
 
     companion object{
         private var INSTANCE:Repository? = null
@@ -33,26 +29,24 @@ class Repository private constructor(application: Application) {
     }
 
     suspend fun getWeatherData(lat:Double,lon:Double,units:String, lang:String){
-        Log.i("comingdata ","new request")
-        val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather2(lat , lon, units, lang)
+        val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather(lat , lon, units, lang)
         val dailyList = ArrayList<DailyDatabase>()
         val hourlyList = ArrayList<HourlyDatabase>()
         val alertList = ArrayList<AlertDatabase>()
-        val comingDailyList = weatherData.daily
-        val list4 = weatherData.hourly
-        val list6 = weatherData.alerts
-        for (i in comingDailyList) {
+        for (i in weatherData.daily) {
             val m = DailyDatabase(lat,lon, i)
             dailyList.add(m)
         }
+
         addDaily(dailyList)
-        for (i in list4) {
+        for (i in weatherData.hourly) {
             val m = HourlyDatabase(lat,lon, i)
             hourlyList.add(m)
         }
         addHourly(hourlyList)
-        if(list6!==null) {
-            for (i in list6) {
+
+        if(weatherData.alerts!==null) {
+            for (i in weatherData.alerts) {
                 val m = AlertDatabase(lat, lon, i)
                 alertList.add(m)
             }
@@ -64,49 +58,61 @@ class Repository private constructor(application: Application) {
         return weatherDao.getDaily()
     }
 
-    suspend fun addAlert(list:List<AlertDatabase>){
+    private fun addAlert(list:List<AlertDatabase>){
         weatherDao.deleteAlert()
         weatherDao.addAlert(list)
     }
 
-    suspend fun addDaily(list:List<DailyDatabase>){
+    private fun addDaily(list:List<DailyDatabase>){
         weatherDao.deleteDaily()
         weatherDao.addDaily(list)
     }
 
-    suspend fun addHourly(list:List<HourlyDatabase>){
+    private fun addHourly(list:List<HourlyDatabase>){
         weatherDao.deleteHourly()
         weatherDao.addHourly(list)
     }
-
-    fun getCurrentLocationSharedPref():String?{
-        return sharedPreference.getCurrentLocation()
+    //location view model
+    suspend fun addCityDB(location:Locations){
+        weatherDao.addCityDB(location)
+    }
+    //location view model && main view model
+    fun getCurrentLocation(id:Int): Locations {
+        return weatherDao.getCurrentLocation(id)
+    }
+    //location view model
+    fun getLocations(): LiveData<List<Locations>> {
+        return weatherDao.getLocations()
     }
 
+
+//    fun getCurrentLocationSharedPref():String?{
+//        return sharedPreference.getCurrentLocation()
+//    }
+    //main view model
     fun setCurrentLocation(currentLocation:String){
         sharedPreference.setCurrentLocation(currentLocation)
     }
 
+    //location frag
     fun loadCities(): ArrayList<String?> {
         return sharedPreference.loadCities()
+    }
+
+    fun getLang(): String {
+        return sharedPreference.getLang()
+    }
+    fun getUnits(): String {
+        return sharedPreference.getUnits()
+    }
+    fun setLang(lang:String) {
+        sharedPreference.setLang(lang)
+    }
+    fun setUnits(units:String) {
+        sharedPreference.setUnits(units)
     }
 
     fun saveCity(city:String) {
         sharedPreference.saveCity(city)
     }
-
-    suspend fun addLocation(location:Locations){
-        weatherDao.addLocation(location)
-    }
-
-    suspend fun getCurrentLocation(id:Int): Locations {
-        return weatherDao.getCurrentLocation(id)
-    }
-
-    suspend fun getLocations(): LiveData<List<Locations>> {
-        return weatherDao.getLocations()
-    }
-
-
-
 }
