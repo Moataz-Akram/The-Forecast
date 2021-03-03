@@ -42,9 +42,7 @@ class Settings : PreferenceFragmentCompat() {
         val langString = lang?.value.toString()
         if(langString!=oldLang){
             Log.i("languageRestart inside","not equals old lang is '$oldLang' new lang is '${lang?.value}'")
-            val refresh = Intent(activity, MainActivity::class.java)
-            startActivity(refresh)
-            requireActivity().finish()
+            requireActivity().recreate()
         }else{
             Log.i("languageRestart outside","equals old lang is '$oldLang' new lang is '${lang?.value}'")
         }
