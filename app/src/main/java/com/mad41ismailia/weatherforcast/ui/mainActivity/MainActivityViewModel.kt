@@ -31,29 +31,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         return repository.getCurrentLocation(id)
     }
 
-
-    fun checkLanguage(activity: Activity) {
-//        val sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE)
-        var lang = repository.getLang()
-//        lang = "ar"
-//        val currentLang = Locale.getDefault().language
-//        Log.i("comingdata", "SP lang $lang")
-//        Log.i("comingdata", "device lang$currentLang")
-//        Thread.sleep(1000)
-        val locale = Locale(lang)
-//        if(sharedPreferences.getBoolean("restartactivity",false)){
-//            sharedPreferences.edit().putBoolean("restartactivity",false)
-        //language
-        val res = activity.resources
-        val dm = res.displayMetrics
-        val conf = res.configuration
-        conf.setLocale(locale)
-//                requireActivity().baseContext.createConfigurationContext(conf)
-        res.updateConfiguration(conf, dm)
-
-        val refresh = Intent(activity, MainActivity::class.java)
-        activity.startActivity(refresh)
-//        }
-
+    fun loadCities(){
+        repository.loadCities()
     }
 }

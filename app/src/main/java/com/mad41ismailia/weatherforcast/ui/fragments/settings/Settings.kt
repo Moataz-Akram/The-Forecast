@@ -36,13 +36,19 @@ class Settings : PreferenceFragmentCompat() {
         val lang: ListPreference? = findPreference("lang")
         val units: ListPreference? = findPreference("units")
         val oldLang = Repository.getRepoObject().getLang()
+        val oldUnits = Repository.getRepoObject().getUnits()
         lang?.value?.let { Repository.getRepoObject().setLang(it) }
         units?.value?.let { Repository.getRepoObject().setUnits(it) }
         lang?.value?.let { myPreference.setLoginCount(it) }
         val langString = lang?.value.toString()
-        if(langString!=oldLang){
+        val unitsString = units?.value.toString()
+        if(langString!=oldLang||oldUnits!=unitsString){
+//            Repository.getRepoObject().updateAllData()
             Log.i("languageRestart inside","not equals old lang is '$oldLang' new lang is '${lang?.value}'")
-            requireActivity().recreate()
+
+            if(langString!=oldLang){
+                requireActivity().recreate()
+            }
         }else{
             Log.i("languageRestart outside","equals old lang is '$oldLang' new lang is '${lang?.value}'")
         }

@@ -7,6 +7,7 @@ import com.mad41ismailia.weatherforcast.entity.comingData.Alert
 
 @Entity(tableName = "Alert")
 data class AlertDatabase(
+        val cityName:String,
         val lat: Double,
         val lon: Double,
         val description: String,
@@ -17,5 +18,5 @@ data class AlertDatabase(
 ){
     @PrimaryKey(autoGenerate = true)
     var id:Int=0
-    constructor(lat: Double,lon: Double,alert: Alert):this(lat,lon,alert.description,alert.end,alert.event,alert.sender_name,alert.start)
+    constructor(cityName: String, lat: Double,lon: Double,alert: Alert):this(cityName,lat,lon,alert.description,alert.end,alert.event,alert.sender_name,alert.start)
 }

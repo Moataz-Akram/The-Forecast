@@ -109,6 +109,7 @@ class Location : Fragment(R.layout.location_fragment) {
                 viewModel.saveCity(place.name!!)
                 CoroutineScope(Dispatchers.IO).launch {
                     viewModel.addCityDB(loc)
+                    viewModel.fetchCityData(place.name!!, latlong[0].latitude, latlong[0].longitude)
                 }
             }
 

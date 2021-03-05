@@ -19,21 +19,22 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView"
-            app:layout_constraintTop_toBottomOf="@+id/indicatior"
-            android:id="@+id/viewPager"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/indicatior" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textNoData"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="Hello"
+            android:layout_height="wrap_content"
+            android:text="@string/textNoData"
+            android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/indicatior" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

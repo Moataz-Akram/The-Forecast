@@ -5,6 +5,7 @@ import com.mad41ismailia.weatherforcast.entity.comingData.*
 
 @Entity(tableName = "Daily")
 data class DailyDatabase(
+    val cityName:String,
     val lat: Double,
     val lon: Double,
     val clouds: Int,
@@ -27,7 +28,7 @@ data class DailyDatabase(
 ){
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
-        constructor(lat: Double,long: Double,daily: Daily):this(lat,long,daily.clouds,daily.dew_point,daily.dt,daily.feels_like,
+        constructor(cityName: String, lat: Double,long: Double,daily: Daily):this(cityName, lat,long,daily.clouds,daily.dew_point,daily.dt,daily.feels_like,
                                                             daily.humidity,daily.pop,daily.pressure,daily.sunrise,daily.sunset,daily.temp,
                                                             daily.uvi,daily.weather[0],daily.wind_deg,daily.wind_speed)
 }

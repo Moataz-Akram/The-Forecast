@@ -10,6 +10,8 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -72,27 +74,17 @@ class MainActivity : AppCompatActivity() {
         )
         binding.bottomNavBar.setupWithNavController(navController)
 
+        //internet connection
+        INTERNECT_CONNECTION = checkInternetConnection()
+
+
         //check GPS, location
         fusedLocation = LocationServices.getFusedLocationProviderClient(this)
         Log.i("comingdata","before check"+currentLocation.toString())
         getLastLocation()
-
-
-        //check for local language
-//        val sharedPreferences: SharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-//        val editor = sharedPreferences.edit()
-//        val restart = sharedPreferences.getInt("restart",1)
-//        if(restart===0){
-//            viewModel.checkLanguage(this)
-//            editor.putInt("restart",1)
-//            editor.commit()
-//        }else if(restart===1){
-//            editor.putInt("restart",2)
-//            editor.commit()
-//        }
     }
 
-
+    //wrapper base class for the language -> get called before onCreate
     override fun attachBaseContext(newBase: Context?) {
         val myPreference = MyPreference(newBase!!)
         val lang = myPreference.getLoginCount()
@@ -128,6 +120,10 @@ class MainActivity : AppCompatActivity() {
         startActivity(settingIntent)
     }
 
+    private fun checkInternetConnection():Boolean{
+        return (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo?.isConnected == true
+    }
+
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         locationRequest = LocationRequest()
@@ -161,39 +157,40 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
         if (checkPermissions()) {
-            //add check in local not null don't ask
-            if (gpsEnabled()) {
-                requestNewLocationData()
-                fusedLocation.lastLocation.addOnCompleteListener { task ->
-                    val location = task.result
-                    Log.i("comingdata","coming fused location "+location.toString())
-                    longt = location.longitude ?: 0.0
-                    lat = location.latitude ?: 0.0
-                    //not need but left for toast
-                    val geocoder = Geocoder(this, Locale.getDefault())
-                    val addresses: List<Address> = geocoder.getFromLocation(lat, longt, 1)
-                    currentLocation = addresses[0].locality
-                    Log.i("comingdata",currentLocation.toString())
+            if(INTERNECT_CONNECTION){
+                //add check in local not null don't ask
+                if (gpsEnabled()) {
+                    requestNewLocationData()
+                    fusedLocation.lastLocation.addOnCompleteListener { task ->
+                        val location = task.result
+                        Log.i("comingdata","coming fused location "+location.toString())
+                        longt = location.longitude ?: 0.0
+                        lat = location.latitude ?: 0.0
 
-                    //in shared preference
-                    viewModel.setCurrentLocation(addresses[0].locality)
+                        //not need but left for toast
+                        val geocoder = Geocoder(this, Locale.getDefault())
+                        val addresses: List<Address> = geocoder.getFromLocation(lat, longt, 1)
+                        currentLocation = addresses[0].locality
+                        Log.i("comingdata",currentLocation.toString())
 
-                    //need to change table to a list in shared pref
-                    val loc = Locations(addresses[0].locality,lat,longt)
-                    loc.id = 1
+                        //in shared preference
+                        viewModel.loadCities()
+                        viewModel.setCurrentLocation(addresses[0].locality)
 
-                    CoroutineScope(Dispatchers.Default).launch {
-                        //update current in database
-                        viewModel.addLocation(loc)
-                        val r= viewModel.getCurrentLocation(1)
-//                        Toast.makeText(applicationContext, "city: ${r.cityAddress}\n Lat: ${r.lat}\n id:${r.id}", Toast.LENGTH_LONG).show()
-//                        Log.i("comingdata", "coming location $r")
-//                        Log.i("comingdata","coming location "+r.cityAddress+" "+r.id+" "+r.lat+" "+r.lon)
+                        //need to change table to a list in shared pref
+                        val loc = Locations(addresses[0].locality,lat,longt)
+                        loc.id = 1
+
+                        CoroutineScope(Dispatchers.Default).launch {
+                            //update current in database
+                            viewModel.addLocation(loc)
+                            val r= viewModel.getCurrentLocation(1)
+                        }
+                        Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()
                     }
-                    Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()
+                } else {
+                    requestGpsEnable()
                 }
-            } else {
-                requestGpsEnable()
             }
         } else {
             requestPermissions()
@@ -208,16 +205,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onStop() {
-//        val sharedPreferences: SharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-//        val editor = sharedPreferences.edit()
-//        val restart = sharedPreferences.getInt("restart",1)
-//        if(restart===2){
-//            editor.putInt("restart",0)
-//            editor.commit()
-//        }
-        super.onStop()
-    }
-
 }

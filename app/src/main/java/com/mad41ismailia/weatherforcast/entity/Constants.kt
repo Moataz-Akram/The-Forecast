@@ -8,4 +8,6 @@ package com.mad41ismailia.weatherforcast
    const val CITIES_LIST = "CITIES_LIST"
    const val CURRENT_LOCATION = "CURRENT_LOCATION"
    const val LANGUAGE = "LANGUAGE"
+   const val UPDATE_DATE = "UPDATE_DATE"
+   var INTERNECT_CONNECTION = false
 

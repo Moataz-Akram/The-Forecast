@@ -9,6 +9,7 @@ import com.mad41ismailia.weatherforcast.entity.comingData.Weather
 
 @Entity(tableName = "Hourly")
 class HourlyDatabase(
+    val cityName:String,
     val lat: Double,
     val lon: Double,
     val clouds: Int,
@@ -28,7 +29,7 @@ class HourlyDatabase(
 ){
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
-    constructor(lat: Double,long: Double,hourly: Hourly):this(
-                lat, long, hourly.clouds, hourly.dew_point, hourly.dt, hourly.feels_like, hourly.humidity, hourly.pop, hourly.pressure, hourly.temp, hourly.uvi, hourly.visibility,
+    constructor(cityName: String, lat: Double,long: Double,hourly: Hourly):this(
+                cityName, lat, long, hourly.clouds, hourly.dew_point, hourly.dt, hourly.feels_like, hourly.humidity, hourly.pop, hourly.pressure, hourly.temp, hourly.uvi, hourly.visibility,
                 hourly.weather[0],hourly.wind_deg,hourly.wind_speed)
 }

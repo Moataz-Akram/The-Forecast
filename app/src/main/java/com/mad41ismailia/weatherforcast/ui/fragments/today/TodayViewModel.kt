@@ -1,86 +1,69 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.today
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.util.Log
+import android.location.Geocoder
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.mad41ismailia.weatherforcast.INTERNECT_CONNECTION
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
 import com.mad41ismailia.weatherforcast.repo.Repository
-import com.mad41ismailia.weatherforcast.ui.mainActivity.MainActivity
 import java.util.*
 
 class TodayViewModel : ViewModel(){
     val repo = Repository.getRepoObject()
-    var flag = false//remove
-    //language
-    lateinit var locale: Locale
 
+//    suspend fun fetchData(lat: Double, lon: Double, units: String, lang: String){
+//        if(INTERNECT_CONNECTION) {
+//                repo.getWeatherData(lat, lon, units, lang)
+//        }
+//    }
 
-    suspend fun fetchData(lat: Double, lon: Double, units: String, lang: String){
-        if(!checkCall()){
-            flag = true
-            repo.getWeatherData(lat, lon, units, lang)
+    suspend fun fetchData2(geocoder: Geocoder) {
+        if(INTERNECT_CONNECTION) {
+            val geocoder = geocoder
+            val list = repo.loadCities()
+            val lang = repo.getLang()
+            val units = repo.getUnits()
+            if(list.isNotEmpty()){
+                for(city in list){
+                    val latLong = geocoder.getFromLocationName(city, 1)
+                    if (city != null) {
+                        repo.getWeatherData(city, latLong[0].latitude,latLong[0].longitude, units, lang)
+                    }
+                }
+            }
         }
     }
-    fun getDaily(): LiveData<List<DailyDatabase>> {
-        return repo.getDaily()
+
+    fun getDaily(city:String): LiveData<List<DailyDatabase>> {
+        return repo.getDaily(city)
     }
-    fun getLang(): String {
-        return repo.getLang()
+
+    suspend fun getDaily2(city: String): List<DailyDatabase> {
+        return repo.getDaily2(city)
     }
-    fun getUnits(): String {
-        return repo.getUnits()
+
+    fun getHourly(city: String): LiveData<List<HourlyDatabase>> {
+        return repo.getHourly(city)
     }
+
+//    fun getLang(): String {
+//        return repo.getLang()
+//    }
+//    fun getUnits(): String {
+//        return repo.getUnits()
+//    }
 
     fun loadCities(): ArrayList<String?> {
         return repo.loadCities()
     }
 
-
-    //to be done, check if i need to send a new api or not -> change current location, add new place, after 12AM
-    private fun checkCall(): Boolean {
-        return flag
-    }
-    suspend fun checkCities():Boolean{
-//        val current = repo.getCurrentLocation(1)
-//        val myCity = current.cityAddress
-//        //shared pref list not database list
-//        val cityList = repo.loadCities()
-//
-//        val cityListDb = repo.getLocations()
-////        Log.i("comingdata","today check ${cityListDb.size }")
-//        Log.i("comingdata","today check ${current }")
-//        if(myCity!==null){
-//            return true
-//        }
+    fun checkCities():Boolean{
+        val list = repo.loadCities()
+        if(list.size==1 && list[0]==null){
+            return false
+        }
         return true
     }
 
-    //change app language
-    //to be removed to sharedPref
-    fun checkLanguage(activity: Activity) {
-        val sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE)
-        var lang = repo.getLang()
-        lang = "ar"
-        val currentLang = Locale.getDefault().language
-        Log.i("comingdata", "SP lang $lang")
-        Log.i("comingdata", "device lang$currentLang")
-        Thread.sleep(1000)
-        locale = Locale(lang)
-//        if(sharedPreferences.getBoolean("restartactivity",false)){
-//            sharedPreferences.edit().putBoolean("restartactivity",false)
-        //language
-        val res = activity.resources
-        val dm = res.displayMetrics
-        val conf = res.configuration
-        conf.setLocale(locale)
-//                requireActivity().baseContext.createConfigurationContext(conf)
-        res.updateConfiguration(conf, dm)
-
-        val refresh = Intent(activity, MainActivity::class.java)
-        activity.startActivity(refresh)
-//        }
-    }
 }

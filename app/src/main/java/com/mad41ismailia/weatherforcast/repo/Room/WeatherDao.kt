@@ -24,27 +24,35 @@ interface WeatherDao {
     fun addCityDB(daily: Locations)
 
 
-    @Query("Delete from Hourly")
-    fun deleteHourly()
-    @Query("Delete from Daily")
-    fun deleteDaily()
-    @Query("Delete from Alert")
-    fun deleteAlert()
+    @Query("Delete from Hourly where cityName =:city")
+    fun deleteHourly(city:String)
+    @Query("Delete from Daily where cityName =:city")
+    fun deleteDaily(city:String)
+    @Query("Delete from Alert where cityName =:city")
+    fun deleteAlert(city:String)
 
     @Query("Delete from Locations where cityAddress=:address")
     fun deleteLocation( address:String)
 
 
-    @Query("SELECT * From Daily")
-    fun getDaily():LiveData<List<DailyDatabase>>
-    @Query("SELECT * From Hourly")
-    fun getHourly():LiveData<List<HourlyDatabase>>
-    @Query("SELECT * From Alert")
-    fun getAlert():LiveData<List<AlertDatabase>>
+    @Query("SELECT * From Daily where cityName =:city")
+    fun getDaily(city: String):LiveData<List<DailyDatabase>>
+    @Query("SELECT * From Hourly where cityName =:city")
+    fun getHourly(city: String):LiveData<List<HourlyDatabase>>
+    @Query("SELECT * From Alert where cityName =:city")
+    fun getAlert(city: String):LiveData<List<AlertDatabase>>
 
 
-    @Query("SELECT * From Locations")
-    fun getLocations():LiveData<List<Locations>>
+    @Query("SELECT * From Daily where cityName =:city")
+    suspend fun getDaily2(city: String):List<DailyDatabase>
+    @Query("SELECT * From Hourly where cityName =:city")
+    suspend fun getHourly2(city: String):List<HourlyDatabase>
+    @Query("SELECT * From Alert where cityName =:city")
+    suspend fun getAlert2(city: String):List<AlertDatabase>
+
+
+//    @Query("SELECT * From Locations")
+//    fun getLocationsFromDB():LiveData<List<Locations>>
     @Query("SELECT * From Locations where id=:id")
     fun getCurrentLocation( id:Int):Locations
 }

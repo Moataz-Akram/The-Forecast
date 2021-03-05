@@ -26,5 +26,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="language">La langue</string>
     <string name="units">Unités</string>
+    <string name="textNoData">Please check your interned connection and GPS or add a city to see the weather</string>
 
 </resources>
