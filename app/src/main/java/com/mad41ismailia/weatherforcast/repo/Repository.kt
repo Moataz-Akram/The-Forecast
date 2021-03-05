@@ -69,7 +69,7 @@ class Repository private constructor(application: Application) {
             getWeatherData(city!!,latLong[0].latitude,latLong[0].longitude,units,lang)
         }
     }
-    fun getCityAllLiveData():List<LiveData<List<DailyDatabase>>>{
+    fun getCityAllLiveData():ArrayList<LiveData<List<DailyDatabase>>>{
         val list = sharedPreference.loadCitiesCurrentAlone()
         val listDaily:ArrayList<LiveData<List<DailyDatabase>>> = ArrayList()
         for (city in list){

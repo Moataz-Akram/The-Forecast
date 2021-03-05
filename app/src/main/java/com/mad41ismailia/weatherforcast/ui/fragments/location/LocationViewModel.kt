@@ -8,10 +8,10 @@ import com.mad41ismailia.weatherforcast.repo.Repository
 
 class LocationViewModel : ViewModel() {
     val repo = Repository.getRepoObject()
-    val list = repo.loadCities()
+    val list = repo.loadCitiesNew()
 
     fun loadCities(): ArrayList<String?> {
-        return repo.loadCities()
+        return repo.loadCitiesNew()
     }
 
     private val comingList:MutableLiveData<ArrayList<String?>> = MutableLiveData()

@@ -1,31 +1,22 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.today
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.annotation.SuppressLint
 import android.location.Geocoder
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.libraries.places.api.Places
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
-import com.mad41ismailia.weatherforcast.API_KEY
 import com.mad41ismailia.weatherforcast.INTERNECT_CONNECTION
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.TodayFragmentBinding
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
 import com.mad41ismailia.weatherforcast.ui.mainActivity.MainActivity
 import kotlinx.coroutines.*
-import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,10 +34,11 @@ class Today : Fragment(R.layout.today_fragment) {
         return view
     }
 
+    @SuppressLint("LogNotTimber")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         //view model
-//        viewModel = ViewModelProvider(this).get(TodayViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(TodayViewModel::class.java)
 //        viewModel.getDaily().observe(viewLifecycleOwner, {
 //            Log.i("comingdata", it.toString())
 //            binding.textNoData.text = it.toString()
@@ -56,19 +48,21 @@ class Today : Fragment(R.layout.today_fragment) {
         val list = viewModel.loadCities()
         var listDaily: ArrayList<List<DailyDatabase>> = ArrayList()
 
-        var listTrial:List<LiveData<List<DailyDatabase>>> = ArrayList()
+        var listTrial:ArrayList<LiveData<List<DailyDatabase>>> = ArrayList()
         CoroutineScope(Dispatchers.Default).launch {
             val job = launch {
                 listTrial = viewModel.getCityAllLiveData()
                 for (city in list) {
                     listDaily.add(viewModel.getDaily2(city!!))
                 }
+                Log.i("viewpager","list size ${listDaily.size} list live data size ${listTrial.size}")
 
             }
             job.join()
+            Log.i("viewpager","list size ${listDaily.size} list live data size ${listTrial.size}")
             withContext(Dispatchers.Main){
                 if (list.isNotEmpty()) {
-                    binding.viewPager.adapter = ViewPagerAdapter(list, listDaily)
+                    binding.viewPager.adapter = ViewPagerAdapter(requireContext(), list, listDaily,listTrial)
                     val indicator = binding.indicatior
                     indicator.setViewPager(binding.viewPager)
                     binding.textNoData.visibility = GONE

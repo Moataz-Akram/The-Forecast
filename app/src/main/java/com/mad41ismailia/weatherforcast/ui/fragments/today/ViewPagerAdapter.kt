@@ -1,25 +1,29 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.today
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
 @SuppressLint("LogNotTimber")
-class ViewPagerAdapter(list:List<String?>,listDaily: ArrayList<List<DailyDatabase>>) : RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
+class ViewPagerAdapter(val context: Context,list: List<String?>, listDaily: ArrayList<List<DailyDatabase>>, listTrial: ArrayList<LiveData<List<DailyDatabase>>>) : RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
     private var myList: List<String?> = list
     private var dailyList: ArrayList<List<DailyDatabase>> = listDaily
+    private var dailyListLive: ArrayList<LiveData<List<DailyDatabase>>> = listTrial
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_pager_item, parent, false)
+        Toast.makeText(context, "list size ${dailyList.size} list live data size ${dailyListLive.size}",Toast.LENGTH_LONG).show()
         return ViewHolder(view)
     }
 

@@ -42,7 +42,7 @@ class TodayViewModel : ViewModel(){
         return repo.getDaily(city)
     }
 
-    fun getCityAllLiveData():List<LiveData<List<DailyDatabase>>>{
+    fun getCityAllLiveData():ArrayList<LiveData<List<DailyDatabase>>>{
         return repo.getCityAllLiveData()
     }
 
@@ -56,7 +56,7 @@ class TodayViewModel : ViewModel(){
     }
 
     fun loadCities(): ArrayList<String?> {
-        return repo.loadCities()
+        return repo.loadCitiesNew()
     }
 
 //    fun checkCities():Boolean{
