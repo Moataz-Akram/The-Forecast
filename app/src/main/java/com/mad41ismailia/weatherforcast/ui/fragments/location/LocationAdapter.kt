@@ -2,14 +2,17 @@ package com.mad41ismailia.weatherforcast.ui.fragments.location
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.mad41ismailia.weatherforcast.R
 import java.util.ArrayList
 
-class LocationAdapter(private var myList: ArrayList<String?>) : RecyclerView.Adapter<LocationAdapter.ViewHolder>() {
+class LocationAdapter(private var myList: ArrayList<String?>,private val viewModel: LocationViewModel) : RecyclerView.Adapter<LocationAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.location_card, parent, false)
@@ -21,6 +24,18 @@ class LocationAdapter(private var myList: ArrayList<String?>) : RecyclerView.Ada
         holder.userId.text = location
         holder.card.setOnClickListener(View.OnClickListener {
 
+        })
+        val current = viewModel.getCurrentLocationStandAlone()
+        if(current!=null){
+            if(current == myList[position]){
+                holder.deleteLocation.visibility = GONE
+                holder.myLocation.visibility = VISIBLE
+            }
+        }
+        holder.deleteLocation.setOnClickListener ( View.OnClickListener {
+            myList.removeAt(position)
+            viewModel.deleteCity(myList[position-1]!!)
+            notifyDataSetChanged()
         })
     }
 
@@ -35,6 +50,8 @@ class LocationAdapter(private var myList: ArrayList<String?>) : RecyclerView.Ada
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userId: TextView = view.findViewById(R.id.cityName)
         val card: CardView = view.findViewById(R.id.location_card)
+        val myLocation:ImageView = view.findViewById(R.id.imgMyLocation)
+        val deleteLocation:ImageView = view.findViewById(R.id.imgDeleteLocation)
     }
 
 }

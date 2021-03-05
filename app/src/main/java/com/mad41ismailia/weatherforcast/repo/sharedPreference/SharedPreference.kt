@@ -29,18 +29,17 @@ class SharedPreference(application: Application) {
         citiesList = gson.fromJson(json, typeList)
         if (citiesList == null) {
             citiesList = ArrayList()
-            citiesList!!.add(null)
         }
         Log.i("savedPref","init $citiesList")
     }
 
-    fun loadCities(): ArrayList<String?> {
-        Log.i("savedPref"," load cities$citiesList")
-//        if (citiesList!![0]==null){
-//            citiesList!!.removeAt(0)
-//        }
-        return citiesList!!
-    }
+//    fun loadCities(): ArrayList<String?> {
+//        Log.i("savedPref"," load cities$citiesList")
+////        if (citiesList!![0]==null){
+////            citiesList!!.removeAt(0)
+////        }
+//        return citiesList!!
+//    }
 
     fun saveCity(city:String) {
         citiesList?.add(city)
@@ -94,10 +93,10 @@ class SharedPreference(application: Application) {
     }
 
     fun getLang(): String {
-        return sharedPreferences.getString("lang","en")!!
+        return sharedPreferences.getString("lang","EN")!!
     }
     fun getUnits(): String {
-        return sharedPreferences.getString("units","en")!!
+        return sharedPreferences.getString("units","metric")!!
     }
     fun setLang(lang:String) {
         editor.putString("lang", lang)
@@ -106,5 +105,9 @@ class SharedPreference(application: Application) {
     fun setUnits(units:String) {
         editor.putString("units", units)
         editor.apply()
+    }
+
+    fun deleteCity(city: String) {
+        citiesList!!.remove(city)
     }
 }

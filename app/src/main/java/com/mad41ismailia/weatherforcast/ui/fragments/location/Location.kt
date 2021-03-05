@@ -58,7 +58,7 @@ class Location : Fragment(R.layout.location_fragment) {
         binding.locationRecycler.setHasFixedSize(true)
 
         cityList = viewModel.loadCities()
-        adapter = LocationAdapter(cityList)
+        adapter = LocationAdapter(cityList,viewModel)
         binding.locationRecycler.adapter = adapter
 
         addLocation()
@@ -108,7 +108,7 @@ class Location : Fragment(R.layout.location_fragment) {
                 val loc = Locations(place.name!!, latlong[0].latitude, latlong[0].longitude)
                 viewModel.saveCity(place.name!!)
                 CoroutineScope(Dispatchers.IO).launch {
-                    viewModel.addCityDB(loc)
+//                    viewModel.addCityDB(loc)
                     viewModel.fetchCityData(place.name!!, latlong[0].latitude, latlong[0].longitude)
                 }
             }

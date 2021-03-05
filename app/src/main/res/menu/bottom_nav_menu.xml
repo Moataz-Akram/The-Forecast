@@ -6,11 +6,7 @@
         android:icon="@drawable/ic_baseline_today_24"
         android:menuCategory="secondary"
         android:title="@string/today" />
-    <item
-        android:id="@+id/sevenDays"
-        android:icon="@drawable/ic_baseline_calendar_today_24"
-        android:menuCategory="secondary"
-        android:title="@string/sevenDays" />
+
     <item
         android:id="@+id/location"
         android:icon="@drawable/ic_baseline_edit_location_alt_24"

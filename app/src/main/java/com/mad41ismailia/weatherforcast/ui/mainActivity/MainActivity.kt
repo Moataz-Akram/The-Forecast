@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
         navController = navHostFragment.findNavController()
         appBarConfiguration = AppBarConfiguration(
-                setOf(R.id.today, R.id.sevenDays, R.id.location, R.id.settings2, R.id.alarmf)
+                setOf(R.id.today, R.id.location, R.id.settings2, R.id.alarmf)
         )
         binding.bottomNavBar.setupWithNavController(navController)
 
@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity() {
                 //in shared preference
                 val currentCity = viewModel.getCurrentLocationStandAlone()
                 if (addresses[0].locality != null && !addresses[0].locality.equals(currentCity)) {
-                    viewModel.setCurrentLocation(addresses[0].locality)
+//                    viewModel.setCurrentLocation(addresses[0].locality)
                     viewModel.setCurrentLocationStandAlone(addresses[0].locality)
                 }
 //                Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()

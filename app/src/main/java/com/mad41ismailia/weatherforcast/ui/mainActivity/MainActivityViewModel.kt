@@ -16,10 +16,10 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private val repo = Repository.createObject(application)
     private val repository = Repository.getRepoObject()
 
-    //shared pref
-    fun setCurrentLocation(currentLocation:String){
-        repository.setCurrentLocation(currentLocation)
-    }
+//    //shared pref
+//    fun setCurrentLocation(currentLocation:String){
+//        repository.setCurrentLocation(currentLocation)
+//    }
     fun setCurrentLocationStandAlone(currentLocation:String){
         repository.setCurrentLocationStandAlone(currentLocation)
     }
@@ -28,17 +28,17 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     }
 
 
-    //DB
-    suspend fun addLocation(location: Locations){
-        repository.addCityDB(location)
-    }
+//    //DB
+//    suspend fun addLocation(location: Locations){
+//        repository.addCityDB(location)
+//    }
+//
+//    //DB
+//    fun getCurrentLocation(id:Int): Locations {
+//        return repository.getCurrentLocation(id)
+//    }
 
-    //DB
-    fun getCurrentLocation(id:Int): Locations {
-        return repository.getCurrentLocation(id)
-    }
-
-    fun loadCities(){
-        repository.loadCities()
-    }
+//    fun loadCities(){
+//        repository.loadCities()
+//    }
 }

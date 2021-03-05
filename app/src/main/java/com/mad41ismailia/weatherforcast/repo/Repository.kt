@@ -1,7 +1,9 @@
 package com.mad41ismailia.weatherforcast.repo
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.location.Geocoder
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.mad41ismailia.weatherforcast.CURRENT_LOCATION
@@ -12,6 +14,9 @@ import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
 import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
 import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
 import com.mad41ismailia.weatherforcast.repo.sharedPreference.SharedPreference
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -60,10 +65,13 @@ class Repository private constructor(application: Application) {
         }
     }
     //today
+    @SuppressLint("LogNotTimber")
     suspend fun fetchAllCitiesData(list:ArrayList<String?>) {
 
         val lang = sharedPreference.getLang()
         val units = sharedPreference.getUnits()
+        Log.i("settingsNow","lang '$lang' units '$units'")
+
         for (city in list){
             val latLong = geocoder.getFromLocationName(city, 1)
             getWeatherData(city!!,latLong[0].latitude,latLong[0].longitude,units,lang)
@@ -86,11 +94,15 @@ class Repository private constructor(application: Application) {
         return weatherDao.getDaily2(city)
     }
     //today
+    suspend fun getHourly2(city: String): List<HourlyDatabase> {
+        return weatherDao.getHourly2(city)
+    }
+
     fun getHourly(city: String): LiveData<List<HourlyDatabase>> {
         return weatherDao.getHourly(city)
     }
 
-    fun getAlret(city: String): LiveData<List<AlertDatabase>> {
+    fun getAlert(city: String): LiveData<List<AlertDatabase>> {
         return weatherDao.getAlert(city)
     }
 
@@ -108,14 +120,14 @@ class Repository private constructor(application: Application) {
         weatherDao.deleteHourly(city)
         weatherDao.addHourly(list)
     }
-    //location view model -> to be deleted
-    suspend fun addCityDB(location:Locations){
-        weatherDao.addCityDB(location)
-    }
-    //location view model && main view model
-    fun getCurrentLocation(id:Int): Locations {
-        return weatherDao.getCurrentLocation(id)
-    }
+//    //location view model -> to be deleted
+//    suspend fun addCityDB(location:Locations){
+//        weatherDao.addCityDB(location)
+//    }
+//    //location view model && main view model
+//    fun getCurrentLocation(id:Int): Locations {
+//        return weatherDao.getCurrentLocation(id)
+//    }
 //    //location view model
 //    fun getLocationsFromDB(): LiveData<List<Locations>> {
 //        return weatherDao.getLocationsFromDB()
@@ -138,15 +150,15 @@ class Repository private constructor(application: Application) {
     }
 
     //location frag, today, main activity
-    fun loadCities(): ArrayList<String?> {
-        val list =  sharedPreference.loadCities()
-        if(list.isNotEmpty()){
-            if (list!![0]==null){
-                list!!.removeAt(0)
-            }
-        }
-        return list
-    }
+//    fun loadCities(): ArrayList<String?> {
+//        val list =  sharedPreference.loadCities()
+//        if(list.isNotEmpty()){
+//            if (list!![0]==null){
+//                list!!.removeAt(0)
+//            }
+//        }
+//        return list
+//    }
     fun loadCitiesNew(): ArrayList<String?> {
         return sharedPreference.loadCitiesCurrentAlone()
     }
@@ -168,6 +180,15 @@ class Repository private constructor(application: Application) {
     //location
     fun saveCity(city:String) {
         sharedPreference.saveCity(city)
+    }
+    //location
+    fun deleteCity(city: String) {
+        CoroutineScope(Dispatchers.Default).launch {
+            weatherDao.deleteDaily(city)
+            weatherDao.deleteHourly(city)
+            weatherDao.deleteAlert(city)
+        }
+        sharedPreference.deleteCity(city)
     }
 
 }

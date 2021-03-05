@@ -55,6 +55,10 @@ class TodayViewModel : ViewModel(){
         return repo.getHourly(city)
     }
 
+    suspend fun getHourly2(city: String): List<HourlyDatabase> {
+        return repo.getHourly2(city)
+    }
+
     fun loadCities(): ArrayList<String?> {
         return repo.loadCitiesNew()
     }

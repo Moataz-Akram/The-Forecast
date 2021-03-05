@@ -4,7 +4,6 @@ plugins {
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
 }
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -19,7 +18,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
-
+        //to use vector imgs im my layout
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {

@@ -9,20 +9,7 @@
         android:id="@+id/today"
         android:name="com.mad41ismailia.weatherforcast.ui.fragments.today.Today"
         android:label="today_fragment"
-        tools:layout="@layout/today_fragment" >
-        <action
-            android:id="@+id/action_today_to_location"
-            app:destination="@id/location"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
-    </fragment>
-    <fragment
-        android:id="@+id/sevenDays"
-        android:name="com.mad41ismailia.weatherforcast.ui.fragments.sevenDays.SevenDays"
-        android:label="seven_days_fragment"
-        tools:layout="@layout/seven_days_fragment" />
+        tools:layout="@layout/today_fragment" />
     <fragment
         android:id="@+id/location"
         android:name="com.mad41ismailia.weatherforcast.ui.fragments.location.Location"
