@@ -58,19 +58,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //createRepo & database
-        Repository.createObject(application)
+//        Repository.createObject(application)
+
         //initialize for the autoComplete
         Places.initialize(this, API_KEY)
+
         //viewModel
         viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(application))
-                            .get(MainActivityViewModel::class.java)
+                .get(MainActivityViewModel::class.java)
         //dataBinding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
         //bottomNavBar
-        val  navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
         navController = navHostFragment.findNavController()
         appBarConfiguration = AppBarConfiguration(
-                setOf(R.id.today, R.id.sevenDays, R.id.location, R.id.settings2,R.id.alarmf)
+                setOf(R.id.today, R.id.sevenDays, R.id.location, R.id.settings2, R.id.alarmf)
         )
         binding.bottomNavBar.setupWithNavController(navController)
 
@@ -80,7 +83,7 @@ class MainActivity : AppCompatActivity() {
 
         //check GPS, location
         fusedLocation = LocationServices.getFusedLocationProviderClient(this)
-        Log.i("comingdata","before check"+currentLocation.toString())
+        Log.i("comingdata", "before check" + currentLocation.toString())
         getLastLocation()
     }
 
@@ -88,18 +91,18 @@ class MainActivity : AppCompatActivity() {
     override fun attachBaseContext(newBase: Context?) {
         val myPreference = MyPreference(newBase!!)
         val lang = myPreference.getLoginCount()
-        super.attachBaseContext(MyContextWrapper.wrap(newBase!!,lang!!))
+        super.attachBaseContext(MyContextWrapper.wrap(newBase!!, lang!!))
     }
 
 
     @SuppressLint("MissingPermission")
     private fun getCurrentLocation() {
         fusedLocation.lastLocation.addOnSuccessListener { location: Location? ->
-                    
+
         }
     }
 
-    fun checkPermissions():Boolean{
+    private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             return true
         }
@@ -120,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(settingIntent)
     }
 
-    private fun checkInternetConnection():Boolean{
+    fun checkInternetConnection(): Boolean {
         return (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo?.isConnected == true
     }
 
@@ -131,69 +134,55 @@ class MainActivity : AppCompatActivity() {
         locationRequest.interval = 0
         locationRequest.numUpdates = 1
         fusedLocation.requestLocationUpdates(locationRequest,
-                                            object : LocationCallback() {
-                                                override fun onLocationResult(locationResult: LocationResult) {
-                                                    super.onLocationResult(locationResult)
-                                                    val location = locationResult.lastLocation
-                                                    longt = location.longitude
-                                                    lat = location.latitude
-                                                }
-                                            }
-                                            , Looper.myLooper())
-    }
-
-    fun getAddress(): String? {
-        getLastLocation()
-        val geocoder = Geocoder(this)
-        val addresses = geocoder.getFromLocation(longt, lat, 1)
-        Log.i("comingdata",addresses[0]?.locality.toString())
-
-        if (addresses.isEmpty()){
-            return null
-        }
-        return addresses[0]?.locality
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        super.onLocationResult(locationResult)
+//                                                    val location = locationResult.lastLocation
+//                                                    longt = location.longitude
+//                                                    lat = location.latitude
+                    }
+                }, Looper.myLooper())
     }
 
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
         if (checkPermissions()) {
-            if(INTERNECT_CONNECTION){
-                //add check in local not null don't ask
-                if (gpsEnabled()) {
+            if (INTERNECT_CONNECTION) {
+                //add check if local not null don't ask for gps again
+                if (gpsEnabled() || viewModel.getCurrentLocationStandAlone() != null) {
                     requestNewLocationData()
-                    fusedLocation.lastLocation.addOnCompleteListener { task ->
-                        val location = task.result
-                        Log.i("comingdata","coming fused location "+location.toString())
-                        longt = location.longitude ?: 0.0
-                        lat = location.latitude ?: 0.0
-
-                        //not need but left for toast
-                        val geocoder = Geocoder(this, Locale.getDefault())
-                        val addresses: List<Address> = geocoder.getFromLocation(lat, longt, 1)
-                        currentLocation = addresses[0].locality
-                        Log.i("comingdata",currentLocation.toString())
-
-                        //in shared preference
-                        viewModel.loadCities()
-                        viewModel.setCurrentLocation(addresses[0].locality)
-
-                        //need to change table to a list in shared pref
-                        val loc = Locations(addresses[0].locality,lat,longt)
-                        loc.id = 1
-
-                        CoroutineScope(Dispatchers.Default).launch {
-                            //update current in database
-                            viewModel.addLocation(loc)
-                            val r= viewModel.getCurrentLocation(1)
-                        }
-                        Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()
-                    }
+                    updateCurrentLocation()
                 } else {
                     requestGpsEnable()
                 }
             }
         } else {
             requestPermissions()
+        }
+    }
+
+    @SuppressLint("MissingPermission", "LogNotTimber")
+    private fun updateCurrentLocation() {
+        fusedLocation.lastLocation.addOnCompleteListener { task ->
+            val location = task.result
+            Log.i("comingData", "coming fused location $location")
+            if (location != null) {
+                longt = location.longitude ?: 0.0
+                lat = location.latitude ?: 0.0
+
+                val geoCoder = Geocoder(this, Locale.getDefault())
+                val addresses: List<Address> = geoCoder.getFromLocation(lat, longt, 1)
+                currentLocation = addresses[0].locality
+
+                //only save current city , don't fetch data
+                //in shared preference
+                val currentCity = viewModel.getCurrentLocationStandAlone()
+                if (addresses[0].locality != null && !addresses[0].locality.equals(currentCity)) {
+                    viewModel.setCurrentLocation(addresses[0].locality)
+                    viewModel.setCurrentLocationStandAlone(addresses[0].locality)
+                }
+                Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -204,5 +193,9 @@ class MainActivity : AppCompatActivity() {
                 getLastLocation()
             }
         }
+    }
+
+    companion object {
+        val instance = MainActivity()
     }
 }

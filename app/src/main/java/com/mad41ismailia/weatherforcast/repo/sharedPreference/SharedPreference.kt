@@ -59,6 +59,31 @@ class SharedPreference(application: Application) {
         editor.apply()}else{citiesList!!.add(currentLocation)}
     }
 
+    fun setCurrentLocationStandAlone(currentLocation:String){
+        Log.i("savedPref","set current location $citiesList")
+        val city = sharedPreferences.getString(CURRENT_LOCATION,null)
+        editor.putString(CURRENT_LOCATION,currentLocation)
+        editor.apply()
+    }
+
+    fun getCurrentLocationStandAlone():String?{
+        return sharedPreferences.getString(CURRENT_LOCATION,null)
+    }
+
+    fun loadCitiesCurrentAlone(): ArrayList<String?> {
+        val current = getCurrentLocationStandAlone()
+        val list = ArrayList<String?>()
+        if(current!=null){
+            list.add(current!!)
+            for(city in citiesList!!){
+                list.add(city)
+            }
+        }else{
+            return citiesList!!
+        }
+        return list
+    }
+
     fun setUpdateDate(date:Long){
         editor.putLong(UPDATE_DATE, date)
         editor.apply()

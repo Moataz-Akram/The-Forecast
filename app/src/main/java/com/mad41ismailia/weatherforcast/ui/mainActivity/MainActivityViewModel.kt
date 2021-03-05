@@ -20,6 +20,13 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     fun setCurrentLocation(currentLocation:String){
         repository.setCurrentLocation(currentLocation)
     }
+    fun setCurrentLocationStandAlone(currentLocation:String){
+        repository.setCurrentLocationStandAlone(currentLocation)
+    }
+    fun getCurrentLocationStandAlone():String?{
+        return repository.getCurrentLocationStandAlone()
+    }
+
 
     //DB
     suspend fun addLocation(location: Locations){

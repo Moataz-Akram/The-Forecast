@@ -1,8 +1,10 @@
 package com.mad41ismailia.weatherforcast.repo
 
 import android.app.Application
+import android.location.Geocoder
 import androidx.lifecycle.LiveData
 import androidx.room.Room
+import com.mad41ismailia.weatherforcast.CURRENT_LOCATION
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlertDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
@@ -10,12 +12,15 @@ import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
 import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
 import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
 import com.mad41ismailia.weatherforcast.repo.sharedPreference.SharedPreference
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Repository private constructor(application: Application) {
 
     private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather2Database").build()
     private val weatherDao = db.WeatherDao()
     private val sharedPreference = SharedPreference(application)
+    val geocoder = Geocoder(application, Locale.getDefault())
 
     companion object{
         private var INSTANCE:Repository? = null
@@ -54,19 +59,33 @@ class Repository private constructor(application: Application) {
             addAlert(city, alertList)
         }
     }
+    //today
+    suspend fun fetchAllCitiesData(list:ArrayList<String?>) {
 
-    fun fetchCityData(city: String) {
-
+        val lang = sharedPreference.getLang()
+        val units = sharedPreference.getUnits()
+        for (city in list){
+            val latLong = geocoder.getFromLocationName(city, 1)
+            getWeatherData(city!!,latLong[0].latitude,latLong[0].longitude,units,lang)
+        }
     }
-
+    fun getCityAllLiveData():List<LiveData<List<DailyDatabase>>>{
+        val list = sharedPreference.loadCitiesCurrentAlone()
+        val listDaily:ArrayList<LiveData<List<DailyDatabase>>> = ArrayList()
+        for (city in list){
+            listDaily.add(getDaily(city!!))
+        }
+        return listDaily
+    }
+    //today
     fun getDaily(city: String): LiveData<List<DailyDatabase>> {
         return weatherDao.getDaily(city)
     }
-
+    //today
     suspend fun getDaily2(city: String): List<DailyDatabase> {
         return weatherDao.getDaily2(city)
     }
-
+    //today
     fun getHourly(city: String): LiveData<List<HourlyDatabase>> {
         return weatherDao.getHourly(city)
     }
@@ -111,8 +130,14 @@ class Repository private constructor(application: Application) {
     fun setCurrentLocation(currentLocation:String){
         sharedPreference.setCurrentLocation(currentLocation)
     }
+    fun setCurrentLocationStandAlone(currentLocation:String){
+        sharedPreference.setCurrentLocationStandAlone(currentLocation)
+    }
+    fun getCurrentLocationStandAlone():String?{
+        return sharedPreference.getCurrentLocationStandAlone()
+    }
 
-    //location frag
+    //location frag, today, main activity
     fun loadCities(): ArrayList<String?> {
         val list =  sharedPreference.loadCities()
         if(list.isNotEmpty()){
@@ -122,19 +147,25 @@ class Repository private constructor(application: Application) {
         }
         return list
     }
-
+    fun loadCitiesNew(): ArrayList<String?> {
+        return sharedPreference.loadCitiesCurrentAlone()
+    }
+    //location settings
     fun getLang(): String {
         return sharedPreference.getLang()
     }
+    //location settings
     fun getUnits(): String {
         return sharedPreference.getUnits()
     }
+    //settings
     fun setLang(lang:String) {
         sharedPreference.setLang(lang)
     }
     fun setUnits(units:String) {
         sharedPreference.setUnits(units)
     }
+    //location
     fun saveCity(city:String) {
         sharedPreference.saveCity(city)
     }
