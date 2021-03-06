@@ -42,13 +42,13 @@ class Today : Fragment(R.layout.today_fragment) {
         super.onActivityCreated(savedInstanceState)
         //view model
         viewModel = ViewModelProvider(this).get(TodayViewModel::class.java)
-//        viewModel.getDaily().observe(viewLifecycleOwner, {
-//            Log.i("comingdata", it.toString())
+//        viewModel.getDaily(viewModel.loadCitiesNew()[0]!!).observe(viewLifecycleOwner, {
+//            Log.i("comingdata","observe"+ it.toString())
 //            binding.textNoData.text = it.toString()
 //        })
 
 //        val cityListViewPager = viewModel.loadCities()
-        val list = viewModel.loadCities()
+        val list = viewModel.loadCitiesNew()
         var listDaily: ArrayList<List<DailyDatabase>> = ArrayList()
         var listHourly: ArrayList<List<HourlyDatabase>> = ArrayList()
         val context = requireContext()

@@ -56,7 +56,7 @@ class Location : Fragment(R.layout.location_fragment) {
         var layoutManager = LinearLayoutManager(requireContext())
         binding.locationRecycler.layoutManager = layoutManager
         binding.locationRecycler.setHasFixedSize(true)
-
+//        Thread.sleep(100)
         cityList = viewModel.loadCities()
         adapter = LocationAdapter(cityList,viewModel)
         binding.locationRecycler.adapter = adapter
@@ -104,9 +104,13 @@ class Location : Fragment(R.layout.location_fragment) {
                 val latlon = place.address
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 val latlong = geocoder.getFromLocationName(place.name, 1)
-
+                val list = viewModel.loadCities()
+                    list.add(place.name)
+                adapter.setList(list)
+                adapter.notifyDataSetChanged()
                 val loc = Locations(place.name!!, latlong[0].latitude, latlong[0].longitude)
                 viewModel.saveCity(place.name!!)
+
                 CoroutineScope(Dispatchers.IO).launch {
 //                    viewModel.addCityDB(loc)
                     viewModel.fetchCityData(place.name!!, latlong[0].latitude, latlong[0].longitude)

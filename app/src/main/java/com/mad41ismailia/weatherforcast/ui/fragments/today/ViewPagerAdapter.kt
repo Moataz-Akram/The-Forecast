@@ -66,6 +66,8 @@ class ViewPagerAdapter(val context: Context,list: List<String?>, listDaily: Arra
 //        holder.dailyRecyclerView.setHasFixedSize(true)
     }
 
+
+
     override fun getItemCount(): Int {
         return myList.size
     }

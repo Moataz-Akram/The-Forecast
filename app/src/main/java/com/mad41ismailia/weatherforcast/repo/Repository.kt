@@ -6,26 +6,31 @@ import android.location.Geocoder
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Room
-import com.mad41ismailia.weatherforcast.CURRENT_LOCATION
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlertDatabase
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
+import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
 import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
 import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
 import com.mad41ismailia.weatherforcast.repo.sharedPreference.SharedPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Repository private constructor(application: Application) {
+class Repository private constructor(val application: Application) {
 
-    private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather2Database").build()
+    private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather3Database").build()
     private val weatherDao = db.WeatherDao()
     private val sharedPreference = SharedPreference(application)
     val geocoder = Geocoder(application, Locale.getDefault())
+    private val weatherDataConverter: Type = object : TypeToken<WeatherData>() {}.type
+    private var gson = GsonBuilder().create()
 
     companion object{
         private var INSTANCE:Repository? = null
@@ -38,8 +43,13 @@ class Repository private constructor(application: Application) {
         }
     }
 
-    suspend fun getWeatherData(city: String, lat:Double,lon:Double,units:String, lang:String){
+    @SuppressLint("LogNotTimber")
+    suspend fun getWeatherData(city: String, lat:Double, lon:Double, units:String, lang:String){
         val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather(lat , lon, units, lang)
+        val weatherDataString = gson.toJson(weatherData)
+        Log.i("changingDatabase",weatherDataString)
+        weatherDao.deleteWeatherCityData(city)
+        weatherDao.addWeatherCityData(CityWeatherData(city,weatherDataString))
         val dailyList = ArrayList<DailyDatabase>()
         val hourlyList = ArrayList<HourlyDatabase>()
         val alertList = ArrayList<AlertDatabase>()
@@ -64,6 +74,9 @@ class Repository private constructor(application: Application) {
             addAlert(city, alertList)
         }
     }
+
+
+
     //today
     @SuppressLint("LogNotTimber")
     suspend fun fetchAllCitiesData(list:ArrayList<String?>) {
@@ -77,6 +90,27 @@ class Repository private constructor(application: Application) {
             getWeatherData(city!!,latLong[0].latitude,latLong[0].longitude,units,lang)
         }
     }
+    //today
+    @SuppressLint("LogNotTimber")
+    suspend fun fetchAllCitiesData2(list:ArrayList<String?>) {
+
+        val lang = sharedPreference.getLang()
+        val units = sharedPreference.getUnits()
+        Log.i("settingsNow","lang '$lang' units '$units'")
+
+        for (city in list){
+            val latLong = geocoder.getFromLocationName(city, 1)
+            getWeatherData2(city!!,latLong[0].latitude,latLong[0].longitude,units,lang)
+        }
+    }
+
+    private suspend fun getWeatherData2(city: String, latitude: Double, longitude: Double, units: String, lang: String) {
+        val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather(latitude , longitude, units, lang)
+        val weatherDataString = gson.toJson(weatherData)
+        weatherDao.deleteWeatherCityData(city)
+        weatherDao.addWeatherCityData(CityWeatherData(city,weatherDataString))
+    }
+
     fun getCityAllLiveData():ArrayList<LiveData<List<DailyDatabase>>>{
         val list = sharedPreference.loadCitiesCurrentAlone()
         val listDaily:ArrayList<LiveData<List<DailyDatabase>>> = ArrayList()

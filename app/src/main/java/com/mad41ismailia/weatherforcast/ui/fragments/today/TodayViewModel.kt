@@ -20,6 +20,16 @@ class TodayViewModel : ViewModel(){
             }
     }
 
+    suspend fun fetchData2() {
+//        val list = repo.loadCities()
+        val list = repo.loadCitiesNew()
+        if(list.isNotEmpty()){
+
+            repo.fetchAllCitiesData(list)
+        }
+    }
+
+
 //    suspend fun fetchData2(geocoder: Geocoder) {
 //        if(INTERNECT_CONNECTION) {
 //            val geocoder = geocoder
@@ -59,7 +69,7 @@ class TodayViewModel : ViewModel(){
         return repo.getHourly2(city)
     }
 
-    fun loadCities(): ArrayList<String?> {
+    fun loadCitiesNew(): ArrayList<String?> {
         return repo.loadCitiesNew()
     }
 

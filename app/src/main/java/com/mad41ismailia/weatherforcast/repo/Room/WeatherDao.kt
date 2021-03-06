@@ -5,10 +5,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlertDatabase
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.*
+import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
 import retrofit2.http.Path
 
 @Dao
@@ -20,9 +18,13 @@ interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addAlert(alert: List<AlertDatabase>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addCityDB(daily: Locations)
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    fun addCityDB(daily: Locations)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addWeatherCityData(weatherData: CityWeatherData)
+    @Query("Delete from CityWeatherData where cityName =:city")
+    fun deleteWeatherCityData(city:String)
 
     @Query("Delete from Hourly where cityName =:city")
     fun deleteHourly(city:String)
@@ -31,8 +33,8 @@ interface WeatherDao {
     @Query("Delete from Alert where cityName =:city")
     fun deleteAlert(city:String)
 
-    @Query("Delete from Locations where cityAddress=:address")
-    fun deleteLocation( address:String)
+//    @Query("Delete from Locations where cityAddress=:address")
+//    fun deleteLocation( address:String)
 
 
     @Query("SELECT * From Daily where cityName =:city")
@@ -53,6 +55,6 @@ interface WeatherDao {
 
 //    @Query("SELECT * From Locations")
 //    fun getLocationsFromDB():LiveData<List<Locations>>
-    @Query("SELECT * From Locations where id=:id")
-    fun getCurrentLocation( id:Int):Locations
+//    @Query("SELECT * From Locations where id=:id")
+//    fun getCurrentLocation( id:Int):Locations
 }
