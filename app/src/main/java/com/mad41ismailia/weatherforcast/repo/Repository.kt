@@ -118,4 +118,14 @@ class Repository private constructor(val application: Application) {
         sharedPreference.deleteCity(city)
     }
 
+    fun deleteCurrentFromDatabase() {
+        CoroutineScope(Dispatchers.Default).launch {
+            sharedPreference.getCurrentLocationStandAlone()?.let {
+                weatherDao.deleteWeatherCityData(
+                    it
+                )
+            }
+        }
+    }
+
 }

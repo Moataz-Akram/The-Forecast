@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
 import com.mad41ismailia.weatherforcast.repo.Repository
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application){
@@ -21,5 +22,9 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     }
     fun getCurrentLocationStandAlone():String?{
         return repository.getCurrentLocationStandAlone()
+    }
+    fun fetchAllCitiesData(city:String?){
+        val list : ArrayList<String?> = arrayListOf(city)
+        repository.fetchAllCitiesData(list)
     }
 }

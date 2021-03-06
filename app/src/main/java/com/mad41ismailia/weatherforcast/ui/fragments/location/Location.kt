@@ -103,6 +103,8 @@ class Location : Fragment(R.layout.location_fragment) {
             @SuppressLint("LogNotTimber")
             override fun onPlaceSelected(place: Place) {
                 // TODO: Get info about the selected place.
+                autocompleteFragment.setText("")
+                autocompleteFragment.setPlaceFields(mutableListOf())
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 val latlong = geocoder.getFromLocationName(place.name, 1)
                 Log.i("googleplaces", "lat array: ${latlong.toString()} ")
@@ -115,7 +117,7 @@ class Location : Fragment(R.layout.location_fragment) {
                     adapter.setList(list)
                     adapter.notifyDataSetChanged()
 
-                    Locations(place.name!!, latlong[0].latitude, latlong[0].longitude)
+//                    Locations(place.name!!, latlong[0].latitude, latlong[0].longitude)
                     Log.i("googleplaces", "An error occurred: ${latlong[0].latitude} ${latlong[0].longitude}")
                     viewModel.saveCity(place.name!!)
                     CoroutineScope(Dispatchers.IO).launch {

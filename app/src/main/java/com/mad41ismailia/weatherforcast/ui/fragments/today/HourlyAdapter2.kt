@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
@@ -30,7 +31,7 @@ class HourlyAdapter2(private val list:List<Hourly>) : RecyclerView.Adapter<Hourl
         val dateFormat = SimpleDateFormat("hh:mm aa");
         holder.txtHour.text = dateFormat.format(calender.time)
         holder.txtHourTemp.text = task.temp.toString()
-        holder.imgHourlyState.setImageResource(setImg(task.weather[0].icon))
+        holder.lottieIcon.setAnimation(setImgLottie(task.weather[0].icon))
     }
 
     override fun getItemCount(): Int {
@@ -44,7 +45,8 @@ class HourlyAdapter2(private val list:List<Hourly>) : RecyclerView.Adapter<Hourl
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtHourTemp: TextView = view.findViewById(R.id.txtHourTemp)
         val txtHour: TextView = view.findViewById(R.id.txtHour)
-        val imgHourlyState: ImageView = view.findViewById(R.id.imgHourlyState)
+        val lottieIcon: LottieAnimationView = view.findViewById(R.id.imgLottie)
+
 //        val card: CardView = view.findViewById(R.id.myCard)
     }
 

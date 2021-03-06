@@ -33,7 +33,6 @@ class DailyAdapter(private val list:List<DailyDatabase>) : RecyclerView.Adapter<
         holder.txtNightTemp.text = task.temp.night.toString()
         holder.txtMaxTemp.text = task.temp.max.toString()
         holder.txtMinTemp.text = task.temp.min.toString()
-        holder.imgDayIcon.setImageResource(setImg(task.weather.icon))
     }
 
     override fun getItemCount(): Int {
@@ -50,7 +49,6 @@ class DailyAdapter(private val list:List<DailyDatabase>) : RecyclerView.Adapter<
         val txtNightTemp: TextView = view.findViewById(R.id.txtNightTemp)
         val txtMaxTemp: TextView = view.findViewById(R.id.txtMaxTemp)
         val txtMinTemp: TextView = view.findViewById(R.id.txtMinTemp)
-        val imgDayIcon: ImageView = view.findViewById(R.id.imgDayIcon)
 //        val card: CardView = view.findViewById(R.id.myCard)
     }
 

@@ -20,6 +20,9 @@ interface WeatherDao {
     @Query("Delete from CityWeatherData where cityName =:city")
     fun deleteWeatherCityData(city:String)
 
+    @Query("Delete from CityWeatherData")
+    fun deleteWeatherCityDataAll()
+
     @Query("SELECT * From CityWeatherData")
     fun getWeatherData():LiveData<List<CityWeatherData>>
 

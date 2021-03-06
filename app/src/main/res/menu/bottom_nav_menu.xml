@@ -3,13 +3,13 @@
 
     <item
         android:id="@+id/today"
-        android:icon="@drawable/ic_baseline_today_24"
+        android:icon="@drawable/ic_forecast__1_"
         android:menuCategory="secondary"
         android:title="@string/today" />
 
     <item
         android:id="@+id/location"
-        android:icon="@drawable/ic_baseline_edit_location_alt_24"
+        android:icon="@drawable/ic_location"
         android:menuCategory="secondary"
         android:title="@string/location" />
     <item

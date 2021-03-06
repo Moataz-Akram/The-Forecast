@@ -176,6 +176,7 @@ class MainActivity : AppCompatActivity() {
                 val currentCity = viewModel.getCurrentLocationStandAlone()
                 if (addresses[0].locality != null && !addresses[0].locality.equals(currentCity)) {
 //                    viewModel.setCurrentLocation(addresses[0].locality)
+                    viewModel.fetchAllCitiesData(addresses[0].locality)
                     viewModel.setCurrentLocationStandAlone(addresses[0].locality)
                 }
 //                Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()

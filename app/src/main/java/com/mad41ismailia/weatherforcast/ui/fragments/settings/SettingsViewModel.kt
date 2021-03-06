@@ -1,7 +1,6 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.settings
 
 import androidx.lifecycle.ViewModel
-import com.mad41ismailia.weatherforcast.INTERNECT_CONNECTION
 import com.mad41ismailia.weatherforcast.repo.Repository
 
 class SettingsViewModel:ViewModel() {
@@ -12,6 +11,10 @@ class SettingsViewModel:ViewModel() {
             if(list.isNotEmpty()){
                 repo.fetchAllCitiesData(list)
             }
+    }
+
+    fun deleteCurrentFromDatabase() {
+        repo.deleteCurrentFromDatabase()
     }
 
 }

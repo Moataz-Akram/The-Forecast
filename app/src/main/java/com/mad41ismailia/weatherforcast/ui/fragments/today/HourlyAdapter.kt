@@ -29,7 +29,6 @@ class HourlyAdapter(private val list:List<HourlyDatabase>) : RecyclerView.Adapte
         val dateFormat = SimpleDateFormat("hh:mm aa");
         holder.txtHour.text = dateFormat.format(calender.time)
         holder.txtHourTemp.text = task.temp.toString()
-        holder.imgHourlyState.setImageResource(setImg(task.weather.icon))
     }
 
     override fun getItemCount(): Int {
@@ -43,7 +42,6 @@ class HourlyAdapter(private val list:List<HourlyDatabase>) : RecyclerView.Adapte
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtHourTemp: TextView = view.findViewById(R.id.txtHourTemp)
         val txtHour: TextView = view.findViewById(R.id.txtHour)
-        val imgHourlyState: ImageView = view.findViewById(R.id.imgHourlyState)
 //        val card: CardView = view.findViewById(R.id.myCard)
     }
 

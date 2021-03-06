@@ -15,6 +15,7 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.mad41ismailia.weatherforcast.R
@@ -51,7 +52,7 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>) : R
             if (daily.isNotEmpty()){
             val icon = daily[0].weather[0].icon
             Log.i("imageview", "${daily}")
-            icon?.let { setImg(it) }?.let { holder.weatherDetail.setImageResource(it) }
+            icon?.let { setImg(it) }?.let { holder.weatherDetail.setImageResource(R.drawable.cloud_location) }
         }
         val recyclerViewPool = RecyclerView.RecycledViewPool()
         val recyclerViewPool2 = RecyclerView.RecycledViewPool()
@@ -74,6 +75,7 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>) : R
         holder.dailyRecyclerView.adapter = dailyAdapter
 //        holder.dailyRecyclerView.setRecycledViewPool(recyclerViewPool2)
 //        holder.dailyRecyclerView.setHasFixedSize(true)
+        holder.lottieIcon.setAnimation(R.raw.lottie)
     }
 
 
@@ -91,6 +93,7 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>) : R
         val weatherDetail:ImageView = view.findViewById(R.id.imgWeatherState)
         val dailyRecyclerView: RecyclerView = view.findViewById(R.id.DailyRecyclerView)
         val HourlyRecyclerView: RecyclerView = view.findViewById(R.id.HourlyRecyclerView)
+        val lottieIcon: LottieAnimationView = view.findViewById(R.id.imgLottie)
     }
 }
 
