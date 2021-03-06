@@ -56,9 +56,7 @@ class Settings : PreferenceFragmentCompat() {
             Log.i("languageRestart inside","not equals old lang is '$oldLang' new lang is '${lang?.value}'")
             //add need change in SP
             if(INTERNECT_CONNECTION) {
-                CoroutineScope(Dispatchers.IO).launch {
                     viewModel.updateAllCities()
-                }
             }
             if(langString!=oldLang){
                 requireActivity().recreate()

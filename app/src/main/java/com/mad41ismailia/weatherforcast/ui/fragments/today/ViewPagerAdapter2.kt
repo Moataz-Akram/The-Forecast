@@ -31,8 +31,6 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>) : R
 
 
     private var myList: List<CityWeatherData> = list
-//    private var dailyList: ArrayList<List<DailyDatabase>> = listDaily
-//    private var hourlyList: ArrayList<List<HourlyDatabase>> = listHourly
     private lateinit var dailyAdapter:DailyAdapter2
     private lateinit var hourlyAdapter: HourlyAdapter2
 

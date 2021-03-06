@@ -1,5 +1,7 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.location
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -19,6 +21,7 @@ class LocationAdapter(private var myList: ArrayList<String?>,private val viewMod
         return ViewHolder(view)
     }
 
+    @SuppressLint("LogNotTimber")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val location = myList[position]
         holder.userId.text = location
@@ -32,9 +35,10 @@ class LocationAdapter(private var myList: ArrayList<String?>,private val viewMod
                 holder.myLocation.visibility = VISIBLE
             }
         }
-        holder.deleteLocation.setOnClickListener ( View.OnClickListener {
+        holder.deleteLocation.setOnClickListener(View.OnClickListener {
+            Log.i("deletecity", "inside adapter ${myList[position]} from $myList")
+            viewModel.deleteCity(myList[position]!!)
             myList.removeAt(position)
-            viewModel.deleteCity(myList[position-1]!!)
             notifyDataSetChanged()
         })
     }

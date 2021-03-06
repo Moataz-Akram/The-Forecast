@@ -1,5 +1,7 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.location
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,28 +24,20 @@ class LocationViewModel : ViewModel() {
         comingList.postValue(list)
     }
 
-//    suspend fun addCityDB(location: Locations){
-//        repo.addCityDB(location)
-//    }
-
-//    fun getCurrentLocation(id:Int): Locations {
-//        return repo.getCurrentLocation(id)
-//    }
-
-//    fun getLocations(): LiveData<List<Locations>> {
-//        return repo.getLocationsFromDB()
-//    }
-
     fun saveCity(city:String) {
         repo.saveCity(city)
     }
 
-    suspend fun fetchCityData(city: String, lat:Double, lon:Double) {
-        repo.getWeatherData(city,lat,lon,repo.getUnits(), repo.getLang())
+    fun fetchCityData(city: String) {
+        val list:ArrayList<String?> = arrayListOf()
+        list.add(city)
+        repo.fetchAllCitiesData(list)
     }
 
+    @SuppressLint("LogNotTimber")
     fun deleteCity(city: String) {
         repo.deleteCity(city)
+        Log.i("deletecity","inside view model")
     }
     fun getCurrentLocationStandAlone():String?{
         return repo.getCurrentLocationStandAlone()

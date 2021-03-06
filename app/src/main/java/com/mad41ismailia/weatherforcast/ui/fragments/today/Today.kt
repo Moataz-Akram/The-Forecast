@@ -28,7 +28,6 @@ class Today : Fragment(R.layout.today_fragment) {
 
     private lateinit var viewModel: TodayViewModel
     private lateinit var binding: TodayFragmentBinding
-    private lateinit var geocoder: Geocoder
 
 
 
@@ -46,9 +45,6 @@ class Today : Fragment(R.layout.today_fragment) {
 
             viewModel.fetchData2().observe(viewLifecycleOwner, {
                 Log.i("comingdata","observe"+ it.toString())
-//                Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_LONG).show()
-//                binding.textNoData.text = it.toString()
-
                 if (it.isNotEmpty()) {
                     binding.viewPager.adapter = ViewPagerAdapter2(requireContext(),it)
 
@@ -59,48 +55,11 @@ class Today : Fragment(R.layout.today_fragment) {
                     binding.viewPager.visibility = GONE
                     binding.indicatior.visibility = GONE
                 }
-
-
             })
 
-//        val cityListViewPager = viewModel.loadCities()
-        val list = viewModel.loadCitiesNew()
-        var listDaily: ArrayList<List<DailyDatabase>> = ArrayList()
-        var listHourly: ArrayList<List<HourlyDatabase>> = ArrayList()
-        val context = requireContext()
-        var listTrial:ArrayList<LiveData<List<DailyDatabase>>> = ArrayList()
-        CoroutineScope(Dispatchers.Default).launch {
-            val job = launch {
-                listTrial = viewModel.getCityAllLiveData()
-                for (city in list) {
-                    listDaily.add(viewModel.getDaily2(city!!))
-                    listHourly.add(viewModel.getHourly2(city!!))
-                }
-                Log.i("viewpager","list size ${listDaily.size} list live data size ${listTrial.size}")
-
-            }
-            job.join()
-            Log.i("viewpager","list size ${listDaily.size} list live data size ${listTrial.size}")
-            withContext(Dispatchers.Main){
-                if (list.isNotEmpty()) {
-                    binding.viewPager.adapter = ViewPagerAdapter(context, list, listDaily,listHourly)
-
-                    val indicator = binding.indicatior
-                    indicator.setViewPager(binding.viewPager)
-                    binding.textNoData.visibility = GONE
-                } else {
-                    binding.viewPager.visibility = GONE
-                    binding.indicatior.visibility = GONE
-                }
-
-            }
-        }
 
         if (INTERNECT_CONNECTION) {
             CoroutineScope(Dispatchers.IO).launch {
-                delay(100)  //this delay is because saved location in settings get saved after it is read here without the delay and it don't get the updates
-//                geocoder = Geocoder(requireContext(), Locale.getDefault())
-//            viewModel.fetchData2(geocoder)
                 //add check to update only in new day if there is internet connection
 //                viewModel.fetchData2()
             }

@@ -2,6 +2,7 @@ package com.mad41ismailia.weatherforcast.ui.fragments.location
 
 //import androidx.fragment.app.FragmentTransaction
 //import com.mapbox.api.geocoding.v5.models.CarmenFeature
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Geocoder
@@ -99,22 +100,29 @@ class Location : Fragment(R.layout.location_fragment) {
         autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            @SuppressLint("LogNotTimber")
             override fun onPlaceSelected(place: Place) {
                 // TODO: Get info about the selected place.
-                val latlon = place.address
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 val latlong = geocoder.getFromLocationName(place.name, 1)
-                val list = viewModel.loadCities()
-                    list.add(place.name)
-                adapter.setList(list)
-                adapter.notifyDataSetChanged()
-                val loc = Locations(place.name!!, latlong[0].latitude, latlong[0].longitude)
-                viewModel.saveCity(place.name!!)
+                Log.i("googleplaces", "lat array: ${latlong.toString()} ")
+                Log.i("googleplaces", "place object: ${place.toString()} ")
+                Log.i("googleplaces", "place object: ${place.latLng.toString()} ")
 
-                CoroutineScope(Dispatchers.IO).launch {
-//                    viewModel.addCityDB(loc)
-                    viewModel.fetchCityData(place.name!!, latlong[0].latitude, latlong[0].longitude)
+                if(latlong.isNotEmpty()) {
+                    val list = viewModel.loadCities()
+                    list.add(place.name)
+                    adapter.setList(list)
+                    adapter.notifyDataSetChanged()
+
+                    Locations(place.name!!, latlong[0].latitude, latlong[0].longitude)
+                    Log.i("googleplaces", "An error occurred: ${latlong[0].latitude} ${latlong[0].longitude}")
+                    viewModel.saveCity(place.name!!)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        viewModel.fetchCityData(place.name!!)
+                    }
                 }
+
             }
 
             override fun onError(status: Status) {

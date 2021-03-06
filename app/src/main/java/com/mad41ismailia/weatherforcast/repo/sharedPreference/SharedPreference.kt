@@ -30,16 +30,7 @@ class SharedPreference(application: Application) {
         if (citiesList == null) {
             citiesList = ArrayList()
         }
-        Log.i("savedPref","init $citiesList")
     }
-
-//    fun loadCities(): ArrayList<String?> {
-//        Log.i("savedPref"," load cities$citiesList")
-////        if (citiesList!![0]==null){
-////            citiesList!!.removeAt(0)
-////        }
-//        return citiesList!!
-//    }
 
     fun saveCity(city:String) {
         citiesList?.add(city)
@@ -48,27 +39,22 @@ class SharedPreference(application: Application) {
         editor.putString(CITIES_LIST, json)
         editor.apply()
     }
-
-    fun setCurrentLocation(currentLocation:String){
-        Log.i("savedPref","set current location $citiesList")
-        if(citiesList!!.isNotEmpty()){
-        citiesList!![0] = currentLocation
+    fun deleteCity(city: String) {
+        Log.i("deletecity","inside shared pref $city from $citiesList")
+        citiesList!!.remove(city)
         val json = gson.toJson(citiesList)
         editor.putString(CITIES_LIST, json)
-        editor.apply()}else{citiesList!!.add(currentLocation)}
+        editor.commit()
     }
-
     fun setCurrentLocationStandAlone(currentLocation:String){
         Log.i("savedPref","set current location $citiesList")
         val city = sharedPreferences.getString(CURRENT_LOCATION,null)
         editor.putString(CURRENT_LOCATION,currentLocation)
         editor.apply()
     }
-
     fun getCurrentLocationStandAlone():String?{
         return sharedPreferences.getString(CURRENT_LOCATION,null)
     }
-
     fun loadCitiesCurrentAlone(): ArrayList<String?> {
         val current = getCurrentLocationStandAlone()
         val list = ArrayList<String?>()
@@ -83,14 +69,14 @@ class SharedPreference(application: Application) {
         return list
     }
 
-    fun setUpdateDate(date:Long){
-        editor.putLong(UPDATE_DATE, date)
-        editor.apply()
-    }
-
-    fun getUpdateDate():Long{
-        return sharedPreferences.getLong(UPDATE_DATE,0)
-    }
+//    fun setUpdateDate(date:Long){
+//        editor.putLong(UPDATE_DATE, date)
+//        editor.apply()
+//    }
+//
+//    fun getUpdateDate():Long{
+//        return sharedPreferences.getLong(UPDATE_DATE,0)
+//    }
 
     fun getLang(): String {
         return sharedPreferences.getString("lang","EN")!!
@@ -105,9 +91,5 @@ class SharedPreference(application: Application) {
     fun setUnits(units:String) {
         editor.putString("units", units)
         editor.apply()
-    }
-
-    fun deleteCity(city: String) {
-        citiesList!!.remove(city)
     }
 }

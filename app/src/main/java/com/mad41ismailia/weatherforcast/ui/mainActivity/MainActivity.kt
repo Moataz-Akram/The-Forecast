@@ -137,9 +137,6 @@ class MainActivity : AppCompatActivity() {
                 object : LocationCallback() {
                     override fun onLocationResult(locationResult: LocationResult) {
                         super.onLocationResult(locationResult)
-//                                                    val location = locationResult.lastLocation
-//                                                    longt = location.longitude
-//                                                    lat = location.latitude
                     }
                 }, Looper.myLooper())
     }
