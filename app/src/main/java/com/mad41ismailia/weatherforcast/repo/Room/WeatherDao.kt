@@ -21,10 +21,23 @@ interface WeatherDao {
 //    @Insert(onConflict = OnConflictStrategy.REPLACE)
 //    fun addCityDB(daily: Locations)
 
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addWeatherCityData(weatherData: CityWeatherData)
+    @Query("update CityWeatherData set weatherData=:data where cityName =:city")
+    fun updateCityData(city:String,data:String)
+
     @Query("Delete from CityWeatherData where cityName =:city")
     fun deleteWeatherCityData(city:String)
+
+    @Query("SELECT * From CityWeatherData")
+    fun getWeatherData():LiveData<List<CityWeatherData>>
+    @Query("SELECT * From CityWeatherData where cityName =:city")
+    suspend fun getCityWeatherData(city: String):List<CityWeatherData>
+
+
+
 
     @Query("Delete from Hourly where cityName =:city")
     fun deleteHourly(city:String)
@@ -51,6 +64,7 @@ interface WeatherDao {
     suspend fun getHourly2(city: String):List<HourlyDatabase>
     @Query("SELECT * From Alert where cityName =:city")
     suspend fun getAlert2(city: String):List<AlertDatabase>
+
 
 
 //    @Query("SELECT * From Locations")

@@ -25,7 +25,7 @@ import kotlin.collections.ArrayList
 
 class Repository private constructor(val application: Application) {
 
-    private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather3Database").build()
+    private val db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather4Database").build()
     private val weatherDao = db.WeatherDao()
     private val sharedPreference = SharedPreference(application)
     val geocoder = Geocoder(application, Locale.getDefault())
@@ -79,37 +79,45 @@ class Repository private constructor(val application: Application) {
 
     //today
     @SuppressLint("LogNotTimber")
-    suspend fun fetchAllCitiesData(list:ArrayList<String?>) {
-
+    fun fetchAllCitiesData(list:ArrayList<String?>): LiveData<List<CityWeatherData>> {
         val lang = sharedPreference.getLang()
         val units = sharedPreference.getUnits()
         Log.i("settingsNow","lang '$lang' units '$units'")
-
+        CoroutineScope(Dispatchers.IO).launch {
         for (city in list){
             val latLong = geocoder.getFromLocationName(city, 1)
             getWeatherData(city!!,latLong[0].latitude,latLong[0].longitude,units,lang)
         }
+        }
+        return weatherDao.getWeatherData()
     }
     //today
     @SuppressLint("LogNotTimber")
     suspend fun fetchAllCitiesData2(list:ArrayList<String?>) {
-
         val lang = sharedPreference.getLang()
         val units = sharedPreference.getUnits()
         Log.i("settingsNow","lang '$lang' units '$units'")
-
         for (city in list){
             val latLong = geocoder.getFromLocationName(city, 1)
             getWeatherData2(city!!,latLong[0].latitude,latLong[0].longitude,units,lang)
         }
     }
-
+    @SuppressLint("LogNotTimber")
     private suspend fun getWeatherData2(city: String, latitude: Double, longitude: Double, units: String, lang: String) {
         val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather(latitude , longitude, units, lang)
         val weatherDataString = gson.toJson(weatherData)
-        weatherDao.deleteWeatherCityData(city)
-        weatherDao.addWeatherCityData(CityWeatherData(city,weatherDataString))
+//        weatherDao.deleteWeatherCityData(city)
+        val existCity = weatherDao.getCityWeatherData(city)
+        if(existCity.isNotEmpty()) {
+            Log.i("newdatabase","inside update ${existCity.size}")
+            weatherDao.updateCityData(city, weatherDataString)
+        }else{
+            Log.i("newdatabase","inside insert ${existCity.size}")
+            weatherDao.addWeatherCityData(CityWeatherData(city, weatherDataString))
+
+        }
     }
+
 
     fun getCityAllLiveData():ArrayList<LiveData<List<DailyDatabase>>>{
         val list = sharedPreference.loadCitiesCurrentAlone()
@@ -154,23 +162,6 @@ class Repository private constructor(val application: Application) {
         weatherDao.deleteHourly(city)
         weatherDao.addHourly(list)
     }
-//    //location view model -> to be deleted
-//    suspend fun addCityDB(location:Locations){
-//        weatherDao.addCityDB(location)
-//    }
-//    //location view model && main view model
-//    fun getCurrentLocation(id:Int): Locations {
-//        return weatherDao.getCurrentLocation(id)
-//    }
-//    //location view model
-//    fun getLocationsFromDB(): LiveData<List<Locations>> {
-//        return weatherDao.getLocationsFromDB()
-//    }
-
-
-//    fun getCurrentLocationSharedPref():String?{
-//        return sharedPreference.getCurrentLocation()
-//    }
 
     //main view model
     fun setCurrentLocation(currentLocation:String){
@@ -183,16 +174,6 @@ class Repository private constructor(val application: Application) {
         return sharedPreference.getCurrentLocationStandAlone()
     }
 
-    //location frag, today, main activity
-//    fun loadCities(): ArrayList<String?> {
-//        val list =  sharedPreference.loadCities()
-//        if(list.isNotEmpty()){
-//            if (list!![0]==null){
-//                list!!.removeAt(0)
-//            }
-//        }
-//        return list
-//    }
     fun loadCitiesNew(): ArrayList<String?> {
         return sharedPreference.loadCitiesCurrentAlone()
     }
@@ -221,6 +202,7 @@ class Repository private constructor(val application: Application) {
             weatherDao.deleteDaily(city)
             weatherDao.deleteHourly(city)
             weatherDao.deleteAlert(city)
+            weatherDao.deleteWeatherCityData(city)
         }
         sharedPreference.deleteCity(city)
     }

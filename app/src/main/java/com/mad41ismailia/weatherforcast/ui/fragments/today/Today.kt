@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
@@ -42,10 +43,25 @@ class Today : Fragment(R.layout.today_fragment) {
         super.onActivityCreated(savedInstanceState)
         //view model
         viewModel = ViewModelProvider(this).get(TodayViewModel::class.java)
-//        viewModel.getDaily(viewModel.loadCitiesNew()[0]!!).observe(viewLifecycleOwner, {
-//            Log.i("comingdata","observe"+ it.toString())
-//            binding.textNoData.text = it.toString()
-//        })
+
+            viewModel.fetchData2().observe(viewLifecycleOwner, {
+                Log.i("comingdata","observe"+ it.toString())
+//                Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_LONG).show()
+//                binding.textNoData.text = it.toString()
+
+                if (it.isNotEmpty()) {
+                    binding.viewPager.adapter = ViewPagerAdapter2(requireContext(),it)
+
+                    val indicator = binding.indicatior
+                    indicator.setViewPager(binding.viewPager)
+                    binding.textNoData.visibility = GONE
+                } else {
+                    binding.viewPager.visibility = GONE
+                    binding.indicatior.visibility = GONE
+                }
+
+
+            })
 
 //        val cityListViewPager = viewModel.loadCities()
         val list = viewModel.loadCitiesNew()
@@ -86,7 +102,7 @@ class Today : Fragment(R.layout.today_fragment) {
 //                geocoder = Geocoder(requireContext(), Locale.getDefault())
 //            viewModel.fetchData2(geocoder)
                 //add check to update only in new day if there is internet connection
-                viewModel.fetchData()
+//                viewModel.fetchData2()
             }
         }
     }

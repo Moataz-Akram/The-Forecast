@@ -5,10 +5,11 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "CityWeatherData")
 class CityWeatherData(
+@PrimaryKey
 val cityName:String,
 val weatherData: String
 )
-{
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
-}
+//{
+//    @PrimaryKey(autoGenerate = true)
+//    var id: Int = 0
+//}

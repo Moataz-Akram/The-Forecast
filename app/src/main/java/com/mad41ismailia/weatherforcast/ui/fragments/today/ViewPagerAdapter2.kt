@@ -2,6 +2,7 @@ package com.mad41ismailia.weatherforcast.ui.fragments.today
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Geocoder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,20 +15,29 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.mad41ismailia.weatherforcast.R
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
+import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
+import java.lang.reflect.Type
+import java.util.*
 import kotlin.collections.ArrayList
 
 @SuppressLint("LogNotTimber")
-class ViewPagerAdapter(val context: Context,list: List<String?>, listDaily: ArrayList<List<DailyDatabase>>, listHourly: ArrayList<List<HourlyDatabase>>) : RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
+class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>) : RecyclerView.Adapter<ViewPagerAdapter2.ViewHolder>() {
 
 
-    private var myList: List<String?> = list
-    private var dailyList: ArrayList<List<DailyDatabase>> = listDaily
-    private var hourlyList: ArrayList<List<HourlyDatabase>> = listHourly
-    private lateinit var dailyAdapter:DailyAdapter
-    private lateinit var hourlyAdapter: HourlyAdapter
+    private var myList: List<CityWeatherData> = list
+//    private var dailyList: ArrayList<List<DailyDatabase>> = listDaily
+//    private var hourlyList: ArrayList<List<HourlyDatabase>> = listHourly
+    private lateinit var dailyAdapter:DailyAdapter2
+    private lateinit var hourlyAdapter: HourlyAdapter2
+
+    private val gson = GsonBuilder().create()
+    val weatherDataConverter: Type = object : TypeToken<WeatherData>() {}.type
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,31 +47,31 @@ class ViewPagerAdapter(val context: Context,list: List<String?>, listDaily: Arra
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val city = myList[position]
-        holder.userId.text = city
-        if (dailyList.isNotEmpty()){
-        val daily = dailyList[position]
+        holder.userId.text = city.cityName
+        val weatherData = gson.fromJson<WeatherData>(city.weatherData,weatherDataConverter)
+        val daily = weatherData.daily
             if (daily.isNotEmpty()){
-            val icon = daily[0].weather.icon
+            val icon = daily[0].weather[0].icon
             Log.i("imageview", "${daily}")
             icon?.let { setImg(it) }?.let { holder.weatherDetail.setImageResource(it) }
-        }}
+        }
         val recyclerViewPool = RecyclerView.RecycledViewPool()
         val recyclerViewPool2 = RecyclerView.RecycledViewPool()
         val layoutManager = LinearLayoutManager(context)
         val layoutManager2 = LinearLayoutManager(context)
 
         layoutManager.orientation = HORIZONTAL
-        layoutManager.initialPrefetchItemCount = hourlyList[position].size
+        layoutManager.initialPrefetchItemCount = weatherData.hourly.size
 
-        hourlyAdapter = HourlyAdapter(hourlyList[position])
+        hourlyAdapter = HourlyAdapter2(weatherData.hourly)
         holder.HourlyRecyclerView.layoutManager = layoutManager
         holder.HourlyRecyclerView.adapter = hourlyAdapter
 //        holder.HourlyRecyclerView.setRecycledViewPool(recyclerViewPool)
         holder.HourlyRecyclerView.setHasFixedSize(true)
 
 
-        layoutManager2.initialPrefetchItemCount = dailyList[position].size
-        dailyAdapter = DailyAdapter(dailyList[position])
+        layoutManager2.initialPrefetchItemCount = weatherData.daily.size
+        dailyAdapter = DailyAdapter2(weatherData.daily)
         holder.dailyRecyclerView.layoutManager = layoutManager2
         holder.dailyRecyclerView.adapter = dailyAdapter
 //        holder.dailyRecyclerView.setRecycledViewPool(recyclerViewPool2)
@@ -74,7 +84,7 @@ class ViewPagerAdapter(val context: Context,list: List<String?>, listDaily: Arra
         return myList.size
     }
 
-    fun setList(list: List<String?>) {
+    fun setList(list: List<CityWeatherData>) {
         myList = list
     }
 
@@ -83,31 +93,6 @@ class ViewPagerAdapter(val context: Context,list: List<String?>, listDaily: Arra
         val weatherDetail:ImageView = view.findViewById(R.id.imgWeatherState)
         val dailyRecyclerView: RecyclerView = view.findViewById(R.id.DailyRecyclerView)
         val HourlyRecyclerView: RecyclerView = view.findViewById(R.id.HourlyRecyclerView)
-    }
-}
-
-
-fun setImg(icon: String):Int{
-    return when(icon){
-        "01d" -> R.drawable.d01
-        "02d" -> R.drawable.d02
-        "03d" -> R.drawable.d03
-        "04d" -> R.drawable.d04
-        "09d" -> R.drawable.d09
-        "10d" -> R.drawable.d10
-        "11d" -> R.drawable.d11
-        "13d" -> R.drawable.d13
-        "50d" -> R.drawable.d50
-        "01n" -> R.drawable.n01
-        "02n" -> R.drawable.n02
-        "03n" -> R.drawable.n03
-        "04n" -> R.drawable.n04
-        "09n" -> R.drawable.n09
-        "10n" -> R.drawable.n10
-        "11n" -> R.drawable.n11
-        "13n" -> R.drawable.n13
-        "50n" -> R.drawable.n50
-        else -> R.drawable.d01
     }
 }
 
