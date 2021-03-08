@@ -3,15 +3,12 @@ package com.mad41ismailia.weatherforcast.ui.fragments.location
 //import androidx.fragment.app.FragmentTransaction
 //import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.SharedPreferences
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,15 +16,8 @@ import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.LocationFragmentBinding
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.lang.reflect.Type
 import java.util.*
 
 
@@ -54,7 +44,7 @@ class Location : Fragment(R.layout.location_fragment) {
         binding.locationRecycler.layoutManager = layoutManager
         binding.locationRecycler.setHasFixedSize(true)
 //        Thread.sleep(100)
-        cityList = viewModel.loadCities()
+        cityList = viewModel.loadAllCities()
         adapter = LocationAdapter(cityList,viewModel)
         binding.locationRecycler.adapter = adapter
 
@@ -99,8 +89,6 @@ class Location : Fragment(R.layout.location_fragment) {
             @SuppressLint("LogNotTimber")
             override fun onPlaceSelected(place: Place) {
                 // TODO: Get info about the selected place.
-                autocompleteFragment.setText("")
-                autocompleteFragment.setPlaceFields(mutableListOf())
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 val latlong = geocoder.getFromLocationName(place.name, 1)
                 Log.i("googleplaces", "lat array: ${latlong.toString()} ")
@@ -108,17 +96,16 @@ class Location : Fragment(R.layout.location_fragment) {
                 Log.i("googleplaces", "place object: ${place.latLng.toString()} ")
 
                 if(latlong.isNotEmpty()) {
-                    val list = viewModel.loadCities()
+                    val list = viewModel.loadAllCities()
                     list.add(place.name)
                     adapter.setList(list)
                     adapter.notifyDataSetChanged()
 
 //                    Locations(place.name!!, latlong[0].latitude, latlong[0].longitude)
                     Log.i("googleplaces", "An error occurred: ${latlong[0].latitude} ${latlong[0].longitude}")
-                    viewModel.saveCity(place.name!!)
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewModel.fetchCityData(place.name!!)
-                    }
+                    viewModel.saveNewCity(place.name!!)
+                    viewModel.addDataForNewCity(place.name!!,latlong[0].latitude,latlong[0].longitude)
+
                 }
             }
 

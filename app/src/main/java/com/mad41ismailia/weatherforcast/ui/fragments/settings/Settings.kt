@@ -37,8 +37,10 @@ class Settings : PreferenceFragmentCompat() {
     override fun onPause() {
         val lang: ListPreference? = findPreference("lang")
         val units: ListPreference? = findPreference("units")
+
         val oldLang = Repository.getRepoObject().getLang()
         val oldUnits = Repository.getRepoObject().getUnits()
+
         lang?.value?.let { Repository.getRepoObject().setLang(it) }
         units?.value?.let { Repository.getRepoObject().setUnits(it) }
         lang?.value?.let { myPreference.setLoginCount(it) }
@@ -49,8 +51,6 @@ class Settings : PreferenceFragmentCompat() {
             Log.i("languageRestart inside","not equals old lang is '$oldLang' new lang is '${lang?.value}'")
             //add need change in SP
             if(INTERNECT_CONNECTION) {
-                //need to delete current because changing language adds new city
-                viewModel.deleteCurrentFromDatabase()
                 viewModel.updateAllCities()
             }
             if(langString!=oldLang){

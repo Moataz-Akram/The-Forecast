@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 class CityWeatherData(
 @PrimaryKey
 val cityName:String,
+val lat:Double,
+val lon:Double,
 val weatherData: String
 )
 //{

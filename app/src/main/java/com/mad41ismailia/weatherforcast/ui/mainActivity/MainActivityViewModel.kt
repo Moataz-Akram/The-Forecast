@@ -1,15 +1,8 @@
 package com.mad41ismailia.weatherforcast.ui.mainActivity
 
-import android.app.Activity
 import android.app.Application
-import android.content.Context
-import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
 import com.mad41ismailia.weatherforcast.repo.Repository
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application){
@@ -17,14 +10,22 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private val repo = Repository.createObject(application)
     private val repository = Repository.getRepoObject()
 
-    fun setCurrentLocationStandAlone(currentLocation:String){
-        repository.setCurrentLocationStandAlone(currentLocation)
+    fun setCurrentLocation(currentLocation:String){
+        repository.setCurrentLocation(currentLocation)
     }
-    fun getCurrentLocationStandAlone():String?{
-        return repository.getCurrentLocationStandAlone()
+    fun getCurrentLocation():String?{
+        return repository.getCurrentLocation()
     }
-    fun fetchAllCitiesData(city:String?){
-        val list : ArrayList<String?> = arrayListOf(city)
-        repository.fetchAllCitiesData(list)
+//    fun fetchAllCitiesData(city:String?){
+//        val list : ArrayList<String?> = arrayListOf(city)
+//        repository.fetchAllCitiesData(list)
+//    }
+    fun addOrUpdateDataForCurrentCity(city: String, latitude: Double, longitude: Double) {
+        repository.addDataForNewCity(city,latitude,longitude)
     }
+
+    fun deleteOldCurrent(currentCity: String) {
+        repository.deleteCity(currentCity)
+    }
+
 }

@@ -4,19 +4,16 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -26,19 +23,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.datatransport.runtime.scheduling.SchedulingConfigModule_ConfigFactory
 import com.google.android.gms.location.*
 import com.google.android.libraries.places.api.Places
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.mad41ismailia.weatherforcast.*
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.ActivityMainBinding
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.Locations
-import com.mad41ismailia.weatherforcast.repo.Repository
-import kotlinx.coroutines.*
-import java.io.IOException
-import java.lang.reflect.Type
 import java.util.*
 
 
@@ -146,7 +135,7 @@ class MainActivity : AppCompatActivity() {
         if (checkPermissions()) {
             if (INTERNECT_CONNECTION) {
                 //add check if local not null don't ask for gps again
-                if (gpsEnabled() || viewModel.getCurrentLocationStandAlone() != null) {
+                if (gpsEnabled() || viewModel.getCurrentLocation() != null) {
                     requestNewLocationData()
                     updateCurrentLocation()
                 } else {
@@ -171,15 +160,15 @@ class MainActivity : AppCompatActivity() {
                 val addresses: List<Address> = geoCoder.getFromLocation(lat, longt, 1)
                 currentLocation = addresses[0].locality
 
-                //only save current city , don't fetch data
-                //in shared preference
-                val currentCity = viewModel.getCurrentLocationStandAlone()
-                if (addresses[0].locality != null && !addresses[0].locality.equals(currentCity)) {
-//                    viewModel.setCurrentLocation(addresses[0].locality)
-                    viewModel.fetchAllCitiesData(addresses[0].locality)
-                    viewModel.setCurrentLocationStandAlone(addresses[0].locality)
+                val currentCity = viewModel.getCurrentLocation()
+//                if (addresses[0].locality != null && !addresses[0].locality.equals(currentCity)) {
+                if (addresses[0].locality != null) {
+                if(currentCity!=null && currentCity!=addresses[0].locality){
+                    viewModel.deleteOldCurrent(currentCity)
                 }
-//                Toast.makeText(this, "Long: $longt\n Lat: $lat\n city:${addresses[0].locality}", Toast.LENGTH_LONG).show()
+                    viewModel.setCurrentLocation(addresses[0].locality)
+                    viewModel.addOrUpdateDataForCurrentCity(addresses[0].locality,lat,longt)
+                }
             }
         }
     }

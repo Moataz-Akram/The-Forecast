@@ -7,14 +7,14 @@ class SettingsViewModel:ViewModel() {
     val repo = Repository.getRepoObject()
 
      fun updateAllCities() {
-            val list = repo.loadCitiesNew()
-            if(list.isNotEmpty()){
-                repo.fetchAllCitiesData(list)
-            }
-    }
-
-    fun deleteCurrentFromDatabase() {
-        repo.deleteCurrentFromDatabase()
-    }
+//         repo.clearDBNotInList()
+        repo.updateAllCities()
+     }
+//    fun updateAllCities() {
+//        val list = repo.loadAllCities()
+//        if(list.isNotEmpty()){
+//            repo.fetchAllCitiesData(list)
+//        }
+//    }
 
 }

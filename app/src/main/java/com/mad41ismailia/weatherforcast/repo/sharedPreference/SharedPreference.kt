@@ -4,16 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.JsonReader
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.mad41ismailia.weatherforcast.CITIES_LIST
 import com.mad41ismailia.weatherforcast.CURRENT_LOCATION
 import com.mad41ismailia.weatherforcast.PREF_NAME
-import com.mad41ismailia.weatherforcast.UPDATE_DATE
 import java.lang.reflect.Type
 
 @SuppressLint("LogNotTimber")
@@ -32,13 +28,14 @@ class SharedPreference(application: Application) {
         }
     }
 
-    fun saveCity(city:String) {
+    fun saveNewCity(city:String) {
         citiesList?.add(city)
         Log.i("savedPref","$citiesList")
         val json = gson.toJson(citiesList)
         editor.putString(CITIES_LIST, json)
         editor.apply()
     }
+
     fun deleteCity(city: String) {
         Log.i("deletecity","inside shared pref $city from $citiesList")
         citiesList!!.remove(city)
@@ -46,17 +43,20 @@ class SharedPreference(application: Application) {
         editor.putString(CITIES_LIST, json)
         editor.commit()
     }
-    fun setCurrentLocationStandAlone(currentLocation:String){
+
+    fun setCurrentLocation(currentLocation:String){
         Log.i("savedPref","set current location $citiesList")
         val city = sharedPreferences.getString(CURRENT_LOCATION,null)
         editor.putString(CURRENT_LOCATION,currentLocation)
         editor.apply()
     }
-    fun getCurrentLocationStandAlone():String?{
+
+    fun getCurrentLocation():String?{
         return sharedPreferences.getString(CURRENT_LOCATION,null)
     }
-    fun loadCitiesCurrentAlone(): ArrayList<String?> {
-        val current = getCurrentLocationStandAlone()
+
+    fun loadAllCities(): ArrayList<String?> {
+        val current = getCurrentLocation()
         val list = ArrayList<String?>()
         if(current!=null){
             list.add(current!!)
@@ -68,15 +68,6 @@ class SharedPreference(application: Application) {
         }
         return list
     }
-
-//    fun setUpdateDate(date:Long){
-//        editor.putLong(UPDATE_DATE, date)
-//        editor.apply()
-//    }
-//
-//    fun getUpdateDate():Long{
-//        return sharedPreferences.getLong(UPDATE_DATE,0)
-//    }
 
     fun getLang(): String {
         return sharedPreferences.getString("lang","EN")!!
@@ -92,4 +83,13 @@ class SharedPreference(application: Application) {
         editor.putString("units", units)
         editor.apply()
     }
+
+//    fun setUpdateDate(date:Long){
+//        editor.putLong(UPDATE_DATE, date)
+//        editor.apply()
+//    }
+//
+//    fun getUpdateDate():Long{
+//        return sharedPreferences.getLong(UPDATE_DATE,0)
+//    }
 }

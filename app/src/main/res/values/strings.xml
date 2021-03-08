@@ -25,7 +25,7 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="language">Language</string>
     <string name="units">Units</string>
-    <string name="textNoData">Please check your interned connection and GPS or add a city to see the weather</string>
+    <string name="textNoData">Please check your internet connection and GPS or add a city to see the weather</string>
     <string name="feelsLike">"Feels like: "</string>
     <string name="wind">"Wind: "</string>
     <string name="humidity">"Humidity: "</string>

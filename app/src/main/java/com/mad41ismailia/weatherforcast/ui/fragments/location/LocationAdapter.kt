@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -28,7 +27,7 @@ class LocationAdapter(private var myList: ArrayList<String?>,private val viewMod
         holder.card.setOnClickListener(View.OnClickListener {
 
         })
-        val current = viewModel.getCurrentLocationStandAlone()
+        val current = viewModel.getCurrentLocation()
         if(current!=null){
             if(current == myList[position]){
                 holder.deleteLocation.visibility = GONE
