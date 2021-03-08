@@ -113,7 +113,6 @@ class Repository private constructor(val application: Application) {
         CoroutineScope(Dispatchers.Default).launch {
             weatherDao.deleteWeatherCityData(city)
             Log.i("deletecity","inside coroutine repo")
-
         }
         sharedPreference.deleteCity(city)
     }
@@ -121,11 +120,14 @@ class Repository private constructor(val application: Application) {
     fun deleteCurrentFromDatabase() {
         CoroutineScope(Dispatchers.Default).launch {
             sharedPreference.getCurrentLocationStandAlone()?.let {
-                weatherDao.deleteWeatherCityData(
-                    it
-                )
+                weatherDao.deleteWeatherCityData(it)
             }
         }
     }
 
+    fun clearDBNotInList(list: ArrayList<String?>) {
+        CoroutineScope(Dispatchers.Default).launch {
+            weatherDao.deleteWeatherCityData2(list)
+        }
+    }
 }

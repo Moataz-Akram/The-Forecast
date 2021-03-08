@@ -12,16 +12,18 @@ import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
 import com.mad41ismailia.weatherforcast.repo.Repository
 import java.util.*
 
+@SuppressLint("LogNotTimber")
 class TodayViewModel : ViewModel(){
     val repo = Repository.getRepoObject()
 
 
     fun fetchData2(): LiveData<List<CityWeatherData>> {
         val list = repo.loadCitiesNew()
+        repo.clearDBNotInList(list)
+        Log.i("fixingBugs","list $list")
         return repo.fetchAllCitiesData(list)
     }
 
-    @SuppressLint("LogNotTimber")
     fun getCurrentLocationStandAlone(): String? {
         Log.i("mynewui","check again")
         return repo.getCurrentLocationStandAlone()
