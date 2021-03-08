@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -19,6 +20,7 @@ import com.mad41ismailia.weatherforcast.databinding.TodayFragmentBinding
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
 import com.mad41ismailia.weatherforcast.ui.mainActivity.MainActivity
+import com.mapbox.mapboxsdk.style.layers.Property
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -51,6 +53,8 @@ class Today : Fragment(R.layout.today_fragment) {
                     val indicator = binding.indicatior
                     indicator.setViewPager(binding.viewPager)
                     binding.textNoData.visibility = GONE
+                    binding.viewPager.visibility = VISIBLE
+                    binding.indicatior.visibility = VISIBLE
                 } else {
                     binding.viewPager.visibility = GONE
                     binding.indicatior.visibility = GONE
