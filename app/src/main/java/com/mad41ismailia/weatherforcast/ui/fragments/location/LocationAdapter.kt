@@ -32,7 +32,7 @@ class LocationAdapter(private var myList: ArrayList<String?>,private val viewMod
         if(current!=null){
             if(current == myList[position]){
                 holder.deleteLocation.visibility = GONE
-                holder.myLocation.visibility = VISIBLE
+                holder.myLocation.setImageResource(R.drawable.home_location)
             }
         }
         holder.deleteLocation.setOnClickListener(View.OnClickListener {

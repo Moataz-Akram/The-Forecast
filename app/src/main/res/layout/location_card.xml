@@ -34,11 +34,11 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="24dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/cloud_location" />
+                app:srcCompat="@drawable/ic_fav_location" />
 
             <TextView
                 android:id="@+id/cityName"

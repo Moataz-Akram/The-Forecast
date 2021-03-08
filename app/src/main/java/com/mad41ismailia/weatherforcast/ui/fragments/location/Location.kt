@@ -39,10 +39,6 @@ class Location : Fragment(R.layout.location_fragment) {
     private var cityList:ArrayList<String?> = arrayListOf()
     lateinit var adapter : LocationAdapter
 
-    private lateinit var sharedPreferences: SharedPreferences//delete
-    private lateinit var editor:SharedPreferences.Editor//delete
-    var gson = Gson()//delete
-    val typeList: Type = object : TypeToken<ArrayList<String?>>() {}.type//delete
 
 //    private lateinit var autocompleteFragment: PlaceAutocompleteFragment
 //    private var transaction : FragmentTransaction? = null
@@ -124,7 +120,6 @@ class Location : Fragment(R.layout.location_fragment) {
                         viewModel.fetchCityData(place.name!!)
                     }
                 }
-
             }
 
             override fun onError(status: Status) {
@@ -133,7 +128,4 @@ class Location : Fragment(R.layout.location_fragment) {
             }
         })
     }
-
-
-
 }

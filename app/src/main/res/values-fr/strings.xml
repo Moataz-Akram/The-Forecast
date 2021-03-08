@@ -27,5 +27,9 @@
     <string name="language">La langue</string>
     <string name="units">Unités</string>
     <string name="textNoData">Please check your interned connection and GPS or add a city to see the weather</string>
+    <string name="feelsLike">"Feels like: "</string>
+    <string name="wind">"Wind: "</string>
+    <string name="humidity">"Humidity: "</string>
+    <string name="clouds">"Clouds: "</string>
 
 </resources>

@@ -46,7 +46,7 @@ class Today : Fragment(R.layout.today_fragment) {
             viewModel.fetchData2().observe(viewLifecycleOwner, {
                 Log.i("comingdata","observe"+ it.toString())
                 if (it.isNotEmpty()) {
-                    binding.viewPager.adapter = ViewPagerAdapter2(requireContext(),it)
+                    binding.viewPager.adapter = ViewPagerAdapter2(requireContext(),it,viewModel.getCurrentLocationStandAlone())
 
                     val indicator = binding.indicatior
                     indicator.setViewPager(binding.viewPager)

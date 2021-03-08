@@ -3,9 +3,7 @@ package com.mad41ismailia.weatherforcast.ui.fragments.today
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
@@ -47,8 +45,8 @@ class DailyAdapter(private val list:List<DailyDatabase>) : RecyclerView.Adapter<
         val txtDayName: TextView = view.findViewById(R.id.txtDayName)
         val txtDayTemp: TextView = view.findViewById(R.id.txtDayTemp)
         val txtNightTemp: TextView = view.findViewById(R.id.txtNightTemp)
-        val txtMaxTemp: TextView = view.findViewById(R.id.txtMaxTemp)
-        val txtMinTemp: TextView = view.findViewById(R.id.txtMinTemp)
+        val txtMaxTemp: TextView = view.findViewById(R.id.txtHumidty)
+        val txtMinTemp: TextView = view.findViewById(R.id.txtWind)
 //        val card: CardView = view.findViewById(R.id.myCard)
     }
 

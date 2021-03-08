@@ -2,16 +2,14 @@ package com.mad41ismailia.weatherforcast.ui.fragments.today
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Geocoder
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.lifecycle.LiveData
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
@@ -20,21 +18,23 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.DailyDatabase
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.HourlyDatabase
 import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
-import kotlin.collections.ArrayList
 
 @SuppressLint("LogNotTimber")
-class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>) : RecyclerView.Adapter<ViewPagerAdapter2.ViewHolder>() {
+class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>,val current: String?) : RecyclerView.Adapter<ViewPagerAdapter2.ViewHolder>() {
 
 
     private var myList: List<CityWeatherData> = list
     private lateinit var dailyAdapter:DailyAdapter2
     private lateinit var hourlyAdapter: HourlyAdapter2
-
+    @RequiresApi(Build.VERSION_CODES.O)
+    val currentDateTime = LocalDateTime.now()
     private val gson = GsonBuilder().create()
     val weatherDataConverter: Type = object : TypeToken<WeatherData>() {}.type
 
@@ -44,41 +44,48 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>) : R
         return ViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n", "SimpleDateFormat")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val city = myList[position]
         holder.userId.text = city.cityName
         val weatherData = gson.fromJson<WeatherData>(city.weatherData,weatherDataConverter)
-        val daily = weatherData.daily
-            if (daily.isNotEmpty()){
-            val icon = daily[0].weather[0].icon
-            Log.i("imageview", "${daily}")
-            icon?.let { setImg(it) }?.let { holder.weatherDetail.setImageResource(R.drawable.cloud_location) }
+        holder.txtNowTemp.text = weatherData.current.temp.toInt().toString()
+        holder.txtFeelsLike.text = context.resources.getString(R.string.feelsLike) + weatherData.current.feels_like.toInt().toString()
+        holder.txtWeatherState.text = weatherData.current.weather[0].description
+
+        holder.txtDate.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            currentDateTime.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+        }else ({
+            val sdf = SimpleDateFormat("MMM d, yyyy")
+            val currentDate = sdf.format(Date())
+        }).toString()
+
+        if(current!=null){
+            if(current == myList[position].cityName){
+                holder.imgLocation.setImageResource(R.drawable.home_location)
+            }else{
+                holder.imgLocation.setImageResource(R.drawable.ic_fav_location)
+            }
+        }else{
+            holder.imgLocation.setImageResource(R.drawable.ic_fav_location)
         }
-        val recyclerViewPool = RecyclerView.RecycledViewPool()
-        val recyclerViewPool2 = RecyclerView.RecycledViewPool()
+
+        //daily & hourly recyclers
         val layoutManager = LinearLayoutManager(context)
         val layoutManager2 = LinearLayoutManager(context)
-
         layoutManager.orientation = HORIZONTAL
         layoutManager.initialPrefetchItemCount = weatherData.hourly.size
-
         hourlyAdapter = HourlyAdapter2(weatherData.hourly)
         holder.HourlyRecyclerView.layoutManager = layoutManager
         holder.HourlyRecyclerView.adapter = hourlyAdapter
-//        holder.HourlyRecyclerView.setRecycledViewPool(recyclerViewPool)
         holder.HourlyRecyclerView.setHasFixedSize(true)
-
-
         layoutManager2.initialPrefetchItemCount = weatherData.daily.size
-        dailyAdapter = DailyAdapter2(weatherData.daily)
+        dailyAdapter = DailyAdapter2(weatherData.daily,context)
         holder.dailyRecyclerView.layoutManager = layoutManager2
         holder.dailyRecyclerView.adapter = dailyAdapter
-//        holder.dailyRecyclerView.setRecycledViewPool(recyclerViewPool2)
-//        holder.dailyRecyclerView.setHasFixedSize(true)
-        holder.lottieIcon.setAnimation(R.raw.lottie)
+        holder.lottieIcon.setAnimation(setImgLottie(weatherData.current.weather[0].icon))
+        holder.imgTempLottie.setAnimation(R.raw.temp2)
     }
-
-
 
     override fun getItemCount(): Int {
         return myList.size
@@ -90,10 +97,15 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>) : R
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userId: TextView = view.findViewById(R.id.cityNameViewPager)
-        val weatherDetail:ImageView = view.findViewById(R.id.imgWeatherState)
+        val txtNowTemp: TextView = view.findViewById(R.id.txtNowTemp)
+        val txtFeelsLike: TextView = view.findViewById(R.id.txtFeelsLikeTemp)
+        val txtWeatherState: TextView = view.findViewById(R.id.txtWeatherState)
+        val txtDate: TextView = view.findViewById(R.id.txtDate)
+        val imgLocation:ImageView = view.findViewById(R.id.imgLocation)
         val dailyRecyclerView: RecyclerView = view.findViewById(R.id.DailyRecyclerView)
         val HourlyRecyclerView: RecyclerView = view.findViewById(R.id.HourlyRecyclerView)
         val lottieIcon: LottieAnimationView = view.findViewById(R.id.imgLottie)
+        val imgTempLottie: LottieAnimationView = view.findViewById(R.id.imgTempLottie)
     }
 }
 

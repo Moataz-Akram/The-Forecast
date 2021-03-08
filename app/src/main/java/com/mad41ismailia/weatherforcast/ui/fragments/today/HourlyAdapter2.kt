@@ -30,7 +30,7 @@ class HourlyAdapter2(private val list:List<Hourly>) : RecyclerView.Adapter<Hourl
         calender.timeInMillis = (task.dt?.toLong() ?: 10)*1000L
         val dateFormat = SimpleDateFormat("hh:mm aa");
         holder.txtHour.text = dateFormat.format(calender.time)
-        holder.txtHourTemp.text = task.temp.toString()
+        holder.txtHourTemp.text = task.temp.toInt().toString() + "°"
         holder.lottieIcon.setAnimation(setImgLottie(task.weather[0].icon))
     }
 

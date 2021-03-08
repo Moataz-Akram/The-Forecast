@@ -6,11 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
@@ -80,7 +77,7 @@ class ViewPagerAdapter(val context: Context,list: List<String?>, listDaily: Arra
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userId: TextView = view.findViewById(R.id.cityNameViewPager)
-        val weatherDetail:ImageView = view.findViewById(R.id.imgWeatherState)
+        val weatherDetail:ImageView = view.findViewById(R.id.imgLocation)
         val dailyRecyclerView: RecyclerView = view.findViewById(R.id.DailyRecyclerView)
         val HourlyRecyclerView: RecyclerView = view.findViewById(R.id.HourlyRecyclerView)
     }
