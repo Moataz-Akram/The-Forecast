@@ -9,11 +9,13 @@ import androidx.room.Room
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.mad41ismailia.weatherforcast.INTERNECT_CONNECTION
+import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlarmData
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
 import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
 import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
 import com.mad41ismailia.weatherforcast.repo.sharedPreference.SharedPreference
+import com.mad41ismailia.weatherforcast.ui.fragments.alarm.Alarm
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,11 +26,11 @@ import kotlin.collections.ArrayList
 @SuppressLint("LogNotTimber")
 class Repository private constructor(private val application: Application) {
     private val db =
-        Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather8Database").build()
+        Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather13Database").build()
     private val weatherDao = db.WeatherDao()
     private val sharedPreference = SharedPreference(application)
-    val geocoder = Geocoder(application, Locale.getDefault())
-    private val weatherDataConverter: Type = object : TypeToken<WeatherData>() {}.type
+    //    val geocoder = Geocoder(application, Locale.getDefault())
+//    private val weatherDataConverter: Type = object : TypeToken<WeatherData>() {}.type
     private var gson = GsonBuilder().create()
 
     companion object {
@@ -53,7 +55,7 @@ class Repository private constructor(private val application: Application) {
         var list: List<CityWeatherData>? = null
         CoroutineScope(Dispatchers.Default).launch {
             list = weatherDao.getAllWeatherDataList()
-            weatherDao.deleteWeatherCityDataAll()
+//            weatherDao.deleteWeatherCityDataAll()
             val units = sharedPreference.getUnits()
             val language = sharedPreference.getLang()
             if (list != null && list!!.isNotEmpty()) {
@@ -61,6 +63,7 @@ class Repository private constructor(private val application: Application) {
                     addOrUpdateCity(city.cityName, city.lat, city.lon, units, language)
                 }
             }
+            weatherDao.clearDBNotInList(sharedPreference.loadAllCities())
         }
     }
 
@@ -154,7 +157,7 @@ class Repository private constructor(private val application: Application) {
     //today
     fun clearDBNotInList() {
         val list = sharedPreference.loadAllCities()
-        Log.i("fixingBugs","$list")
+        Log.i("fixingBugs", "$list")
         CoroutineScope(Dispatchers.Default).launch {
             weatherDao.clearDBNotInList(list)
         }
@@ -162,5 +165,25 @@ class Repository private constructor(private val application: Application) {
 
     fun observeWeatherData(): LiveData<List<CityWeatherData>> {
         return weatherDao.getWeatherLiveData()
+    }
+
+    fun addAlarmToDB(newAlarm: AlarmData) {
+        CoroutineScope(Dispatchers.Default).launch {
+            weatherDao.addAlarmToDB(newAlarm)
+        }
+    }
+
+    fun getAlarms(): LiveData<List<AlarmData>> {
+        return weatherDao.getAlarms()
+    }
+
+    fun deleteAlarm(id:String){
+        CoroutineScope(Dispatchers.Default).launch {
+            weatherDao.deleteAlarm(id)
+        }
+    }
+
+    fun getAlarm(id: String?): AlarmData {
+        return weatherDao.getAlarm(id)
     }
 }

@@ -17,9 +17,9 @@
         tools:layout="@layout/location_fragment" />
     <fragment
         android:id="@+id/alarmf"
-        android:name="com.mad41ismailia.weatherforcast.ui.fragments.alert.Alarmf"
+        android:name="com.mad41ismailia.weatherforcast.ui.fragments.alarm.Alarm"
         android:label="alarmf_fragment"
-        tools:layout="@layout/alarmf_fragment" />
+        tools:layout="@layout/alarm_fragment" />
     <fragment
         android:id="@+id/settings2"
         android:name="com.mad41ismailia.weatherforcast.ui.fragments.settings.Settings"

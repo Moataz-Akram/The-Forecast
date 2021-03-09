@@ -36,35 +36,26 @@ class Today : Fragment(R.layout.today_fragment) {
         super.onActivityCreated(savedInstanceState)
         //view model
         viewModel = ViewModelProvider(this).get(TodayViewModel::class.java)
-        viewModel.updateAllCities()
+
+        binding.textNoData.visibility = GONE
         viewModel.observeWeatherData().observe(viewLifecycleOwner, {
             Log.i("comingdata","observe"+ it.toString())
             if (it.isNotEmpty()) {
-//                    val current = viewModel.getCurrentLocation()
-//                    if (current!=null){
-                    //make current city the first on list
-//                        val list = orderList(it,current)
-//                    }
                 binding.viewPager.adapter = ViewPagerAdapter2(requireContext(),it,viewModel.getCurrentLocation())
-
                 val indicator = binding.indicatior
                 indicator.setViewPager(binding.viewPager)
                 binding.textNoData.visibility = GONE
                 binding.viewPager.visibility = VISIBLE
                 binding.indicatior.visibility = VISIBLE
             } else {
-                binding.viewPager.visibility = GONE
-                binding.indicatior.visibility = GONE
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000)
+                    binding.viewPager.visibility = GONE
+                    binding.indicatior.visibility = GONE
+                    binding.textNoData.visibility = VISIBLE
+                }
             }
         })
-
-
-        if (INTERNECT_CONNECTION) {
-            CoroutineScope(Dispatchers.IO).launch {
-                //add check to update only in new day if there is internet connection
-//                viewModel.fetchData2()
-            }
-        }
     }
 
 //    private fun orderList(list2: List<CityWeatherData>?, current: String): Any {
@@ -86,7 +77,4 @@ class Today : Fragment(R.layout.today_fragment) {
 //        return list
 //    }
 
-    private fun checkInternetConnection(): Boolean {
-        return MainActivity.instance.checkInternetConnection()
-    }
 }

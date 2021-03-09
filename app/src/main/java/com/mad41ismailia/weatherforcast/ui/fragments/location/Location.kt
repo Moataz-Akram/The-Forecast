@@ -40,12 +40,12 @@ class Location : Fragment(R.layout.location_fragment) {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(LocationViewModel::class.java)
-        var layoutManager = LinearLayoutManager(requireContext())
+        val layoutManager = LinearLayoutManager(requireContext())
         binding.locationRecycler.layoutManager = layoutManager
         binding.locationRecycler.setHasFixedSize(true)
 //        Thread.sleep(100)
         cityList = viewModel.loadAllCities()
-        adapter = LocationAdapter(cityList,viewModel)
+        adapter = LocationAdapter(cityList,viewModel,requireContext())
         binding.locationRecycler.adapter = adapter
 
         addLocation()

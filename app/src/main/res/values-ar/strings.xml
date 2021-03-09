@@ -30,4 +30,11 @@
     <string name="wind">"Wind: "</string>
     <string name="humidity">"Humidity: "</string>
     <string name="clouds">"Clouds: "</string>
+    <string name="alertType">Alert Type</string>
+    <string name="temp_more">Temprature more than</string>
+    <string name="temp_less">Temprature less than</string>
+    <string name="deleteAlarm">Are you sure you want to delete this alarm?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="deleteLocation">Are you sure you want to delete this location from your favourite list?</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.location
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mad41ismailia.weatherforcast.R
 import java.util.ArrayList
 
-class LocationAdapter(private var myList: ArrayList<String?>,private val viewModel: LocationViewModel) : RecyclerView.Adapter<LocationAdapter.ViewHolder>() {
+class LocationAdapter(private var myList: ArrayList<String?>,private val viewModel: LocationViewModel,private val context:Context) : RecyclerView.Adapter<LocationAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.location_card, parent, false)
@@ -24,9 +26,6 @@ class LocationAdapter(private var myList: ArrayList<String?>,private val viewMod
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val location = myList[position]
         holder.userId.text = location
-        holder.card.setOnClickListener(View.OnClickListener {
-
-        })
         val current = viewModel.getCurrentLocation()
         if(current!=null){
             if(current == myList[position]){
@@ -36,9 +35,19 @@ class LocationAdapter(private var myList: ArrayList<String?>,private val viewMod
         }
         holder.deleteLocation.setOnClickListener(View.OnClickListener {
             Log.i("deletecity", "inside adapter ${myList[position]} from $myList")
-            viewModel.deleteCity(myList[position]!!)
-            myList.removeAt(position)
-            notifyDataSetChanged()
+            val builder = android.app.AlertDialog.Builder(context)
+            builder.setMessage(R.string.deleteLocation)
+                .setPositiveButton(R.string.yes
+                ) { _, _ ->
+                    viewModel.deleteCity(myList[position]!!)
+                    myList.removeAt(position)
+                    notifyDataSetChanged()
+                }
+                .setNegativeButton(R.string.no
+                ) { _, _ -> }
+            var alert: AlertDialog = builder.create()
+            alert.show()
+
         })
     }
 
