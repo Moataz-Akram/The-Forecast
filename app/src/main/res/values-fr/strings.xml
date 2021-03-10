@@ -38,5 +38,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="deleteLocation">Are you sure you want to delete this location from your favourite list?</string>
+    <string name="snow">Snow</string>
+    <string name="weather_alarm">Weather Alarm</string>
 
 </resources>

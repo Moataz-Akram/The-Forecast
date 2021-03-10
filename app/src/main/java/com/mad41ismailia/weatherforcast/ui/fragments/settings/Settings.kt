@@ -48,6 +48,9 @@ class Settings : PreferenceFragmentCompat() {
         val unitsString = units?.value.toString()
         if(langString!=oldLang||oldUnits!=unitsString){
 //            Repository.getRepoObject().updateAllData()
+        if(oldUnits!=unitsString){
+            viewModel.updateAlarms(oldUnits,unitsString)
+        }
             Log.i("languageRestart inside","not equals old lang is '$oldLang' new lang is '${lang?.value}'")
             //add need change in SP
             if(INTERNECT_CONNECTION) {

@@ -20,8 +20,8 @@ class TodayViewModel : ViewModel(){
 //    }
 
     fun updateAllCities(){
+//        repo.updateAllCities()
         repo.clearDBNotInList()
-        repo.updateAllCities()
     }
 
     fun observeWeatherData(): LiveData<List<CityWeatherData>> {

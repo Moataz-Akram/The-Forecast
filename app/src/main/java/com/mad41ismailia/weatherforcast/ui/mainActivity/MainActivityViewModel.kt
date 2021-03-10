@@ -20,9 +20,12 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 //        val list : ArrayList<String?> = arrayListOf(city)
 //        repository.fetchAllCitiesData(list)
 //    }
-    fun addOrUpdateDataForCurrentCity(city: String, latitude: Double, longitude: Double) {
+    fun addCurrentCity(city: String, latitude: Double, longitude: Double) {
         repository.addDataForNewCity(city,latitude,longitude)
     }
+//    fun updateCurrentCity(city: String, newName: String, latitude: Double, longitude: Double){
+//        repository.updateCurrentCity(city,newName,latitude,longitude)
+//    }
 
     fun deleteOldCurrent(currentCity: String) {
         repository.deleteCity(currentCity)

@@ -10,6 +10,10 @@ class SettingsViewModel:ViewModel() {
 //         repo.clearDBNotInList()
         repo.updateAllCities()
      }
+
+    fun updateAlarms(oldUnits: String, newUnits: String) {
+        repo.updateAlarms(oldUnits,newUnits)
+    }
 //    fun updateAllCities() {
 //        val list = repo.loadAllCities()
 //        if(list.isNotEmpty()){

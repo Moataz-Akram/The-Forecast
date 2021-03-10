@@ -52,6 +52,7 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
             android.R.layout.simple_spinner_dropdown_item,
             spinnerList
         )
+
         binding.conditionSpinner.adapter = spinnerListAdapter
         binding.conditionSpinner.onItemSelectedListener = this
         //time picker
@@ -95,7 +96,7 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
     }
 
     private fun registerAlarm(time: Long, id: String) {
-        val intent = Intent(this, MyReceiver::class.java)
+        val intent = Intent(applicationContext, MyReceiver::class.java)
         intent.putExtra("ID", id)
         val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
@@ -125,6 +126,7 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
         Log.i("alarmalarm", "m1 ${calendar2.time} ")
         calendar2.set(Calendar.HOUR, hrs)
         calendar2.set(Calendar.MINUTE, minutes)
+        calendar2.set(Calendar.SECOND, 0)
         var m2 = calendar2.timeInMillis
         Log.i("alarmalarm", "m2 $m2 ")
         Log.i("alarmalarm", "m2 ${calendar2.time} ")
@@ -134,13 +136,14 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
             Log.i("alarmalarm", "inside if m3 ${calendar2.time} ")
             m3
         } else {
-            calendar2.set(Calendar.HOUR, hrs + 24)
-            m2 = calendar2.timeInMillis
-            Log.i("alarmalarm", "inside else m2 $m2 ")
-            Log.i("alarmalarm", "inside else m2 ${calendar2.time} ")
-            m3 = m2 - m1
-            Log.i("alarmalarm", "inside else m3 $m3 ")
-            Log.i("alarmalarm", "inside else m3 ${calendar2.time} ")
+//            calendar2.set(Calendar.HOUR, hrs + 24)
+//            m2 = calendar2.timeInMillis
+//            Log.i("alarmalarm", "inside else m2 $m2 ")
+//            Log.i("alarmalarm", "inside else m2 ${calendar2.time} ")
+//            m3 = m2 - m1
+//            Log.i("alarmalarm", "inside else m3 $m3 ")
+//            Log.i("alarmalarm", "inside else m3 ${calendar2.time} ")
+            m3 += 24 * 60 * 60 * 1000
             m3
         }
     }
@@ -168,7 +171,7 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
     }
 
     override fun onTimeChanged(view: TimePicker?, hourOfDay: Int, minute: Int) {
-        hrs = hourOfDay-12
+        hrs = hourOfDay//-12
         minutes = minute
     }
 }

@@ -18,21 +18,21 @@ class AlarmData(
 
 
     fun fromCelsiusToKelvin(){
-        value += 273
+        value += 273 as Int
     }
     fun fromCelsiusToFahrenheit(){
-        value = value*(9/5) + 32
+        value = value* 9/5  + 32 as Int
     }
     fun fromKelvinToCelsius(){
-        value -= 273
+        value -= 273 as Int
     }
     fun fromKelvinToFahrenheit(){
-        value = (value-273) * (9/5) +32
+        value = (value-273) * 9/5 +32 as Int
     }
     fun fromFahrenheitToCelsius(){
-        value = (value-32) *(5/9)
+        value = (value-32) * 5/9 as Int
     }
     fun fromFahrenheitToKelvin(){
-        value = (value - 32 ) * (5/9) + 273
+        value = (value - 32) *  5/9  + 273 as Int
     }
 }

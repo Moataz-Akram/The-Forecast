@@ -8,29 +8,27 @@ import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.mad41ismailia.weatherforcast.INTERNECT_CONNECTION
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlarmData
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
 import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
 import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
 import com.mad41ismailia.weatherforcast.repo.sharedPreference.SharedPreference
-import com.mad41ismailia.weatherforcast.ui.fragments.alarm.Alarm
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 
 @SuppressLint("LogNotTimber")
 class Repository private constructor(private val application: Application) {
-    private val db =
-        Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather13Database").build()
+    private var db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather15Database").build()
     private val weatherDao = db.WeatherDao()
     private val sharedPreference = SharedPreference(application)
-    //    val geocoder = Geocoder(application, Locale.getDefault())
-//    private val weatherDataConverter: Type = object : TypeToken<WeatherData>() {}.type
+        val geocoder = Geocoder(application, Locale.getDefault())
+    private val weatherDataConverter: Type = object : TypeToken<WeatherData>() {}.type
     private var gson = GsonBuilder().create()
 
     companion object {
@@ -50,37 +48,24 @@ class Repository private constructor(private val application: Application) {
         addOrUpdateCity(city!!, latitude, longitude, units, lang)
     }
 
-
     fun updateAllCities() {
         var list: List<CityWeatherData>? = null
         CoroutineScope(Dispatchers.Default).launch {
-            list = weatherDao.getAllWeatherDataList()
+            runBlocking {
+                list = weatherDao.getAllWeatherDataList()
 //            weatherDao.deleteWeatherCityDataAll()
-            val units = sharedPreference.getUnits()
-            val language = sharedPreference.getLang()
-            if (list != null && list!!.isNotEmpty()) {
-                for (city in list!!) {
-                    addOrUpdateCity(city.cityName, city.lat, city.lon, units, language)
+                val units = sharedPreference.getUnits()
+                val language = sharedPreference.getLang()
+                if (list != null && list!!.isNotEmpty()) {
+                    for (city in list!!) {
+                        addOrUpdateCity(city.cityName, city.lat, city.lon, units, language)
+                    }
                 }
+                weatherDao.clearDBNotInList(sharedPreference.loadAllCities())
             }
-            weatherDao.clearDBNotInList(sharedPreference.loadAllCities())
         }
     }
 
-
-//    //today
-//    fun fetchAllCitiesData(list:ArrayList<String?>): LiveData<List<CityWeatherData>> {
-//        if(INTERNECT_CONNECTION) {
-//            val lang = sharedPreference.getLang()
-//            val units = sharedPreference.getUnits()
-//            Log.i("settingsNow", "lang '$lang' units '$units'")
-//                for (city in list) {
-//                    val latLong = geocoder.getFromLocationName(city, 1)
-//                    addOrUpdateCity(city!!, latLong[0].latitude, latLong[0].longitude, units, lang)
-//                }
-//        }
-//        return weatherDao.getWeatherLiveData()
-//    }
 
     private fun addOrUpdateCity(
         city: String,
@@ -186,4 +171,62 @@ class Repository private constructor(private val application: Application) {
     fun getAlarm(id: String?): AlarmData {
         return weatherDao.getAlarm(id)
     }
+
+    //alarm
+    suspend fun getCurrentData(): WeatherData? {
+        val currentLocation = sharedPreference.getCurrentLocation()
+        if(currentLocation!=null) {
+            val list = weatherDao.getCityWeatherDataList(currentLocation)
+            val json = list[0].weatherData
+            Log.i("alarmalarm", "return object")
+            return gson.fromJson(json, weatherDataConverter)
+        }
+        Log.i("alarmalarm", "return null")
+        return null
+    }
+
+    fun updateAlarms(oldUnits: String, newUnits: String) {
+        CoroutineScope(Dispatchers.Default).launch {
+            val alarmList = weatherDao.getAlarmList()
+            if (alarmList.isNotEmpty()){
+                for (alarm in alarmList){
+                    changeUnits(alarm,oldUnits,newUnits)
+                }
+            }
+        }
+    }
+
+    private suspend fun changeUnits(alarm: AlarmData, oldUnits: String, newUnits: String) {
+        if (oldUnits == "metric" && newUnits == "imperial"){
+            alarm.fromCelsiusToFahrenheit()
+            alarm.units = "F"
+        }else if (oldUnits == "metric" && newUnits == "standard"){
+            alarm.fromCelsiusToKelvin()
+            alarm.units = "K"
+        }else if (oldUnits == "imperial" && newUnits == "standard"){
+            alarm.fromFahrenheitToKelvin()
+            alarm.units = "K"
+        }else if (oldUnits == "imperial" && newUnits == "metric"){
+            alarm.fromFahrenheitToCelsius()
+            alarm.units = "C"
+        }else if (oldUnits == "standard" && newUnits == "metric"){
+            alarm.fromKelvinToCelsius()
+            alarm.units = "C"
+        }else if (oldUnits == "standard" && newUnits == "imperial"){
+            alarm.fromKelvinToFahrenheit()
+            alarm.units = "F"
+        }
+        weatherDao.addAlarmToDB(alarm)
+    }
+
+//    fun updateCurrentCity(city: String, newName: String, latitude: Double, longitude: Double) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val units = sharedPreference.getUnits()
+//            val lang = sharedPreference.getLang()
+//            val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather(latitude, longitude, units, lang)
+//            val data = gson.toJson(weatherData)
+//            Log.i("currentLocation", "old name $city new name $newName")
+//            weatherDao.updateCurrent(city,newName,data)
+//        }
+//    }
 }

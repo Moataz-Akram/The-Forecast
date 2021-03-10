@@ -39,9 +39,13 @@ class Today : Fragment(R.layout.today_fragment) {
 
         binding.textNoData.visibility = GONE
         viewModel.observeWeatherData().observe(viewLifecycleOwner, {
-            Log.i("comingdata","observe"+ it.toString())
+            Log.i("comingdata","observe "+ it.toString())
+
+            viewModel.updateAllCities()
+
             if (it.isNotEmpty()) {
-                binding.viewPager.adapter = ViewPagerAdapter2(requireContext(),it,viewModel.getCurrentLocation())
+//                val list = orderList(it!!,viewModel.getCurrentLocation())
+                binding.viewPager.adapter = ViewPagerAdapter2(requireContext(), it,viewModel.getCurrentLocation())
                 val indicator = binding.indicatior
                 indicator.setViewPager(binding.viewPager)
                 binding.textNoData.visibility = GONE
@@ -58,7 +62,9 @@ class Today : Fragment(R.layout.today_fragment) {
         })
     }
 
-//    private fun orderList(list2: List<CityWeatherData>?, current: String): Any {
+//    private fun orderList(list2: List<CityWeatherData>, current: String?): List<CityWeatherData> {
+//        if (current==null)
+//            return list2
 //        val list:ArrayList<CityWeatherData> = (list2 as ArrayList<CityWeatherData>?)!!
 //        var order = 0
 //        for (cityData in list!!){

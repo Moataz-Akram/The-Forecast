@@ -23,9 +23,9 @@
     </string-array>
 
     <string-array name="units_entries">
-        <item>standard ( Kelvin - meter/sec)</item>
-        <item>metric ( Celsius - meter/sec)</item>
-        <item>imperial ( Fahrenheit - miles/hour)</item>
+        <item>standard ( K - m/s)</item>
+        <item>metric ( C - m/s)</item>
+        <item>imperial ( F - miles/hour)</item>
     </string-array>
 
     <string-array name="units_values">

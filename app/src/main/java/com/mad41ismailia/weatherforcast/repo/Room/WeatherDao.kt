@@ -6,9 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.*
-import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
-import com.mad41ismailia.weatherforcast.ui.fragments.alarm.Alarm
-import retrofit2.http.Path
 
 @Dao
 interface WeatherDao {
@@ -47,4 +44,10 @@ interface WeatherDao {
 
     @Query("select * from Alarm where uniqueID=:id")
     fun getAlarm(id: String?): AlarmData
+
+    @Query("select * from Alarm")
+    fun getAlarmList(): List<AlarmData>
+
+    @Query("update  CityWeatherData set cityName=:name and weatherData=:data where  cityName=:oldName ")
+    fun updateCurrent(oldName:String,name:String,data: String)
 }

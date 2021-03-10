@@ -28,6 +28,10 @@ import com.google.android.libraries.places.api.Places
 import com.mad41ismailia.weatherforcast.*
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 
@@ -162,12 +166,25 @@ class MainActivity : AppCompatActivity() {
 
                 val currentCity = viewModel.getCurrentLocation()
 //                if (addresses[0].locality != null && !addresses[0].locality.equals(currentCity)) {
-                if (addresses[0].locality != null) {
-                if(currentCity!=null && currentCity!=addresses[0].locality){
-                    viewModel.deleteOldCurrent(currentCity)
+                CoroutineScope(Dispatchers.Default).launch {
+                    runBlocking {
+                        if (addresses[0].locality != null) {
+                            if(currentCity!=null){
+                                viewModel.deleteOldCurrent(currentCity)
+                            }
+                            viewModel.setCurrentLocation(addresses[0].locality)
+                            viewModel.addCurrentCity(addresses[0].locality,lat,longt)
+
+                        }
                 }
-                    viewModel.setCurrentLocation(addresses[0].locality)
-                    viewModel.addOrUpdateDataForCurrentCity(addresses[0].locality,lat,longt)
+
+//                    if (currentCity != null) {
+//                        viewModel.updateCurrentCity(currentCity,addresses[0].locality ,lat, longt)
+//                        viewModel.setCurrentLocation(addresses[0].locality)
+//                    }else{
+//                        viewModel.addCurrentCity(addresses[0].locality, lat, longt)
+//                        viewModel.setCurrentLocation(addresses[0].locality)
+//                    }
                 }
             }
         }

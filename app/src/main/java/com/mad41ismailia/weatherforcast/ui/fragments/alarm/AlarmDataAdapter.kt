@@ -46,7 +46,7 @@ class AlarmDataAdapter(private val viewModel: AlarmFragmentViewModel, list: List
             val builder = android.app.AlertDialog.Builder(context)
             builder.setMessage(R.string.deleteAlarm)
                 .setPositiveButton(R.string.yes
-                ) { _, _ -> viewModel.deleteAlarm(alarm.uniqueID) }
+                ) { _, _ -> viewModel.deleteAlarm(alarm.uniqueID,context) }
                 .setNegativeButton(R.string.no
                 ) { _, _ -> }
             var alert: AlertDialog = builder.create()
