@@ -27,6 +27,9 @@ interface WeatherDao {
     @Query("SELECT * From CityWeatherData")//needed
     fun getWeatherLiveData():LiveData<List<CityWeatherData>>
 
+//    @Query("SELECT id From CityWeatherData where cityName=:city")//needed
+//    fun getCurrentId(city:String):CityWeatherData
+
     @Query("SELECT * From CityWeatherData where cityName =:city")//needed in add or update
     suspend fun getCityWeatherDataList(city: String):List<CityWeatherData>
 
@@ -48,6 +51,6 @@ interface WeatherDao {
     @Query("select * from Alarm")
     fun getAlarmList(): List<AlarmData>
 
-    @Query("update  CityWeatherData set cityName=:name and weatherData=:data where  cityName=:oldName ")
-    fun updateCurrent(oldName:String,name:String,data: String)
+    @Query("update  CityWeatherData set cityName=:name and weatherData=:data and lat=:lat and lon =:lon where  cityName=:oldName ")
+    fun updateCurrent(oldName:String,name:String,data: String,lat:Double,lon:Double)
 }

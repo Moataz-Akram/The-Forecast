@@ -21,7 +21,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherForcast">
+<!--        <receiver android:name=".ui.widget.trialWidget">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+<!--            </intent-filter>-->
 
+<!--            <meta-data-->
+<!--                android:name="android.appwidget.provider"-->
+<!--                android:resource="@xml/trial_widget_info" />-->
+<!--        </receiver>-->
+        <receiver android:name=".ui.widget.WeatherWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_info" />
+        </receiver>
         <receiver
             android:name=".broadcast.MyReceiver"
             android:enabled="true"
@@ -30,7 +47,6 @@
         </receiver>
 
         <activity android:name=".ui.alarm.AlarmActivity" />
-
         <activity android:name=".ui.mainActivity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

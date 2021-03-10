@@ -2,6 +2,7 @@ package com.mad41ismailia.weatherforcast.repo
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Intent
 import android.location.Geocoder
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -14,6 +15,7 @@ import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
 import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
 import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
 import com.mad41ismailia.weatherforcast.repo.sharedPreference.SharedPreference
+import com.mad41ismailia.weatherforcast.ui.widget.WeatherWidget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,10 +26,11 @@ import kotlin.collections.ArrayList
 
 @SuppressLint("LogNotTimber")
 class Repository private constructor(private val application: Application) {
-    private var db = Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather15Database").build()
+    private var db =
+        Room.databaseBuilder(application, WeatherDatabase::class.java, "Weather16Database").build()
     private val weatherDao = db.WeatherDao()
     private val sharedPreference = SharedPreference(application)
-        val geocoder = Geocoder(application, Locale.getDefault())
+    val geocoder = Geocoder(application, Locale.getDefault())
     private val weatherDataConverter: Type = object : TypeToken<WeatherData>() {}.type
     private var gson = GsonBuilder().create()
 
@@ -62,6 +65,9 @@ class Repository private constructor(private val application: Application) {
                     }
                 }
                 weatherDao.clearDBNotInList(sharedPreference.loadAllCities())
+                val intent = Intent(application,WeatherWidget::class.java)
+                intent.action = "android.appwidget.action.APPWIDGET_UPDATE"
+                application.sendBroadcast(intent)
             }
         }
     }
@@ -162,7 +168,7 @@ class Repository private constructor(private val application: Application) {
         return weatherDao.getAlarms()
     }
 
-    fun deleteAlarm(id:String){
+    fun deleteAlarm(id: String) {
         CoroutineScope(Dispatchers.Default).launch {
             weatherDao.deleteAlarm(id)
         }
@@ -175,7 +181,7 @@ class Repository private constructor(private val application: Application) {
     //alarm
     suspend fun getCurrentData(): WeatherData? {
         val currentLocation = sharedPreference.getCurrentLocation()
-        if(currentLocation!=null) {
+        if (currentLocation != null) {
             val list = weatherDao.getCityWeatherDataList(currentLocation)
             val json = list[0].weatherData
             Log.i("alarmalarm", "return object")
@@ -188,45 +194,45 @@ class Repository private constructor(private val application: Application) {
     fun updateAlarms(oldUnits: String, newUnits: String) {
         CoroutineScope(Dispatchers.Default).launch {
             val alarmList = weatherDao.getAlarmList()
-            if (alarmList.isNotEmpty()){
-                for (alarm in alarmList){
-                    changeUnits(alarm,oldUnits,newUnits)
+            if (alarmList.isNotEmpty()) {
+                for (alarm in alarmList) {
+                    changeUnits(alarm, oldUnits, newUnits)
                 }
             }
         }
     }
 
     private suspend fun changeUnits(alarm: AlarmData, oldUnits: String, newUnits: String) {
-        if (oldUnits == "metric" && newUnits == "imperial"){
+        if (oldUnits == "metric" && newUnits == "imperial") {
             alarm.fromCelsiusToFahrenheit()
             alarm.units = "F"
-        }else if (oldUnits == "metric" && newUnits == "standard"){
+        } else if (oldUnits == "metric" && newUnits == "standard") {
             alarm.fromCelsiusToKelvin()
             alarm.units = "K"
-        }else if (oldUnits == "imperial" && newUnits == "standard"){
+        } else if (oldUnits == "imperial" && newUnits == "standard") {
             alarm.fromFahrenheitToKelvin()
             alarm.units = "K"
-        }else if (oldUnits == "imperial" && newUnits == "metric"){
+        } else if (oldUnits == "imperial" && newUnits == "metric") {
             alarm.fromFahrenheitToCelsius()
             alarm.units = "C"
-        }else if (oldUnits == "standard" && newUnits == "metric"){
+        } else if (oldUnits == "standard" && newUnits == "metric") {
             alarm.fromKelvinToCelsius()
             alarm.units = "C"
-        }else if (oldUnits == "standard" && newUnits == "imperial"){
+        } else if (oldUnits == "standard" && newUnits == "imperial") {
             alarm.fromKelvinToFahrenheit()
             alarm.units = "F"
         }
         weatherDao.addAlarmToDB(alarm)
     }
 
-//    fun updateCurrentCity(city: String, newName: String, latitude: Double, longitude: Double) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val units = sharedPreference.getUnits()
-//            val lang = sharedPreference.getLang()
-//            val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather(latitude, longitude, units, lang)
-//            val data = gson.toJson(weatherData)
-//            Log.i("currentLocation", "old name $city new name $newName")
-//            weatherDao.updateCurrent(city,newName,data)
-//        }
-//    }
+    fun updateCurrentCity(city: String, newName: String, latitude: Double, longitude: Double) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val units = sharedPreference.getUnits()
+            val lang = sharedPreference.getLang()
+            val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather(latitude, longitude, units, lang)
+            val data = gson.toJson(weatherData)
+            Log.i("currentLocation", "old name $city new name $newName")
+            weatherDao.updateCurrent(city,newName,data,latitude,longitude)
+        }
+    }
 }

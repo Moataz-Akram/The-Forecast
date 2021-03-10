@@ -57,16 +57,20 @@ class MainActivity : AppCompatActivity() {
         Places.initialize(this, API_KEY)
 
         //viewModel
-        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(application))
-                .get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+        )
+            .get(MainActivityViewModel::class.java)
         //dataBinding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         //bottomNavBar
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
         navController = navHostFragment.findNavController()
         appBarConfiguration = AppBarConfiguration(
-                setOf(R.id.today, R.id.location, R.id.settings2, R.id.alarmf)
+            setOf(R.id.today, R.id.location, R.id.settings2, R.id.alarmf)
         )
         binding.bottomNavBar.setupWithNavController(navController)
 
@@ -96,14 +100,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             return true
         }
         return false
     }
 
     private fun requestPermissions() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_ID)
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            PERMISSION_ID
+        )
     }
 
     private fun gpsEnabled(): Boolean {
@@ -126,12 +141,14 @@ class MainActivity : AppCompatActivity() {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 0
         locationRequest.numUpdates = 1
-        fusedLocation.requestLocationUpdates(locationRequest,
-                object : LocationCallback() {
-                    override fun onLocationResult(locationResult: LocationResult) {
-                        super.onLocationResult(locationResult)
-                    }
-                }, Looper.myLooper())
+        fusedLocation.requestLocationUpdates(
+            locationRequest,
+            object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    super.onLocationResult(locationResult)
+                }
+            }, Looper.myLooper()
+        )
     }
 
     @SuppressLint("MissingPermission")
@@ -169,14 +186,13 @@ class MainActivity : AppCompatActivity() {
                 CoroutineScope(Dispatchers.Default).launch {
                     runBlocking {
                         if (addresses[0].locality != null) {
-                            if(currentCity!=null){
-                                viewModel.deleteOldCurrent(currentCity)
+                            if (currentCity != null) {
+//                                viewModel.deleteOldCurrent(currentCity)
                             }
                             viewModel.setCurrentLocation(addresses[0].locality)
-                            viewModel.addCurrentCity(addresses[0].locality,lat,longt)
+                            viewModel.addCurrentCity(addresses[0].locality, lat, longt)
 
                         }
-                }
 
 //                    if (currentCity != null) {
 //                        viewModel.updateCurrentCity(currentCity,addresses[0].locality ,lat, longt)
@@ -185,12 +201,18 @@ class MainActivity : AppCompatActivity() {
 //                        viewModel.addCurrentCity(addresses[0].locality, lat, longt)
 //                        viewModel.setCurrentLocation(addresses[0].locality)
 //                    }
+                    }
+
                 }
             }
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_ID) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
