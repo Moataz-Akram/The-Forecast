@@ -1,6 +1,7 @@
 package com.mad41ismailia.weatherforcast.ui.widget
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
@@ -48,7 +49,9 @@ internal fun updateAppWidget(
     views.setTextViewText(R.id.widgetTemperature, widgetText)
     views.setImageViewResource(R.id.imageView,R.drawable.notification_icon)
 
-//    Repository.createObject(context.applicationContext as Application)
+    if (!Repository.isCreated()) {
+        Repository.createObject(context.applicationContext as Application)
+    }
     val repo = Repository.getRepoObject()
     Log.i("weatherWidget","current repo $repo")
 

@@ -35,11 +35,16 @@ class Repository private constructor(private val application: Application) {
     private var gson = GsonBuilder().create()
 
     companion object {
+        private var isCreated = false
         private var INSTANCE: Repository? = null
         fun createObject(application: Application) {
             INSTANCE = Repository(application)
+            isCreated = true
         }
-
+        @JvmName("isCreated1")
+        fun isCreated():Boolean{
+            return isCreated
+        }
         fun getRepoObject(): Repository {
             return INSTANCE!!
         }
@@ -70,6 +75,8 @@ class Repository private constructor(private val application: Application) {
                 application.sendBroadcast(intent)
             }
         }
+
+
     }
 
 
