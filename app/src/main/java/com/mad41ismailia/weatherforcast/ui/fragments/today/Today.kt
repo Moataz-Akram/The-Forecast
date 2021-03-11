@@ -10,11 +10,10 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.mad41ismailia.weatherforcast.INTERNECT_CONNECTION
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.TodayFragmentBinding
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
-import com.mad41ismailia.weatherforcast.ui.mainActivity.MainActivity
+import com.mad41ismailia.weatherforcast.ui.fragments.today.adapters.ViewPagerAdapter2
 import kotlinx.coroutines.*
 
 
@@ -41,10 +40,10 @@ class Today : Fragment(R.layout.today_fragment) {
         viewModel.observeWeatherData().observe(viewLifecycleOwner, {
             Log.i("comingdata","observe "+ it.toString())
 
-            viewModel.updateAllCities()
+//            viewModel.updateAllCities()
 
             if (it.isNotEmpty()) {
-//                val list = orderList(it!!,viewModel.getCurrentLocation())
+                val list = viewModel.orderList(it!!,viewModel.getCurrentLocation())
                 binding.viewPager.adapter = ViewPagerAdapter2(requireContext(), it,viewModel.getCurrentLocation())
                 val indicator = binding.indicatior
                 indicator.setViewPager(binding.viewPager)
@@ -62,25 +61,6 @@ class Today : Fragment(R.layout.today_fragment) {
         })
     }
 
-//    private fun orderList(list2: List<CityWeatherData>, current: String?): List<CityWeatherData> {
-//        if (current==null)
-//            return list2
-//        val list:ArrayList<CityWeatherData> = (list2 as ArrayList<CityWeatherData>?)!!
-//        var order = 0
-//        for (cityData in list!!){
-//            if (current== cityData.cityName){
-//                order = list.indexOf(cityData)
-//            }
-//        }
-//        if (order!=0){
-//            var current = list[order]
-//            for (i in order..1){
-//                val temp = list[order-1]
-//                list[order] = temp
-//            }
-//            list[0] = current
-//        }
-//        return list
-//    }
+
 
 }

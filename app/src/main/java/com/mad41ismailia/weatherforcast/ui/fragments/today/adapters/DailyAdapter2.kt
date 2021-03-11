@@ -1,4 +1,4 @@
-package com.mad41ismailia.weatherforcast.ui.fragments.today
+package com.mad41ismailia.weatherforcast.ui.fragments.today.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -24,6 +24,8 @@ class DailyAdapter2(private val list: List<Daily>,val context: Context) :
     val sunRiseSetFormat = SimpleDateFormat("hh:mm a")
     val res = context.resources
     private var myList: List<Daily> = list
+    private val isDarkMode:Boolean = isDarkModeOn(context)
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.daily_card, parent, false)
         return ViewHolder(view)
@@ -31,25 +33,30 @@ class DailyAdapter2(private val list: List<Daily>,val context: Context) :
 
     @SuppressLint("LogNotTimber", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val task = myList[position]
+        val day = myList[position]
         val calender = Calendar.getInstance()
-        calender.timeInMillis = (task.dt?.toLong() ?: 10) * 1000L
+        calender.timeInMillis = (day.dt?.toLong() ?: 10) * 1000L
         holder.txtDayName.text = dateFormat.format(calender.time)
 
-        calender.timeInMillis = (task.sunrise?.toLong() ?: 10) * 1000L
+        calender.timeInMillis = (day.sunrise?.toLong() ?: 10) * 1000L
         holder.txtSunRise.text = sunRiseSetFormat.format(calender.time)
 
-        calender.timeInMillis = (task.sunset?.toLong() ?: 10) * 1000L
+        calender.timeInMillis = (day.sunset?.toLong() ?: 10) * 1000L
         holder.txtSunset.text = sunRiseSetFormat.format(calender.time)
 
 //        holder.txtDayName.text = task.dt.toString()
-        holder.txtDayTemp.text = task.temp.day.toInt().toString()
-        holder.txtNightTemp.text = task.temp.night.toInt().toString()
-        holder.txtWind.text = task.wind_speed.toInt().toString()
-        holder.txtHumidity.text =task.humidity.toString()
-        holder.txtClouds.text = task.clouds.toString()
-        holder.iconId.text = task.weather[0].description
-        holder.lottieIcon.setAnimation(setImgLottie(task.weather[0].icon))
+        holder.txtDayTemp.text = day.temp.day.toInt().toString()
+        holder.txtNightTemp.text = day.temp.night.toInt().toString()
+        holder.txtWind.text = day.wind_speed.toInt().toString()
+        holder.txtHumidity.text =day.humidity.toString()
+        holder.txtClouds.text = day.clouds.toString()
+        holder.iconId.text = day.weather[0].description
+        if (isDarkMode){
+            holder.lottieIcon.setAnimation(setImgLottieDark(day.weather[0].icon))
+        }else {
+            holder.lottieIcon.setAnimation(setImgLottie(day.weather[0].icon))
+        }
+
         holder.lottieIconClouds.setAnimation(R.raw.d04)
         holder.imgLottieHumidity.setAnimation(R.raw.humidity_icon)
         holder.expand.setOnClickListener {

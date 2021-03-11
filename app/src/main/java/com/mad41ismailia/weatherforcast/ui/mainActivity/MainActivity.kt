@@ -28,6 +28,7 @@ import com.google.android.libraries.places.api.Places
 import com.mad41ismailia.weatherforcast.*
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.ActivityMainBinding
+import com.mad41ismailia.weatherforcast.ui.fragments.today.adapters.isDarkModeOn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,6 +36,7 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 
 
+@SuppressLint("LogNotTimber")
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -62,6 +64,7 @@ class MainActivity : AppCompatActivity() {
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         )
             .get(MainActivityViewModel::class.java)
+
         //dataBinding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
@@ -73,6 +76,14 @@ class MainActivity : AppCompatActivity() {
             setOf(R.id.today, R.id.location, R.id.settings2, R.id.alarmf)
         )
         binding.bottomNavBar.setupWithNavController(navController)
+
+
+        //DarkMode
+        if(isDarkModeOn(this)){
+            binding.mainActivityLayout.setBackgroundResource(R.drawable.background_light_1125_2436_wallpaper)
+            binding.bottomNavBar.setBackgroundColor(R.color.botNavBarBackground)
+        }
+
 
         //internet connection
         INTERNECT_CONNECTION = checkInternetConnection()
@@ -132,6 +143,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkInternetConnection(): Boolean {
+        Log.i("fixingBugs","from inside internet check")
         return (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo?.isConnected == true
     }
 
@@ -177,22 +189,22 @@ class MainActivity : AppCompatActivity() {
                 longt = location.longitude ?: 0.0
                 lat = location.latitude ?: 0.0
 
-                val geoCoder = Geocoder(this, Locale.getDefault())
+                val geoCoder = Geocoder(this, Locale("en"))
                 val addresses: List<Address> = geoCoder.getFromLocation(lat, longt, 1)
                 currentLocation = addresses[0].locality
 
                 val currentCity = viewModel.getCurrentLocation()
 //                if (addresses[0].locality != null && !addresses[0].locality.equals(currentCity)) {
-                CoroutineScope(Dispatchers.Default).launch {
-                    runBlocking {
-                        if (addresses[0].locality != null) {
-                            if (currentCity != null) {
+//                CoroutineScope(Dispatchers.Default).launch {
+//                    runBlocking {
+//                        if (addresses[0].locality != null) {
+//                            if (currentCity != null) {
 //                                viewModel.deleteOldCurrent(currentCity)
-                            }
+//                            }
                             viewModel.setCurrentLocation(addresses[0].locality)
                             viewModel.addCurrentCity(addresses[0].locality, lat, longt)
 
-                        }
+//                        }
 
 //                    if (currentCity != null) {
 //                        viewModel.updateCurrentCity(currentCity,addresses[0].locality ,lat, longt)
@@ -201,9 +213,9 @@ class MainActivity : AppCompatActivity() {
 //                        viewModel.addCurrentCity(addresses[0].locality, lat, longt)
 //                        viewModel.setCurrentLocation(addresses[0].locality)
 //                    }
-                    }
-
-                }
+//                    }
+//
+//                }
             }
         }
     }

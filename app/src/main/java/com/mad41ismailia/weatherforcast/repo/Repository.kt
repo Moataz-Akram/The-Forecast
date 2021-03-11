@@ -69,7 +69,7 @@ class Repository private constructor(private val application: Application) {
                         addOrUpdateCity(city.cityName, city.lat, city.lon, units, language)
                     }
                 }
-                weatherDao.clearDBNotInList(sharedPreference.loadAllCities())
+//                weatherDao.clearDBNotInList(sharedPreference.loadAllCities())
                 val intent = Intent(application,WeatherWidget::class.java)
                 intent.action = "android.appwidget.action.APPWIDGET_UPDATE"
                 application.sendBroadcast(intent)

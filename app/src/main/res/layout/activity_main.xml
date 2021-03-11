@@ -6,6 +6,7 @@
     tools:context=".ui.mainActivity.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mainActivityLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/cloud_morning">

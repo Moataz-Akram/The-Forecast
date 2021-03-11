@@ -11,6 +11,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.mad41ismailia.weatherforcast.INTERNECT_CONNECTION
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.repo.Repository
+import com.mad41ismailia.weatherforcast.ui.mainActivity.MainActivity
 import com.mad41ismailia.weatherforcast.ui.mainActivity.MyPreference
 
 class Settings : PreferenceFragmentCompat() {
@@ -53,7 +54,7 @@ class Settings : PreferenceFragmentCompat() {
         }
             Log.i("languageRestart inside","not equals old lang is '$oldLang' new lang is '${lang?.value}'")
             //add need change in SP
-            if(INTERNECT_CONNECTION) {
+            if((requireActivity() as MainActivity).checkInternetConnection()) {
                 viewModel.updateAllCities()
             }
             if(langString!=oldLang){

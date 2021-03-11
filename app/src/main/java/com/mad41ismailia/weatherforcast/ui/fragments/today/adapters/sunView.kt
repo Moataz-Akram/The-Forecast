@@ -1,4 +1,4 @@
-//package com.mad41ismailia.weatherforcast.ui.fragments.today
+package com.mad41ismailia.weatherforcast.ui.fragments.today.adapters//package com.mad41ismailia.weatherforcast.ui.fragments.today
 //
 //import android.R
 //import android.animation.ValueAnimator

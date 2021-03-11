@@ -1,13 +1,16 @@
-package com.mad41ismailia.weatherforcast.ui.fragments.today
+package com.mad41ismailia.weatherforcast.ui.fragments.today.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
+import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,15 +32,15 @@ import java.util.*
 @SuppressLint("LogNotTimber")
 class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>,val current: String?) : RecyclerView.Adapter<ViewPagerAdapter2.ViewHolder>() {
 
-
     private var myList: List<CityWeatherData> = list
-    private lateinit var dailyAdapter:DailyAdapter2
+    private lateinit var dailyAdapter: DailyAdapter2
     private lateinit var hourlyAdapter: HourlyAdapter2
     @RequiresApi(Build.VERSION_CODES.O)
-    val currentDateTime = LocalDateTime.now()
+    val currentDateTime: LocalDateTime = LocalDateTime.now()
     private val gson = GsonBuilder().create()
-    val weatherDataConverter: Type = object : TypeToken<WeatherData>() {}.type
+    private val weatherDataConverter: Type = object : TypeToken<WeatherData>() {}.type
 
+    private val isDarkMode:Boolean = isDarkModeOn(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_pager_item, parent, false)
@@ -49,6 +52,18 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>,val 
         val city = myList[position]
         holder.userId.text = city.cityName
         val weatherData = gson.fromJson<WeatherData>(city.weatherData,weatherDataConverter)
+
+        val sunsetTime = weatherData.current.sunset.toDouble() *1000
+        val sunriseTime = weatherData.current.sunrise.toDouble() *1000
+        val currentTime = System.currentTimeMillis()
+        Log.i("makingUI", "city ${city.cityName} sunset $sunsetTime current $currentTime ${sunriseTime<currentTime&&sunsetTime>currentTime}")
+        if (sunriseTime<currentTime&&sunsetTime>currentTime){
+            holder.pagerScrollView.setBackgroundResource(R.drawable.cloud_morning)
+        }
+        if(isDarkMode){
+            holder.pagerScrollView.setBackgroundResource(R.drawable.background_light_1125_2436_wallpaper)
+        }
+
         holder.txtNowTemp.text = weatherData.current.temp.toInt().toString()
         holder.txtFeelsLike.text = context.resources.getString(R.string.feelsLike) + weatherData.current.feels_like.toInt().toString()
         holder.txtWeatherState.text = weatherData.current.weather[0].description
@@ -75,15 +90,19 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>,val 
         val layoutManager2 = LinearLayoutManager(context)
         layoutManager.orientation = HORIZONTAL
         layoutManager.initialPrefetchItemCount = weatherData.hourly.size
-        hourlyAdapter = HourlyAdapter2(weatherData.hourly)
-        holder.HourlyRecyclerView.layoutManager = layoutManager
-        holder.HourlyRecyclerView.adapter = hourlyAdapter
-        holder.HourlyRecyclerView.setHasFixedSize(true)
+        hourlyAdapter = HourlyAdapter2(weatherData.hourly,context)
+        holder.hourlyRecyclerView.layoutManager = layoutManager
+        holder.hourlyRecyclerView.adapter = hourlyAdapter
+        holder.hourlyRecyclerView.setHasFixedSize(true)
         layoutManager2.initialPrefetchItemCount = weatherData.daily.size
         dailyAdapter = DailyAdapter2(weatherData.daily,context)
         holder.dailyRecyclerView.layoutManager = layoutManager2
         holder.dailyRecyclerView.adapter = dailyAdapter
-        holder.lottieIcon.setAnimation(setImgLottie(weatherData.current.weather[0].icon))
+        if (isDarkMode){
+            holder.lottieIcon.setAnimation(setImgLottieDark(weatherData.current.weather[0].icon))
+        }else {
+            holder.lottieIcon.setAnimation(setImgLottie(weatherData.current.weather[0].icon))
+        }
         holder.imgTempLottie.setAnimation(R.raw.temp2)
     }
 
@@ -96,6 +115,7 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>,val 
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val pagerScrollView: ScrollView = view.findViewById(R.id.pagerScrollView)
         val userId: TextView = view.findViewById(R.id.cityNameViewPager)
         val txtNowTemp: TextView = view.findViewById(R.id.txtNowTemp)
         val txtFeelsLike: TextView = view.findViewById(R.id.txtFeelsLikeTemp)
@@ -103,10 +123,15 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>,val 
         val txtDate: TextView = view.findViewById(R.id.txtDate)
         val imgLocation:ImageView = view.findViewById(R.id.imgLocation)
         val dailyRecyclerView: RecyclerView = view.findViewById(R.id.DailyRecyclerView)
-        val HourlyRecyclerView: RecyclerView = view.findViewById(R.id.HourlyRecyclerView)
+        val hourlyRecyclerView: RecyclerView = view.findViewById(R.id.HourlyRecyclerView)
         val lottieIcon: LottieAnimationView = view.findViewById(R.id.imgLottie)
         val imgTempLottie: LottieAnimationView = view.findViewById(R.id.imgTempLottie)
     }
+}
+
+fun isDarkModeOn(context: Context): Boolean {
+    val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+    return currentNightMode == Configuration.UI_MODE_NIGHT_YES
 }
 
 fun setImg(icon: String):Int{
@@ -135,15 +160,24 @@ fun setImg(icon: String):Int{
 
 fun setImgLottie(icon: String):Int{
     return when(icon){
-        "01d" -> R.raw.d01
-        "02d" -> R.raw.d02
-        "03d" -> R.raw.d03
-        "04d" -> R.raw.d04
-        "09d" -> R.raw.d09
-        "10d" -> R.raw.d10
-        "11d" -> R.raw.d11
-        "13d" -> R.raw.d13
-        "50d" -> R.raw.d50
+//        "01d" -> R.raw.d01
+//        "02d" -> R.raw.d02
+//        "03d" -> R.raw.d03
+//        "04d" -> R.raw.d04
+//        "09d" -> R.raw.d09
+//        "10d" -> R.raw.d10
+//        "11d" -> R.raw.d11
+//        "13d" -> R.raw.d13
+//        "50d" -> R.raw.d50
+        "01d" -> R.raw.dd01
+        "02d" -> R.raw.dd02
+        "03d" -> R.raw.dd03
+        "04d" -> R.raw.dd04
+        "09d" -> R.raw.dd09
+        "10d" -> R.raw.dd10
+        "11d" -> R.raw.dd11
+        "13d" -> R.raw.dd13
+        "50d" -> R.raw.dd50
         "01n" -> R.raw.n01
         "02n" -> R.raw.n02
         "03n" -> R.raw.n03
@@ -154,6 +188,30 @@ fun setImgLottie(icon: String):Int{
         "13n" -> R.raw.n13
         "50n" -> R.raw.n50
         else -> R.raw.d01
+    }
+}
+
+fun setImgLottieDark(icon: String):Int{
+    return when(icon){
+        "01d" -> R.raw.dd01
+        "02d" -> R.raw.dd02
+        "03d" -> R.raw.dd03
+        "04d" -> R.raw.dd04
+        "09d" -> R.raw.dd09
+        "10d" -> R.raw.dd10
+        "11d" -> R.raw.dd11
+        "13d" -> R.raw.dd13
+        "50d" -> R.raw.dd50
+        "01n" -> R.raw.dn01
+        "02n" -> R.raw.dn02
+        "03n" -> R.raw.dn03
+        "04n" -> R.raw.dn04
+        "09n" -> R.raw.dn09
+        "10n" -> R.raw.dn10
+        "11n" -> R.raw.dn11
+        "13n" -> R.raw.dn13
+        "50n" -> R.raw.dn50
+        else -> R.raw.dd01
     }
 }
 

@@ -33,4 +33,23 @@ class TodayViewModel : ViewModel(){
         return repo.getCurrentLocation()
     }
 
+    fun orderList(list2: List<CityWeatherData>, current: String?): List<CityWeatherData> {
+        if (current==null)
+            return list2
+        val list:ArrayList<CityWeatherData> = (list2 as ArrayList<CityWeatherData>?)!!
+        var order = 0
+        var currentCity:CityWeatherData? = null
+        for (cityData in list!!){
+            if (current== cityData.cityName){
+                order = list.indexOf(cityData)
+                currentCity = cityData
+            }
+        }
+        if (order!=0){
+            list.removeAt(order)
+            list.add(0,currentCity!!)
+            var current = list[order]
+        }
+        return list
+    }
 }

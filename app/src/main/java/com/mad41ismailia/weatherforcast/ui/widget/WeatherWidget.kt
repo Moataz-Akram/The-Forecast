@@ -10,7 +10,7 @@ import android.widget.RemoteViews
 import android.widget.Toast
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.repo.Repository
-import com.mad41ismailia.weatherforcast.ui.fragments.today.setImg
+import com.mad41ismailia.weatherforcast.ui.fragments.today.adapters.setImg
 import kotlinx.coroutines.runBlocking
 
 /**
