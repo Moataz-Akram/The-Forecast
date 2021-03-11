@@ -84,6 +84,15 @@ class SharedPreference(application: Application) {
         editor.apply()
     }
 
+    fun getLastDayUpdated(): Int {
+        return sharedPreferences.getInt("LastDayUpdated",0)
+    }
+
+    fun setLastDayUpdated(today: Int) {
+        editor.putInt("LastDayUpdated", today)
+        editor.apply()
+    }
+
 //    fun setUpdateDate(date:Long){
 //        editor.putLong(UPDATE_DATE, date)
 //        editor.apply()

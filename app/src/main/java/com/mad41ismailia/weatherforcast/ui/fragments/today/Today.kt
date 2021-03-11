@@ -14,6 +14,7 @@ import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.TodayFragmentBinding
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.ui.fragments.today.adapters.ViewPagerAdapter2
+import com.mad41ismailia.weatherforcast.ui.mainActivity.MainActivity
 import kotlinx.coroutines.*
 
 
@@ -21,8 +22,6 @@ class Today : Fragment(R.layout.today_fragment) {
 
     private lateinit var viewModel: TodayViewModel
     private lateinit var binding: TodayFragmentBinding
-
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = TodayFragmentBinding.inflate(inflater, container, false)
@@ -38,9 +37,12 @@ class Today : Fragment(R.layout.today_fragment) {
 
         binding.textNoData.visibility = GONE
         viewModel.observeWeatherData().observe(viewLifecycleOwner, {
-            Log.i("comingdata","observe "+ it.toString())
+            Log.i("comingdata", "observe $it")
 
 //            viewModel.updateAllCities()
+            if((requireActivity() as MainActivity).checkInternetConnection()) {
+                viewModel.updateDataIfNewDay()
+            }
 
             if (it.isNotEmpty()) {
                 val list = viewModel.orderList(it!!,viewModel.getCurrentLocation())

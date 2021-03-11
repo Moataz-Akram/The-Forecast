@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.repo.Repository
+import java.util.*
+import kotlin.collections.ArrayList
 
 @SuppressLint("LogNotTimber")
 class TodayViewModel : ViewModel(){
@@ -51,5 +53,15 @@ class TodayViewModel : ViewModel(){
             var current = list[order]
         }
         return list
+    }
+
+    fun updateDataIfNewDay() {
+        val lastDayUpdate:Int = repo.getLastDayUpdated()
+        val today = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+        Log.i("finishingWork"," lastUpdate $lastDayUpdate today $today")
+        if(today!=lastDayUpdate){
+            repo.setLastDayUpdated(today)
+            repo.updateAllCities()
+        }
     }
 }

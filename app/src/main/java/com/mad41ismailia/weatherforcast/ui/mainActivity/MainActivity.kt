@@ -5,15 +5,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -54,6 +57,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //createRepo & database
 //        Repository.createObject(application)
+        window.statusBarColor = Color.TRANSPARENT
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
         //initialize for the autoComplete
         Places.initialize(this, API_KEY)

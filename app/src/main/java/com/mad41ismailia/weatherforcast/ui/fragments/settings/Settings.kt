@@ -1,6 +1,7 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.settings
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import com.mad41ismailia.weatherforcast.INTERNECT_CONNECTION
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.repo.Repository
@@ -28,6 +30,15 @@ class Settings : PreferenceFragmentCompat() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
+
+//        val lang = SharedPreferences.OnSharedPreferenceChangeListener{ _: SharedPreferences, _: String ->
+//            val lang: ListPreference? = findPreference("lang")
+//            val units: ListPreference? = findPreference("units")
+//            Repository.getRepoObject().setLang(lang?.value?:"en")
+//            Repository.getRepoObject().setUnits(units?.value?:"metric")
+//            requireActivity().recreate()
+//        }
+//        PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(lang)
 
         sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()

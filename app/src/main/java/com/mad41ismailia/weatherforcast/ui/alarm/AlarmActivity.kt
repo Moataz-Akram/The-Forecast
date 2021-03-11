@@ -23,6 +23,7 @@ import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.broadcast.MyReceiver
 import com.mad41ismailia.weatherforcast.databinding.ActivityAlarmBinding
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlarmData
+import com.mad41ismailia.weatherforcast.ui.fragments.today.adapters.isDarkModeOn
 import java.util.*
 
 @SuppressLint("LogNotTimber")
@@ -39,6 +40,12 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_alarm)
         viewModel = ViewModelProvider(this).get(AlarmViewModel::class.java)
+
+        //DarkMode
+        if(isDarkModeOn(this)){
+            binding.alarmLayout.setBackgroundResource(R.drawable.background_light_1125_2436_wallpaper)
+        }
+
 
         createNotificationChannel()
 

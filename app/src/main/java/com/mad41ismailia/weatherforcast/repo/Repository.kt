@@ -242,4 +242,12 @@ class Repository private constructor(private val application: Application) {
             weatherDao.updateCurrent(city,newName,data,latitude,longitude)
         }
     }
+
+    fun getLastDayUpdated(): Int {
+        return sharedPreference.getLastDayUpdated()
+    }
+
+    fun setLastDayUpdated(today: Int) {
+        sharedPreference.setLastDayUpdated(today)
+    }
 }
