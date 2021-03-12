@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.mad41ismailia.weatherforcast.ALARM_ID
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.broadcast.MyReceiver
 import com.mad41ismailia.weatherforcast.databinding.ActivityAlarmBinding
@@ -47,7 +48,7 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
         }
 
 
-        createNotificationChannel()
+        viewModel.createNotificationChannel(this)
 
         //spinner
         val spinnerList = arrayOf(
@@ -96,6 +97,7 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
 
                 Toast.makeText(this, "time is $time", Toast.LENGTH_LONG).show()
                 Log.i("alarmalarm", "time returned $alarmTime ")
+                Log.i("alarmalarm", "alarm id ${newAlarm.uniqueID} ")
                 registerAlarm(alarmTime, newAlarm.uniqueID)
                 finish()
             }
@@ -104,26 +106,26 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
 
     private fun registerAlarm(time: Long, id: String) {
         val intent = Intent(applicationContext, MyReceiver::class.java)
-        intent.putExtra("ID", id)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        intent.putExtra(ALARM_ID, id)
+        val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, 0)
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time, pendingIntent)
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime() + time, 24*60*60*1000,pendingIntent)
+//        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time, 24*60*60*1000,pendingIntent)
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val description = "Channel"
-            val notificationChannel = NotificationChannel(
-                "ALARM_CHANNEL",
-                "Alarm_Notification",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationChannel.description = description
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
-    }
+//    private fun createNotificationChannel() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            val description = "Channel"
+//            val notificationChannel = NotificationChannel(
+//                "ALARM_CHANNEL",
+//                "Alarm_Notification",
+//                NotificationManager.IMPORTANCE_HIGH
+//            )
+//            notificationChannel.description = description
+//            val notificationManager = getSystemService(NotificationManager::class.java)
+//            notificationManager.createNotificationChannel(notificationChannel)
+//        }
+//    }
 
     private fun calculateAlarmTime(): Long {
         val calendar2 = Calendar.getInstance()
@@ -143,13 +145,6 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
             Log.i("alarmalarm", "inside if m3 ${calendar2.time} ")
             m3
         } else {
-//            calendar2.set(Calendar.HOUR, hrs + 24)
-//            m2 = calendar2.timeInMillis
-//            Log.i("alarmalarm", "inside else m2 $m2 ")
-//            Log.i("alarmalarm", "inside else m2 ${calendar2.time} ")
-//            m3 = m2 - m1
-//            Log.i("alarmalarm", "inside else m3 $m3 ")
-//            Log.i("alarmalarm", "inside else m3 ${calendar2.time} ")
             m3 += 24 * 60 * 60 * 1000
             m3
         }
@@ -178,7 +173,15 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
     }
 
     override fun onTimeChanged(view: TimePicker?, hourOfDay: Int, minute: Int) {
-        hrs = hourOfDay//-12
+        val HOD = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        Log.i("alarmAlarm","hour of day ${Calendar.getInstance().get(Calendar.HOUR_OF_DAY)}  hrs of clock $hourOfDay")
+        hrs = if (HOD>=12){
+            Log.i("alarmAlarm","hrs - 12")
+            hourOfDay-12
+        }else {
+            Log.i("alarmAlarm","hrs only")
+            hourOfDay//-12
+        }
         minutes = minute
     }
 }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
-import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +21,7 @@ import com.google.gson.reflect.TypeToken
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
+import com.mad41ismailia.weatherforcast.ui.fragments.today.TodayViewModel
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -30,8 +30,10 @@ import java.time.format.FormatStyle
 import java.util.*
 
 @SuppressLint("LogNotTimber")
-class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>,val current: String?) : RecyclerView.Adapter<ViewPagerAdapter2.ViewHolder>() {
-
+class ViewPagerAdapter2(val context: Context, val list:List<CityWeatherData>, private val viewModel: TodayViewModel) : RecyclerView.Adapter<ViewPagerAdapter2.ViewHolder>() {
+    val current: String? = viewModel.getCurrentLocation()
+    val lang:String = viewModel.getLang()
+    val units:String = viewModel.getUnits()
     private var myList: List<CityWeatherData> = list
     private lateinit var dailyAdapter: DailyAdapter2
     private lateinit var hourlyAdapter: HourlyAdapter2
@@ -62,6 +64,17 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>,val 
         }
         if(isDarkMode){
             holder.pagerScrollView.setBackgroundResource(R.drawable.background_light_1125_2436_wallpaper)
+        }
+
+        if(units=="metric"){
+            holder.txtDegree.text = context.resources.getString(R.string.c)
+            holder.txtSpeed.text = context.resources.getString(R.string.m_s)
+        }else if(units=="standard"){
+            holder.txtDegree.text = context.resources.getString(R.string.k)
+            holder.txtSpeed.text = context.resources.getString(R.string.m_s)
+        }else{
+            holder.txtDegree.text = context.resources.getString(R.string.f)
+            holder.txtSpeed.text = context.resources.getString(R.string.m_h)
         }
 
         holder.txtNowTemp.text = weatherData.current.temp.toInt().toString()
@@ -117,6 +130,8 @@ class ViewPagerAdapter2(val context: Context,val list:List<CityWeatherData>,val 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val pagerScrollView: ScrollView = view.findViewById(R.id.pagerScrollView)
         val userId: TextView = view.findViewById(R.id.cityNameViewPager)
+        val txtDegree: TextView = view.findViewById(R.id.txtDegree)
+        val txtSpeed: TextView = view.findViewById(R.id.txtSpeed)
         val txtNowTemp: TextView = view.findViewById(R.id.txtNowTemp)
         val txtFeelsLike: TextView = view.findViewById(R.id.txtFeelsLikeTemp)
         val txtWeatherState: TextView = view.findViewById(R.id.txtWeatherState)
@@ -136,25 +151,25 @@ fun isDarkModeOn(context: Context): Boolean {
 
 fun setImg(icon: String):Int{
     return when(icon){
-        "01d" -> R.drawable.d01
-        "02d" -> R.drawable.d02
-        "03d" -> R.drawable.d03
-        "04d" -> R.drawable.d04
-        "09d" -> R.drawable.d09
-        "10d" -> R.drawable.d10
-        "11d" -> R.drawable.d11
-        "13d" -> R.drawable.d13
-        "50d" -> R.drawable.d50
-        "01n" -> R.drawable.n01
-        "02n" -> R.drawable.n02
-        "03n" -> R.drawable.n03
-        "04n" -> R.drawable.n04
-        "09n" -> R.drawable.n09
-        "10n" -> R.drawable.n10
-        "11n" -> R.drawable.n11
-        "13n" -> R.drawable.n13
-        "50n" -> R.drawable.n50
-        else -> R.drawable.d01
+        "01d" -> R.drawable.widget_sun
+        "02d" -> R.drawable.widget_sun
+        "03d" -> R.drawable.widget_sun_clouds
+        "04d" -> R.drawable.widget_sun_clouds
+        "09d" -> R.drawable.widget_rain
+        "10d" -> R.drawable.widget_rain
+        "11d" -> R.drawable.widget_thunderstorm
+        "13d" -> R.drawable.widget_snow
+        "50d" -> R.drawable.widget_sun_clouds
+        "01n" -> R.drawable.widget_moon
+        "02n" -> R.drawable.widget_moon
+        "03n" -> R.drawable.widget_moon_clouds
+        "04n" -> R.drawable.widget_moon_clouds
+        "09n" -> R.drawable.widget_rain
+        "10n" -> R.drawable.widget_rain
+        "11n" -> R.drawable.widget_thunderstorm
+        "13n" -> R.drawable.widget_snow
+        "50n" -> R.drawable.widget_moon_clouds
+        else -> R.drawable.widget_sun
     }
 }
 

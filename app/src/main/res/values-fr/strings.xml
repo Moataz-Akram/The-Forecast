@@ -42,5 +42,11 @@
     <string name="weather_alarm">Alarme météo</string>
     <string name="sunrise">lever du soleil</string>
     <string name="sunset">Le coucher du soleil</string>
+    <string name="locationCityNotFound">Can access your local location</string>
+    <string name="m_s">m/s</string>
+    <string name="m_h">mile/h</string>
+    <string name="c">C°</string>
+    <string name="f">F°</string>
+    <string name="k">K°</string>
 
 </resources>

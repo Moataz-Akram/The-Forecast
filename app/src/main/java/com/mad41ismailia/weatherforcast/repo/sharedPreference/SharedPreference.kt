@@ -7,9 +7,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.mad41ismailia.weatherforcast.CITIES_LIST
-import com.mad41ismailia.weatherforcast.CURRENT_LOCATION
-import com.mad41ismailia.weatherforcast.PREF_NAME
+import com.mad41ismailia.weatherforcast.*
 import java.lang.reflect.Type
 
 @SuppressLint("LogNotTimber")
@@ -70,35 +68,43 @@ class SharedPreference(application: Application) {
     }
 
     fun getLang(): String {
-        return sharedPreferences.getString("lang","EN")!!
-    }
-    fun getUnits(): String {
-        return sharedPreferences.getString("units","metric")!!
+        return sharedPreferences.getString(LANGUAGE,"EN")!!
     }
     fun setLang(lang:String) {
-        editor.putString("lang", lang)
+        editor.putString(LANGUAGE, lang)
         editor.apply()
     }
+    fun getUnits(): String {
+        return sharedPreferences.getString(UNITS,"metric")!!
+    }
     fun setUnits(units:String) {
-        editor.putString("units", units)
+        editor.putString(UNITS, units)
         editor.apply()
     }
 
     fun getLastDayUpdated(): Int {
-        return sharedPreferences.getInt("LastDayUpdated",0)
+        return sharedPreferences.getInt(UPDATE_DATE,0)
     }
 
     fun setLastDayUpdated(today: Int) {
-        editor.putInt("LastDayUpdated", today)
+        editor.putInt(UPDATE_DATE, today)
         editor.apply()
     }
 
-//    fun setUpdateDate(date:Long){
-//        editor.putLong(UPDATE_DATE, date)
-//        editor.apply()
-//    }
-//
-//    fun getUpdateDate():Long{
-//        return sharedPreferences.getLong(UPDATE_DATE,0)
-//    }
+    fun setNeedUpdate(flag:Boolean) {
+        editor.putBoolean(NEED_UPDATE,flag)
+        editor.apply()
+    }
+
+    fun getNeedUpdate(): Boolean {
+        return sharedPreferences.getBoolean(NEED_UPDATE,false)
+    }
+
+    fun saveAppWidgetId(appWidgetId: Int) {
+        editor.putInt(APP_WIDGET_ID,appWidgetId)
+        editor.apply()
+    }
+    fun getAppWidgetId():Int{
+        return sharedPreferences.getInt(APP_WIDGET_ID,0)
+    }
 }

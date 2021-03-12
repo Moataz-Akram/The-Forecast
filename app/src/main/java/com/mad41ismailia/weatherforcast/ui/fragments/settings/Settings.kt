@@ -1,7 +1,6 @@
 package com.mad41ismailia.weatherforcast.ui.fragments.settings
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -9,8 +8,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
-import com.mad41ismailia.weatherforcast.INTERNECT_CONNECTION
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.repo.Repository
 import com.mad41ismailia.weatherforcast.ui.mainActivity.MainActivity
@@ -67,6 +64,8 @@ class Settings : PreferenceFragmentCompat() {
             //add need change in SP
             if((requireActivity() as MainActivity).checkInternetConnection()) {
                 viewModel.updateAllCities()
+            }else{
+                viewModel.setNeedUpdate(true)
             }
             if(langString!=oldLang){
                 requireActivity().recreate()

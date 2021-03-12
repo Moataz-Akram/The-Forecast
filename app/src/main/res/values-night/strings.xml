@@ -15,4 +15,10 @@
     <string name="weather_alarm">Weather Alarm</string>
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
+    <string name="locationCityNotFound">Can\'t access your local location</string>
+    <string name="m_s">m/s</string>
+    <string name="m_h">mile/h</string>
+    <string name="c">C°</string>
+    <string name="f">F°</string>
+    <string name="k">K°</string>
 </resources>

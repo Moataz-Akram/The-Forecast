@@ -7,6 +7,10 @@ package com.mad41ismailia.weatherforcast
    const val CITIES_LIST = "CITIES_LIST"
    const val CURRENT_LOCATION = "CURRENT_LOCATION"
    const val LANGUAGE = "LANGUAGE"
+   const val UNITS = "UNITS"
    const val UPDATE_DATE = "UPDATE_DATE"
+   const val NEED_UPDATE = "NEED_UPDATE"
+   const val APP_WIDGET_ID = "APP_WIDGET_ID"
+   const val ALARM_ID = "ALARM_ID"
    const val ALARM_BROADCAST_MESSAGE = "com.mad41ismailia.weatherforcast.Alarm"
    var INTERNECT_CONNECTION = false

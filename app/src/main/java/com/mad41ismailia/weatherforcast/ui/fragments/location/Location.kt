@@ -96,15 +96,14 @@ class Location : Fragment(R.layout.location_fragment) {
                 Log.i("googleplaces", "place object: ${place.latLng.toString()} ")
 
                 if(latlong.isNotEmpty()) {
+                    viewModel.saveNewCity(place.name!!)
+                    viewModel.addDataForNewCity(place.name!!,latlong[0].latitude,latlong[0].longitude)
                     val list = viewModel.loadAllCities()
-                    list.add(place.name)
                     adapter.setList(list)
                     adapter.notifyDataSetChanged()
 
 //                    Locations(place.name!!, latlong[0].latitude, latlong[0].longitude)
                     Log.i("googleplaces", "An error occurred: ${latlong[0].latitude} ${latlong[0].longitude}")
-                    viewModel.saveNewCity(place.name!!)
-                    viewModel.addDataForNewCity(place.name!!,latlong[0].latitude,latlong[0].longitude)
 
                 }
             }

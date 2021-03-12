@@ -2,6 +2,8 @@ package com.mad41ismailia.weatherforcast.ui.mainActivity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,6 +16,7 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.os.SystemClock
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -30,12 +33,11 @@ import com.google.android.gms.location.*
 import com.google.android.libraries.places.api.Places
 import com.mad41ismailia.weatherforcast.*
 import com.mad41ismailia.weatherforcast.R
+import com.mad41ismailia.weatherforcast.broadcast.MyReceiver
 import com.mad41ismailia.weatherforcast.databinding.ActivityMainBinding
 import com.mad41ismailia.weatherforcast.ui.fragments.today.adapters.isDarkModeOn
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.mad41ismailia.weatherforcast.ui.widget.WeatherWidget
+import kotlinx.coroutines.*
 import java.util.*
 
 
@@ -89,6 +91,14 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavBar.setBackgroundColor(R.color.botNavBarBackground)
         }
 
+        val context:Context = this
+        CoroutineScope(Dispatchers.Default).launch {
+        delay(5000)
+            val intent = Intent(applicationContext, WeatherWidget::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+10000, pendingIntent)
+        }
 
         //internet connection
         INTERNECT_CONNECTION = checkInternetConnection()

@@ -26,7 +26,7 @@
     <string name="language">اللغه</string>
     <string name="units">الوحدات</string>
     <string name="textNoData">من فضلك تحقق من الاتصال بالانترنت و خدمة تحديد المكان أو أضف مدينه لتتمكن من معرفة الطقس</string>
-    <string name="feelsLike">تشعر كأنها</string>
+    <string name="feelsLike">تشعر كأنها </string>
     <string name="wind">الرياح: </string>
     <string name="humidity">الرطوبة: </string>
     <string name="clouds">"الغيوم </string>
@@ -41,4 +41,10 @@
     <string name="weather_alarm">منبه الطقس</string>
     <string name="sunrise">شروق الشمس</string>
     <string name="sunset">غروب الشمس</string>
+    <string name="locationCityNotFound">Can access your local location</string>
+    <string name="m_s">م/ث</string>
+    <string name="m_h">ميل/س</string>
+    <string name="c">س°</string>
+    <string name="f">ف°</string>
+    <string name="k">ك°</string>
 </resources>

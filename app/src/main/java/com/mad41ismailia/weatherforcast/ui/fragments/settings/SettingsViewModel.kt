@@ -14,6 +14,10 @@ class SettingsViewModel:ViewModel() {
     fun updateAlarms(oldUnits: String, newUnits: String) {
         repo.updateAlarms(oldUnits,newUnits)
     }
+
+    fun setNeedUpdate(flag:Boolean) {
+        repo.setNeedUpdate(false)
+    }
 //    fun updateAllCities() {
 //        val list = repo.loadAllCities()
 //        if(list.isNotEmpty()){

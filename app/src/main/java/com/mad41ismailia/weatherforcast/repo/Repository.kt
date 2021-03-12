@@ -2,13 +2,16 @@ package com.mad41ismailia.weatherforcast.repo
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.location.Geocoder
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlarmData
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
@@ -16,10 +19,8 @@ import com.mad41ismailia.weatherforcast.repo.Room.WeatherDatabase
 import com.mad41ismailia.weatherforcast.repo.retrofit.UseRetrofit
 import com.mad41ismailia.weatherforcast.repo.sharedPreference.SharedPreference
 import com.mad41ismailia.weatherforcast.ui.widget.WeatherWidget
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+//import com.mad41ismailia.weatherforcast.ui.widget.updateAppWidget
 import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
@@ -70,13 +71,12 @@ class Repository private constructor(private val application: Application) {
                     }
                 }
 //                weatherDao.clearDBNotInList(sharedPreference.loadAllCities())
-                val intent = Intent(application,WeatherWidget::class.java)
-                intent.action = "android.appwidget.action.APPWIDGET_UPDATE"
-                application.sendBroadcast(intent)
             }
+            Log.i("weatherWidget","after finish blocking")
+            delay(2000)
+            val widgetId = sharedPreference.getAppWidgetId()
+            WeatherWidget.updateAppWidget(application, AppWidgetManager.getInstance(application), widgetId)
         }
-
-
     }
 
 
@@ -165,6 +165,10 @@ class Repository private constructor(private val application: Application) {
         return weatherDao.getWeatherLiveData()
     }
 
+//    fun observeCurrent(city: String):LiveData<CityWeatherData>{
+//        return weatherDao.getWeatherLiveDataCurrent(city)
+//    }
+
     fun addAlarmToDB(newAlarm: AlarmData) {
         CoroutineScope(Dispatchers.Default).launch {
             weatherDao.addAlarmToDB(newAlarm)
@@ -249,5 +253,17 @@ class Repository private constructor(private val application: Application) {
 
     fun setLastDayUpdated(today: Int) {
         sharedPreference.setLastDayUpdated(today)
+    }
+
+    fun setNeedUpdate(flag: Boolean) {
+        sharedPreference.setNeedUpdate(flag)
+    }
+
+    fun getNeedUpdate(): Boolean {
+        return sharedPreference.getNeedUpdate()
+    }
+
+    fun saveAppWidgetId(appWidgetId: Int) {
+        sharedPreference.saveAppWidgetId(appWidgetId)
     }
 }

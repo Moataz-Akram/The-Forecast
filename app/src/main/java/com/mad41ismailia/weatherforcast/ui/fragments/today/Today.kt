@@ -36,17 +36,17 @@ class Today : Fragment(R.layout.today_fragment) {
         viewModel = ViewModelProvider(this).get(TodayViewModel::class.java)
 
         binding.textNoData.visibility = GONE
+        if((requireActivity() as MainActivity).checkInternetConnection()) {
+            viewModel.updateDataIfNewDay()
+        }
         viewModel.observeWeatherData().observe(viewLifecycleOwner, {
-            Log.i("comingdata", "observe $it")
-
+            Log.i("comingdata", "comingListSize ${it.size}")
+            Log.i("comingdata", "comingListSize ${it.isNotEmpty()}")
 //            viewModel.updateAllCities()
-            if((requireActivity() as MainActivity).checkInternetConnection()) {
-                viewModel.updateDataIfNewDay()
-            }
 
             if (it.isNotEmpty()) {
                 val list = viewModel.orderList(it!!,viewModel.getCurrentLocation())
-                binding.viewPager.adapter = ViewPagerAdapter2(requireContext(), it,viewModel.getCurrentLocation())
+                binding.viewPager.adapter = ViewPagerAdapter2(requireContext(), it,viewModel)
                 val indicator = binding.indicatior
                 indicator.setViewPager(binding.viewPager)
                 binding.textNoData.visibility = GONE

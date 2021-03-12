@@ -56,12 +56,22 @@ class TodayViewModel : ViewModel(){
     }
 
     fun updateDataIfNewDay() {
+        val needUpdate = repo.getNeedUpdate()
         val lastDayUpdate:Int = repo.getLastDayUpdated()
         val today = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
-        Log.i("finishingWork"," lastUpdate $lastDayUpdate today $today")
-        if(today!=lastDayUpdate){
+        Log.i("finishingWork"," lastUpdate $lastDayUpdate today $today needupdate $needUpdate")
+        if(today!=lastDayUpdate || needUpdate){
+            repo.setNeedUpdate(false)
             repo.setLastDayUpdated(today)
             repo.updateAllCities()
         }
+    }
+
+    fun getLang(): String {
+        return repo.getLang()
+    }
+
+    fun getUnits(): String {
+        return repo.getUnits()
     }
 }
