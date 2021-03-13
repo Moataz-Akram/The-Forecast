@@ -12,6 +12,14 @@ plugins {
 //}
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\Moataz Akram\\Desktop\\First APK\\WeatherForcast2.jks')
+            storePassword 'adfiosifs'
+            keyAlias 'Moataz'
+            keyPassword 'zalamokashta'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
@@ -33,6 +41,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {

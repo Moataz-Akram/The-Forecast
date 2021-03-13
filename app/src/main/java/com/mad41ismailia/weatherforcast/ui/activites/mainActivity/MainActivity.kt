@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
 
         //DarkMode
         if(isDarkModeOn(this)){
-            binding.mainActivityLayout.setBackgroundResource(R.drawable.background_light_1125_2436_wallpaper)
+            binding.mainActivityLayout.setBackgroundResource(R.drawable.darkmode_backgroud)
             binding.bottomNavBar.setBackgroundColor(R.color.botNavBarBackground)
         }
 

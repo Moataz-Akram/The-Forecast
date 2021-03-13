@@ -22,7 +22,6 @@ import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
 import com.mad41ismailia.weatherforcast.ui.fragments.today.TodayViewModel
-import com.openweather.sunviewlibrary.SunView
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -91,7 +90,7 @@ class ViewPagerAdapter2(val context: Context, val list:List<CityWeatherData>, pr
             holder.pagerScrollView.setBackgroundResource(R.drawable.cloud_morning)
         }
         if(isDarkMode){
-            holder.pagerScrollView.setBackgroundResource(R.drawable.background_light_1125_2436_wallpaper)
+            holder.pagerScrollView.setBackgroundResource(R.drawable.darkmode_backgroud)
         }
 
         //units

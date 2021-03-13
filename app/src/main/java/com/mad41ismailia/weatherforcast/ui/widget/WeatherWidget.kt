@@ -83,19 +83,21 @@ class WeatherWidget : AppWidgetProvider() {
                     views.setTextViewText(R.id.widgetCityName3, currentLocation)
 
                     val imgIcon = curretData?.current?.weather?.get(0)?.icon
-                    val imgSource = setImg(imgIcon!!)
-                    val currentTemperature = curretData.current.temp
-                    views.setImageViewResource(R.id.imageView,R.drawable.notification_icon)
-                    views.setImageViewResource(R.id.imageView2,imgSource)
+                    if (imgIcon!=null){
+                        val imgSource = setImg(imgIcon!!)
+                        val currentTemperature = curretData.current.temp
+                        views.setImageViewResource(R.id.imageView,R.drawable.notification_icon)
+                        views.setImageViewResource(R.id.imageView2,imgSource)
 
-                    val hourlyList = curretData.hourly.filter {  it.dt.toDouble() *1000 +3600000> System.currentTimeMillis() }
+                        val hourlyList = curretData.hourly.filter {  it.dt.toDouble() *1000 +3600000> System.currentTimeMillis() }
 
-                    views.setTextViewText(R.id.widgetTemperature2, hourlyList[0].temp.toInt().toString())
-                    views.setTextViewText(R.id.widgetWeatherState2, hourlyList[0].weather[0].main)
+                        views.setTextViewText(R.id.widgetTemperature2, hourlyList[0].temp.toInt().toString())
+                        views.setTextViewText(R.id.widgetWeatherState2, hourlyList[0].weather[0].main)
 
-                    views.setTextViewText(R.id.widgetTempFeels2, hourlyList[0].feels_like.toInt().toString())
-                    Log.i("weatherWidget","reached final ")
-                    appWidgetManager.updateAppWidget(appWidgetId, views)
+                        views.setTextViewText(R.id.widgetTempFeels2, hourlyList[0].feels_like.toInt().toString())
+                        Log.i("weatherWidget","reached final ")
+                        appWidgetManager.updateAppWidget(appWidgetId, views)
+                    }
                 }else{
                     views.setViewVisibility(R.id.widgetDetails,GONE)
                     views.setViewVisibility(R.id.widgetMessage, VISIBLE)

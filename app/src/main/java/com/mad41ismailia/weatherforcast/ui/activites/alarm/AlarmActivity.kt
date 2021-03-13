@@ -42,7 +42,7 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
 
         //DarkMode
         if(isDarkModeOn(this)){
-            binding.alarmLayout.setBackgroundResource(R.drawable.background_light_1125_2436_wallpaper)
+            binding.alarmLayout.setBackgroundResource(R.drawable.darkmode_backgroud)
         }
 
         viewModel.createNotificationChannel(this)
