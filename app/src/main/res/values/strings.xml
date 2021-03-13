@@ -42,7 +42,7 @@
     <string name="sunrise">Sunrise :</string>
     <string name="sunset">Sunset :</string>
     <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
+    <string name="add_widget">Add <widget></widget></string>
     <string name="locationCityNotFound">Can\'t access your local location</string>
     <string name="m_s">m/s</string>
     <string name="m_h">mile/h</string>

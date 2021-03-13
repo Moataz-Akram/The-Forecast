@@ -28,15 +28,6 @@ class Settings : PreferenceFragmentCompat() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
 
-//        val lang = SharedPreferences.OnSharedPreferenceChangeListener{ _: SharedPreferences, _: String ->
-//            val lang: ListPreference? = findPreference("lang")
-//            val units: ListPreference? = findPreference("units")
-//            Repository.getRepoObject().setLang(lang?.value?:"en")
-//            Repository.getRepoObject().setUnits(units?.value?:"metric")
-//            requireActivity().recreate()
-//        }
-//        PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(lang)
-
         sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
         myPreference = MyPreference(requireActivity())
@@ -56,7 +47,6 @@ class Settings : PreferenceFragmentCompat() {
         val langString = lang?.value.toString()
         val unitsString = units?.value.toString()
         if(langString!=oldLang||oldUnits!=unitsString){
-//            Repository.getRepoObject().updateAllData()
         if(oldUnits!=unitsString){
             viewModel.updateAlarms(oldUnits,unitsString)
         }

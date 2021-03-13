@@ -19,6 +19,8 @@ class AlarmViewModel : ViewModel() {
         repo.addAlarmToDB(newAlarm)
     }
 
+
+
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val description = "Channel"

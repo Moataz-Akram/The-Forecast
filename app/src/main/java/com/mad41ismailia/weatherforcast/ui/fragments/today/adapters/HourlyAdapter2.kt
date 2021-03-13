@@ -48,8 +48,6 @@ class HourlyAdapter2(private val list:List<Hourly>,context: Context) : RecyclerV
         val txtHourTemp: TextView = view.findViewById(R.id.txtHourTemp)
         val txtHour: TextView = view.findViewById(R.id.txtHour)
         val lottieIcon: LottieAnimationView = view.findViewById(R.id.imgLottie)
-
-//        val card: CardView = view.findViewById(R.id.myCard)
     }
 
 }

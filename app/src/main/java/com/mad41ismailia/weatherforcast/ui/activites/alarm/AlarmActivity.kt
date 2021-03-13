@@ -45,7 +45,6 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
             binding.alarmLayout.setBackgroundResource(R.drawable.background_light_1125_2436_wallpaper)
         }
 
-
         viewModel.createNotificationChannel(this)
 
         //spinner
@@ -93,7 +92,7 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
                 val newAlarm = AlarmData("alarm", alarmValue, condition, time, units)
                 viewModel.addAlarmToDB(newAlarm)
 
-                Toast.makeText(this, "time is $time", Toast.LENGTH_LONG).show()
+//                Toast.makeText(this, "time is $time", Toast.LENGTH_LONG).show()
                 Log.i("alarmalarm", "time returned $alarmTime ")
                 Log.i("alarmalarm", "alarm id ${newAlarm.uniqueID} ")
                 registerAlarm(alarmTime, newAlarm.uniqueID)
@@ -108,26 +107,11 @@ class AlarmActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
         val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, 0)
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time, pendingIntent)
-//        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + time, 24*60*60*1000,pendingIntent)
     }
 
-//    private fun createNotificationChannel() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val description = "Channel"
-//            val notificationChannel = NotificationChannel(
-//                "ALARM_CHANNEL",
-//                "Alarm_Notification",
-//                NotificationManager.IMPORTANCE_HIGH
-//            )
-//            notificationChannel.description = description
-//            val notificationManager = getSystemService(NotificationManager::class.java)
-//            notificationManager.createNotificationChannel(notificationChannel)
-//        }
-//    }
 
     private fun calculateAlarmTime(): Long {
         val calendar2 = Calendar.getInstance()
-//        calendar2.timeInMillis = SystemClock.elapsedRealtime()
         val m1 = calendar2.timeInMillis
         Log.i("alarmalarm", "m1 $m1 ")
         Log.i("alarmalarm", "m1 ${calendar2.time} ")

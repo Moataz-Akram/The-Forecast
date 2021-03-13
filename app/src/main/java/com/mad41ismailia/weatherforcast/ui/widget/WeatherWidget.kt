@@ -90,12 +90,9 @@ class WeatherWidget : AppWidgetProvider() {
 
                     val hourlyList = curretData.hourly.filter {  it.dt.toDouble() *1000 +3600000> System.currentTimeMillis() }
 
-//                    views.setTextViewText(R.id.widgetTemperature2, currentTemperature.toInt().toString())
                     views.setTextViewText(R.id.widgetTemperature2, hourlyList[0].temp.toInt().toString())
-//                    views.setTextViewText(R.id.widgetWeatherState2, curretData.current.weather[0].main)
                     views.setTextViewText(R.id.widgetWeatherState2, hourlyList[0].weather[0].main)
 
-//                    views.setTextViewText(R.id.widgetTempFeels2, curretData.current.feels_like.toInt().toString())
                     views.setTextViewText(R.id.widgetTempFeels2, hourlyList[0].feels_like.toInt().toString())
                     Log.i("weatherWidget","reached final ")
                     appWidgetManager.updateAppWidget(appWidgetId, views)

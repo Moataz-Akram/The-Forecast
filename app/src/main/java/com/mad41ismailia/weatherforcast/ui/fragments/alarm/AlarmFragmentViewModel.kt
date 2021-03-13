@@ -18,6 +18,10 @@ class AlarmFragmentViewModel:ViewModel() {
         return repo.getAlarms()
     }
 
+    fun getCurrentLocation():String?{
+        return repo.getCurrentLocation()
+    }
+
     fun deleteAlarm(id:String,context: Context){
         repo.deleteAlarm(id)
         val intent = Intent(context.applicationContext, MyReceiver::class.java)

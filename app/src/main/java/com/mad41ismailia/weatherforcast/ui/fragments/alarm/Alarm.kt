@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.AlarmFragmentBinding
@@ -20,8 +21,6 @@ class Alarm : Fragment(R.layout.alarm_fragment) {
     companion object {
         fun newInstance() = Alarm()
     }
-
-//    private lateinit var viewModel: AlarmViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -42,9 +41,15 @@ class Alarm : Fragment(R.layout.alarm_fragment) {
             binding.alarmRecycler.adapter = adapter
         })
 
-        binding.FABAddAlarm.setOnClickListener {
-            val intent = Intent(requireContext(),AlarmActivity::class.java)
-            requireActivity().startActivity(intent)
+        if (viewModel.getCurrentLocation()==null){
+            binding.FABAddAlarm.setOnClickListener {
+                Toast.makeText(requireContext(),"Please set your current location first",Toast.LENGTH_LONG).show()
+            }
+        }else {
+            binding.FABAddAlarm.setOnClickListener {
+                val intent = Intent(requireContext(), AlarmActivity::class.java)
+                requireActivity().startActivity(intent)
+            }
         }
 
     }

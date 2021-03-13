@@ -38,7 +38,7 @@
     <string name="no">لا</string>
     <string name="deleteLocation">هل انت متاكد من انك تريد مسح هذا الموقع من قائمتك المفضلة؟</string>
     <string name="snow">ثلوج</string>
-    <string name="weather_alarm">منبه الطقس</string>
+    <string name="weather_alarm">نوع المنبه</string>
     <string name="sunrise">شروق الشمس</string>
     <string name="sunset">غروب الشمس</string>
     <string name="locationCityNotFound">Can access your local location</string>

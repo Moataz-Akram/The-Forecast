@@ -13,19 +13,6 @@ import kotlin.collections.ArrayList
 class TodayViewModel : ViewModel(){
     val repo = Repository.getRepoObject()
 
-
-//    fun fetchData2(): LiveData<List<CityWeatherData>> {
-//        val list = repo.loadAllCities()
-//        repo.clearDBNotInList(list)
-//        Log.i("fixingBugs","list $list")
-//        return repo.fetchAllCitiesData(list)
-//    }
-
-//    fun updateAllCities(){
-////        repo.updateAllCities()
-//        repo.clearDBNotInList()
-//    }
-
     fun observeWeatherData(): LiveData<List<CityWeatherData>> {
         return repo.observeWeatherData()
     }

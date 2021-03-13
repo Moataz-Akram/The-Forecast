@@ -41,7 +41,6 @@ class Today : Fragment(R.layout.today_fragment) {
         viewModel.observeWeatherData().observe(viewLifecycleOwner, {
             Log.i("comingdata", "comingListSize ${it.size}")
             Log.i("comingdata", "comingListSize ${it.isNotEmpty()}")
-//            viewModel.updateAllCities()
 
             if (it.isNotEmpty()) {
                 val list = viewModel.orderList(it!!,viewModel.getCurrentLocation())

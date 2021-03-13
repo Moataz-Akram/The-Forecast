@@ -19,18 +19,6 @@ class AlarmDataAdapter(private val viewModel: AlarmFragmentViewModel, list: List
     private var myList: List<AlarmData> = list
     private val units = viewModel.getUnits()
 
-
-
-
-
-
-
-
-
-
-
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.alarm_card, parent, false)
         return ViewHolder(view)

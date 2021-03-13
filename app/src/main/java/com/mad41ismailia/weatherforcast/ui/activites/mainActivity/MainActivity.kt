@@ -207,28 +207,9 @@ class MainActivity : AppCompatActivity() {
                 currentLocation = addresses[0].locality
 
                 val currentCity = viewModel.getCurrentLocation()
-//                if (addresses[0].locality != null && !addresses[0].locality.equals(currentCity)) {
-//                CoroutineScope(Dispatchers.Default).launch {
-//                    runBlocking {
-//                        if (addresses[0].locality != null) {
-//                            if (currentCity != null) {
-//                                viewModel.deleteOldCurrent(currentCity)
-//                            }
                             viewModel.setCurrentLocation(addresses[0].locality)
                             viewModel.addCurrentCity(addresses[0].locality, lat, longt)
 
-//                        }
-
-//                    if (currentCity != null) {
-//                        viewModel.updateCurrentCity(currentCity,addresses[0].locality ,lat, longt)
-//                        viewModel.setCurrentLocation(addresses[0].locality)
-//                    }else{
-//                        viewModel.addCurrentCity(addresses[0].locality, lat, longt)
-//                        viewModel.setCurrentLocation(addresses[0].locality)
-//                    }
-//                    }
-//
-//                }
             }
         }
     }

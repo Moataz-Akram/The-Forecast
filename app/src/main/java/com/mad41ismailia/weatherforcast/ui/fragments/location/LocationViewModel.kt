@@ -18,12 +18,6 @@ class LocationViewModel : ViewModel() {
     fun saveNewCity(city:String) {
         repo.saveNewCity(city)
     }
-    //need to fetch for new city passing lat, long
-//    fun fetchNewCityData(city: String) {
-//        val list:ArrayList<String?> = arrayListOf()
-//        list.add(city)
-//        repo.fetchAllCitiesData(list)
-//    }
 
     fun addDataForNewCity(city: String, latitude: Double, longitude: Double) {
         repo.addDataForNewCity(city,latitude,longitude)

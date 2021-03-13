@@ -39,7 +39,7 @@
     <string name="no">Non</string>
     <string name="deleteLocation">Voulez-vous vraiment supprimer cet emplacement de votre liste de favoris?</string>
     <string name="snow">Neiger</string>
-    <string name="weather_alarm">Alarme météo</string>
+    <string name="weather_alarm">Type d\'alarme</string>
     <string name="sunrise">lever du soleil</string>
     <string name="sunset">Le coucher du soleil</string>
     <string name="locationCityNotFound">Can access your local location</string>

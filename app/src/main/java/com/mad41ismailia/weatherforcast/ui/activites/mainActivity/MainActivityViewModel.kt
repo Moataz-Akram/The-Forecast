@@ -17,6 +17,7 @@ class MainActivityViewModel(  application: Application) : AndroidViewModel(appli
     init {
         Repository.createObject(application)
     }
+
     private val repository = Repository.getRepoObject()
 
     fun setCurrentLocation(currentLocation: String) {
@@ -27,20 +28,8 @@ class MainActivityViewModel(  application: Application) : AndroidViewModel(appli
         return repository.getCurrentLocation()
     }
 
-    //    fun fetchAllCitiesData(city:String?){
-//        val list : ArrayList<String?> = arrayListOf(city)
-//        repository.fetchAllCitiesData(list)
-//    }
     fun addCurrentCity(city: String, latitude: Double, longitude: Double) {
         repository.addDataForNewCity(city, latitude, longitude)
         repository.updateWidget()
     }
-//    fun updateCurrentCity(city: String, newName: String, latitude: Double, longitude: Double){
-//        repository.updateCurrentCity(city,newName,latitude,longitude)
-//    }
-//
-//    fun deleteOldCurrent(currentCity: String) {
-//        repository.deleteCity(currentCity)
-//    }
-
 }
