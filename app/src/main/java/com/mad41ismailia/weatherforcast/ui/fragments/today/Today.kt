@@ -12,9 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.TodayFragmentBinding
-import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.ui.fragments.today.adapters.ViewPagerAdapter2
-import com.mad41ismailia.weatherforcast.ui.mainActivity.MainActivity
+import com.mad41ismailia.weatherforcast.ui.activites.mainActivity.MainActivity
 import kotlinx.coroutines.*
 
 
@@ -46,7 +45,7 @@ class Today : Fragment(R.layout.today_fragment) {
 
             if (it.isNotEmpty()) {
                 val list = viewModel.orderList(it!!,viewModel.getCurrentLocation())
-                binding.viewPager.adapter = ViewPagerAdapter2(requireContext(), it,viewModel)
+                binding.viewPager.adapter = ViewPagerAdapter2(requireContext(), list,viewModel)
                 val indicator = binding.indicatior
                 indicator.setViewPager(binding.viewPager)
                 binding.textNoData.visibility = GONE

@@ -1,4 +1,4 @@
-package com.mad41ismailia.weatherforcast.ui.mainActivity
+package com.mad41ismailia.weatherforcast.ui.activites.mainActivity
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -13,7 +13,6 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.net.ConnectivityManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.os.SystemClock
@@ -33,7 +32,6 @@ import com.google.android.gms.location.*
 import com.google.android.libraries.places.api.Places
 import com.mad41ismailia.weatherforcast.*
 import com.mad41ismailia.weatherforcast.R
-import com.mad41ismailia.weatherforcast.broadcast.MyReceiver
 import com.mad41ismailia.weatherforcast.databinding.ActivityMainBinding
 import com.mad41ismailia.weatherforcast.ui.fragments.today.adapters.isDarkModeOn
 import com.mad41ismailia.weatherforcast.ui.widget.WeatherWidget

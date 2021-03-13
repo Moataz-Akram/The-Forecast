@@ -16,7 +16,7 @@ class SettingsViewModel:ViewModel() {
     }
 
     fun setNeedUpdate(flag:Boolean) {
-        repo.setNeedUpdate(false)
+        repo.setNeedUpdate(flag)
     }
 //    fun updateAllCities() {
 //        val list = repo.loadAllCities()

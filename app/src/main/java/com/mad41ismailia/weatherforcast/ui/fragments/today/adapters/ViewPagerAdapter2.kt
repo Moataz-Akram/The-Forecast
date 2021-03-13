@@ -22,6 +22,7 @@ import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.CityWeatherData
 import com.mad41ismailia.weatherforcast.entity.comingData.WeatherData
 import com.mad41ismailia.weatherforcast.ui.fragments.today.TodayViewModel
+import com.openweather.sunviewlibrary.SunView
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -52,9 +53,36 @@ class ViewPagerAdapter2(val context: Context, val list:List<CityWeatherData>, pr
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val city = myList[position]
-        holder.userId.text = city.cityName
         val weatherData = gson.fromJson<WeatherData>(city.weatherData,weatherDataConverter)
+        holder.userId.text = city.cityName
 
+        //daily & hourly recyclers
+        val layoutManager = LinearLayoutManager(context)
+        val layoutManager2 = LinearLayoutManager(context)
+        layoutManager.orientation = HORIZONTAL
+        layoutManager.initialPrefetchItemCount = weatherData.hourly.size
+        val hourlyList = weatherData.hourly.filter { it.dt.toDouble() *1000 +3600000 > System.currentTimeMillis()}.subList(0,24)
+        hourlyAdapter = HourlyAdapter2(hourlyList,context)
+        holder.hourlyRecyclerView.layoutManager = layoutManager
+        holder.hourlyRecyclerView.adapter = hourlyAdapter
+        holder.hourlyRecyclerView.setHasFixedSize(true)
+        layoutManager2.initialPrefetchItemCount = weatherData.daily.size
+        dailyAdapter = DailyAdapter2(weatherData.daily,context)
+        holder.dailyRecyclerView.layoutManager = layoutManager2
+        holder.dailyRecyclerView.adapter = dailyAdapter
+        holder.imgTempLottie.setAnimation(R.raw.temp2)
+
+        //temp degree from hrs List
+        holder.txtNowTemp.text = hourlyList[0].temp.toInt().toString()
+        holder.txtFeelsLike.text = context.resources.getString(R.string.feelsLike) + hourlyList[0].feels_like.toInt().toString()
+        holder.txtWeatherState.text = hourlyList[0].weather[0].description
+        if (isDarkMode){
+            holder.lottieIcon.setAnimation(setImgLottieDark(hourlyList[0].weather[0].icon))
+        }else {
+            holder.lottieIcon.setAnimation(setImgLottie(hourlyList[0].weather[0].icon))
+        }
+
+        //background
         val sunsetTime = weatherData.current.sunset.toDouble() *1000
         val sunriseTime = weatherData.current.sunrise.toDouble() *1000
         val currentTime = System.currentTimeMillis()
@@ -66,20 +94,21 @@ class ViewPagerAdapter2(val context: Context, val list:List<CityWeatherData>, pr
             holder.pagerScrollView.setBackgroundResource(R.drawable.background_light_1125_2436_wallpaper)
         }
 
-        if(units=="metric"){
-            holder.txtDegree.text = context.resources.getString(R.string.c)
-            holder.txtSpeed.text = context.resources.getString(R.string.m_s)
-        }else if(units=="standard"){
-            holder.txtDegree.text = context.resources.getString(R.string.k)
-            holder.txtSpeed.text = context.resources.getString(R.string.m_s)
-        }else{
-            holder.txtDegree.text = context.resources.getString(R.string.f)
-            holder.txtSpeed.text = context.resources.getString(R.string.m_h)
+        //units
+        when (units) {
+            "metric" -> {
+                holder.txtDegree.text = context.resources.getString(R.string.c)
+                holder.txtSpeed.text = context.resources.getString(R.string.m_s)
+            }
+            "standard" -> {
+                holder.txtDegree.text = context.resources.getString(R.string.k)
+                holder.txtSpeed.text = context.resources.getString(R.string.m_s)
+            }
+            else -> {
+                holder.txtDegree.text = context.resources.getString(R.string.f)
+                holder.txtSpeed.text = context.resources.getString(R.string.m_h)
+            }
         }
-
-        holder.txtNowTemp.text = weatherData.current.temp.toInt().toString()
-        holder.txtFeelsLike.text = context.resources.getString(R.string.feelsLike) + weatherData.current.feels_like.toInt().toString()
-        holder.txtWeatherState.text = weatherData.current.weather[0].description
 
         holder.txtDate.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             currentDateTime.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
@@ -88,6 +117,7 @@ class ViewPagerAdapter2(val context: Context, val list:List<CityWeatherData>, pr
             val currentDate = sdf.format(Date())
         }).toString()
 
+        //home icon
         if(current!=null){
             if(current == myList[position].cityName){
                 holder.imgLocation.setImageResource(R.drawable.home_location)
@@ -98,26 +128,8 @@ class ViewPagerAdapter2(val context: Context, val list:List<CityWeatherData>, pr
             holder.imgLocation.setImageResource(R.drawable.ic_fav_location)
         }
 
-        //daily & hourly recyclers
-        val layoutManager = LinearLayoutManager(context)
-        val layoutManager2 = LinearLayoutManager(context)
-        layoutManager.orientation = HORIZONTAL
-        layoutManager.initialPrefetchItemCount = weatherData.hourly.size
-        hourlyAdapter = HourlyAdapter2(weatherData.hourly,context)
-        holder.hourlyRecyclerView.layoutManager = layoutManager
-        holder.hourlyRecyclerView.adapter = hourlyAdapter
-        holder.hourlyRecyclerView.setHasFixedSize(true)
-        layoutManager2.initialPrefetchItemCount = weatherData.daily.size
-        dailyAdapter = DailyAdapter2(weatherData.daily,context)
-        holder.dailyRecyclerView.layoutManager = layoutManager2
-        holder.dailyRecyclerView.adapter = dailyAdapter
-        if (isDarkMode){
-            holder.lottieIcon.setAnimation(setImgLottieDark(weatherData.current.weather[0].icon))
-        }else {
-            holder.lottieIcon.setAnimation(setImgLottie(weatherData.current.weather[0].icon))
-        }
-        holder.imgTempLottie.setAnimation(R.raw.temp2)
     }
+
 
     override fun getItemCount(): Int {
         return myList.size
@@ -175,15 +187,6 @@ fun setImg(icon: String):Int{
 
 fun setImgLottie(icon: String):Int{
     return when(icon){
-//        "01d" -> R.raw.d01
-//        "02d" -> R.raw.d02
-//        "03d" -> R.raw.d03
-//        "04d" -> R.raw.d04
-//        "09d" -> R.raw.d09
-//        "10d" -> R.raw.d10
-//        "11d" -> R.raw.d11
-//        "13d" -> R.raw.d13
-//        "50d" -> R.raw.d50
         "01d" -> R.raw.dd01
         "02d" -> R.raw.dd02
         "03d" -> R.raw.dd03

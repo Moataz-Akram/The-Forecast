@@ -10,8 +10,8 @@ import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.repo.Repository
-import com.mad41ismailia.weatherforcast.ui.mainActivity.MainActivity
-import com.mad41ismailia.weatherforcast.ui.mainActivity.MyPreference
+import com.mad41ismailia.weatherforcast.ui.activites.mainActivity.MainActivity
+import com.mad41ismailia.weatherforcast.ui.activites.mainActivity.MyPreference
 
 class Settings : PreferenceFragmentCompat() {
     private lateinit var sharedPreferences: SharedPreferences

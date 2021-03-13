@@ -40,7 +40,6 @@ private lateinit var myContext:Context
             repository = Repository.getRepoObject()
             Log.i("alarmalarm", "from alarm receiver created DB")
         }
-
         Log.i("alarmalarm", "from receiver coming id $id")
 
         CoroutineScope(Dispatchers.Default).launch {

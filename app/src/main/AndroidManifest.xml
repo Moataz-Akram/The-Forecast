@@ -38,8 +38,8 @@
 
         </receiver>
 
-        <activity android:name=".ui.alarm.AlarmActivity" />
-        <activity android:name=".ui.mainActivity.MainActivity">
+        <activity android:name="com.mad41ismailia.weatherforcast.ui.activites.alarm.AlarmActivity" />
+        <activity android:name="com.mad41ismailia.weatherforcast.ui.activites.mainActivity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

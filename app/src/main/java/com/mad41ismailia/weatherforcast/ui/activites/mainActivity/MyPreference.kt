@@ -1,17 +1,18 @@
-package com.mad41ismailia.weatherforcast.ui.mainActivity
+package com.mad41ismailia.weatherforcast.ui.activites.mainActivity
 
 import android.content.Context
+import com.mad41ismailia.weatherforcast.LANGUAGE
 import com.mad41ismailia.weatherforcast.PREF_NAME
 
-val PREFERENCE_LANGUAGE = "Language"
+const val PREFERENCE_LANGUAGE = "Language"
 
 class MyPreference(context : Context){
 
 
-    val preference = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE)
+    private val preference = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE)
 
     fun getLoginCount() : String? {
-        return preference.getString("lang","en")
+        return preference.getString(LANGUAGE,"en")
     }
 
     fun setLoginCount(Language:String){

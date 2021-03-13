@@ -10,8 +10,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mad41ismailia.weatherforcast.R
 import com.mad41ismailia.weatherforcast.databinding.AlarmFragmentBinding
-import com.mad41ismailia.weatherforcast.ui.alarm.AlarmActivity
-import com.mad41ismailia.weatherforcast.ui.fragments.location.LocationAdapter
+import com.mad41ismailia.weatherforcast.ui.activites.alarm.AlarmActivity
 
 class Alarm : Fragment(R.layout.alarm_fragment) {
     private lateinit var binding: AlarmFragmentBinding

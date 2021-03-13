@@ -7,6 +7,7 @@ import android.content.Intent
 import android.location.Geocoder
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.google.gson.GsonBuilder
@@ -42,10 +43,12 @@ class Repository private constructor(private val application: Application) {
             INSTANCE = Repository(application)
             isCreated = true
         }
+
         @JvmName("isCreated1")
-        fun isCreated():Boolean{
+        fun isCreated(): Boolean {
             return isCreated
         }
+
         fun getRepoObject(): Repository {
             return INSTANCE!!
         }
@@ -72,13 +75,22 @@ class Repository private constructor(private val application: Application) {
                 }
 //                weatherDao.clearDBNotInList(sharedPreference.loadAllCities())
             }
-            Log.i("weatherWidget","after finish blocking")
-            delay(2000)
-            val widgetId = sharedPreference.getAppWidgetId()
-            WeatherWidget.updateAppWidget(application, AppWidgetManager.getInstance(application), widgetId)
+            updateWidget()
         }
     }
 
+    fun updateWidget() {
+        CoroutineScope(Dispatchers.Default).launch {
+            Log.i("weatherWidget", "after finish blocking")
+            delay(2000)
+            val widgetId = sharedPreference.getAppWidgetId()
+            WeatherWidget.updateAppWidget(
+                application,
+                AppWidgetManager.getInstance(application),
+                widgetId
+            )
+        }
+    }
 
     private fun addOrUpdateCity(
         city: String,
@@ -88,21 +100,28 @@ class Repository private constructor(private val application: Application) {
         lang: String
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            val weatherData =
+            val response =
                 UseRetrofit.retrofitInterfaceObject.getWeather(latitude, longitude, units, lang)
-            val weatherDataString = gson.toJson(weatherData)
-            val existCity = weatherDao.getCityWeatherDataList(city)
-            if (existCity.isNotEmpty()) {
-                weatherDao.updateCityData(city, weatherDataString)
-            } else {
-                weatherDao.addWeatherCityData(
-                    CityWeatherData(
-                        city,
-                        latitude,
-                        longitude,
-                        weatherDataString
+            if (response.isSuccessful) {
+                val weatherData = response.body()
+                val weatherDataString = gson.toJson(weatherData)
+                val existCity = weatherDao.getCityWeatherDataList(city)
+                if (existCity.isNotEmpty()) {
+                    weatherDao.updateCityData(city, weatherDataString)
+                } else {
+                    weatherDao.addWeatherCityData(
+                        CityWeatherData(
+                            city,
+                            latitude,
+                            longitude,
+                            weatherDataString
+                        )
                     )
-                )
+                }
+            }else{
+                withContext(Dispatchers.Main){
+                    Toast.makeText(application,"An error occurred while calling server",Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
@@ -152,14 +171,14 @@ class Repository private constructor(private val application: Application) {
         sharedPreference.deleteCity(city)
     }
 
-    //today
-    fun clearDBNotInList() {
-        val list = sharedPreference.loadAllCities()
-        Log.i("fixingBugs", "$list")
-        CoroutineScope(Dispatchers.Default).launch {
-            weatherDao.clearDBNotInList(list)
-        }
-    }
+//    //today
+//    fun clearDBNotInList() {
+//        val list = sharedPreference.loadAllCities()
+//        Log.i("fixingBugs", "$list")
+//        CoroutineScope(Dispatchers.Default).launch {
+//            weatherDao.clearDBNotInList(list)
+//        }
+//    }
 
     fun observeWeatherData(): LiveData<List<CityWeatherData>> {
         return weatherDao.getWeatherLiveData()
@@ -236,16 +255,17 @@ class Repository private constructor(private val application: Application) {
         weatherDao.addAlarmToDB(alarm)
     }
 
-    fun updateCurrentCity(city: String, newName: String, latitude: Double, longitude: Double) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val units = sharedPreference.getUnits()
-            val lang = sharedPreference.getLang()
-            val weatherData = UseRetrofit.retrofitInterfaceObject.getWeather(latitude, longitude, units, lang)
-            val data = gson.toJson(weatherData)
-            Log.i("currentLocation", "old name $city new name $newName")
-            weatherDao.updateCurrent(city,newName,data,latitude,longitude)
-        }
-    }
+//    fun updateCurrentCity(city: String, newName: String, latitude: Double, longitude: Double) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val units = sharedPreference.getUnits()
+//            val lang = sharedPreference.getLang()
+//            val weatherData =
+//                UseRetrofit.retrofitInterfaceObject.getWeather(latitude, longitude, units, lang)
+//            val data = gson.toJson(weatherData)
+//            Log.i("currentLocation", "old name $city new name $newName")
+//            weatherDao.updateCurrent(city, newName, data, latitude, longitude)
+//        }
+//    }
 
     fun getLastDayUpdated(): Int {
         return sharedPreference.getLastDayUpdated()

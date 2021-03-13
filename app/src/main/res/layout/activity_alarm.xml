@@ -4,7 +4,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.alarm.AlarmActivity">
+    tools:context=".ui.activites.alarm.AlarmActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/alarmLayout"
@@ -23,7 +23,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/add_cloud_icon3" />
+            app:srcCompat="@drawable/add_cloud_icon" />
 
         <TimePicker
             android:id="@+id/alarmTimePicker"

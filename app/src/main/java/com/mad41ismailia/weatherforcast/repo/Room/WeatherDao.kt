@@ -18,23 +18,25 @@ interface WeatherDao {
     @Query("Delete from CityWeatherData where cityName =:city")//needed
     fun deleteWeatherCityData(city:String)
 
-    @Query("Delete from CityWeatherData where cityName not in (:cityList)")//fixed a bug
-    fun clearDBNotInList(cityList:List<String?>)
-
-    @Query("Delete from CityWeatherData")//not need yet, will be needed in refactor
-    fun deleteWeatherCityDataAll()
-
-    @Query("SELECT * From CityWeatherData")//needed
-    fun getWeatherLiveData():LiveData<List<CityWeatherData>>
-
-//    @Query("SELECT id From CityWeatherData where cityName=:city")//needed
-//    fun getCurrentId(city:String):CityWeatherData
-
-    @Query("SELECT * From CityWeatherData where cityName =:city")//needed in add or update
+    @Query("SELECT * From CityWeatherData where cityName =:city")//needed in add or update, alarm and widget
     suspend fun getCityWeatherDataList(city: String):List<CityWeatherData>
 
     @Query("SELECT * From CityWeatherData")//needed in add or update
     suspend fun getAllWeatherDataList():List<CityWeatherData>
+
+
+//    @Query("Delete from CityWeatherData where cityName not in (:cityList)")//fixed a bug
+//    fun clearDBNotInList(cityList:List<String?>)
+
+//    @Query("Delete from CityWeatherData")//not need yet, will be needed in refactor
+//    fun deleteWeatherCityDataAll()
+
+//    @Query("SELECT id From CityWeatherData where cityName=:city")//needed
+//    fun getCurrentId(city:String):CityWeatherData
+
+    @Query("SELECT * From CityWeatherData")//needed
+    fun getWeatherLiveData():LiveData<List<CityWeatherData>>
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addAlarmToDB(newAlarm: AlarmData)
@@ -48,9 +50,9 @@ interface WeatherDao {
     @Query("select * from Alarm where uniqueID=:id")
     fun getAlarm(id: String?): AlarmData
 
-    @Query("select * from Alarm")
+    @Query("select * from Alarm")//in updating alarm units
     fun getAlarmList(): List<AlarmData>
 
-    @Query("update  CityWeatherData set cityName=:name and weatherData=:data and lat=:lat and lon =:lon where  cityName=:oldName ")
-    fun updateCurrent(oldName:String,name:String,data: String,lat:Double,lon:Double)
+//    @Query("update  CityWeatherData set cityName=:name and weatherData=:data and lat=:lat and lon =:lon where  cityName=:oldName ")
+//    fun updateCurrent(oldName:String,name:String,data: String,lat:Double,lon:Double)
 }

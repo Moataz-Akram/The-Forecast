@@ -1,4 +1,4 @@
-package com.mad41ismailia.weatherforcast.ui.mainActivity
+package com.mad41ismailia.weatherforcast.ui.activites.mainActivity
 
 import android.os.Build
 import android.annotation.TargetApi

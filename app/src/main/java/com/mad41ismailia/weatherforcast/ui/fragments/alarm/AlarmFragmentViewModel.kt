@@ -5,13 +5,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.mad41ismailia.weatherforcast.broadcast.MyReceiver
 import com.mad41ismailia.weatherforcast.entity.DatabaseClasses.AlarmData
 import com.mad41ismailia.weatherforcast.repo.Repository
-import com.mad41ismailia.weatherforcast.ui.alarm.AlarmActivity
 
 class AlarmFragmentViewModel:ViewModel() {
     val repo = Repository.getRepoObject()
