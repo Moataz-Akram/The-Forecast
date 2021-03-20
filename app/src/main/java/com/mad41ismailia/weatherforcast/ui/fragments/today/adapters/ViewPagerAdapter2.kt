@@ -60,7 +60,9 @@ class ViewPagerAdapter2(val context: Context, val list:List<CityWeatherData>, pr
         val layoutManager2 = LinearLayoutManager(context)
         layoutManager.orientation = HORIZONTAL
         layoutManager.initialPrefetchItemCount = weatherData.hourly.size
-        val hourlyList = weatherData.hourly.filter { it.dt.toDouble() *1000 +3600000 > System.currentTimeMillis()}.subList(0,24)
+        var hourlyList = weatherData.hourly.filter { it.dt.toDouble() *1000 +3600000 > System.currentTimeMillis()}
+        if(hourlyList.size>25)
+            hourlyList = hourlyList.subList(0,24)
         hourlyAdapter = HourlyAdapter2(hourlyList,context)
         holder.hourlyRecyclerView.layoutManager = layoutManager
         holder.hourlyRecyclerView.adapter = hourlyAdapter
@@ -72,13 +74,18 @@ class ViewPagerAdapter2(val context: Context, val list:List<CityWeatherData>, pr
         holder.imgTempLottie.setAnimation(R.raw.temp2)
 
         //temp degree from hrs List
-        holder.txtNowTemp.text = hourlyList[0].temp.toInt().toString()
-        holder.txtFeelsLike.text = context.resources.getString(R.string.feelsLike) + hourlyList[0].feels_like.toInt().toString()
-        holder.txtWeatherState.text = hourlyList[0].weather[0].description
-        if (isDarkMode){
-            holder.lottieIcon.setAnimation(setImgLottieDark(hourlyList[0].weather[0].icon))
-        }else {
-            holder.lottieIcon.setAnimation(setImgLottie(hourlyList[0].weather[0].icon))
+        if (hourlyList.isEmpty()){
+            //data is old and need update
+
+        }else{
+            holder.txtNowTemp.text = hourlyList[0].temp.toInt().toString()
+            holder.txtFeelsLike.text = context.resources.getString(R.string.feelsLike) + hourlyList[0].feels_like.toInt().toString()
+            holder.txtWeatherState.text = hourlyList[0].weather[0].description
+            if (isDarkMode){
+                holder.lottieIcon.setAnimation(setImgLottieDark(hourlyList[0].weather[0].icon))
+            }else {
+                holder.lottieIcon.setAnimation(setImgLottie(hourlyList[0].weather[0].icon))
+            }
         }
 
         //background
