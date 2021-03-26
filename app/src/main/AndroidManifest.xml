@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mad41ismailia.weatherforcast">
+    package="com.mad41ismailia.weatherforecast">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -22,7 +22,7 @@
         android:supportsRtl="true"
 
         android:theme="@style/Theme.WeatherForcast">
-        <receiver android:name=".ui.widget.WeatherWidget">
+        <receiver android:name="com.mad41ismailia.weatherforecast.ui.widget.WeatherWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -32,14 +32,14 @@
                 android:resource="@xml/weather_widget_info" />
         </receiver>
         <receiver
-            android:name=".broadcast.MyReceiver"
+            android:name="com.mad41ismailia.weatherforecast.broadcast.MyReceiver"
             android:enabled="true"
             android:exported="true">
 
         </receiver>
 
-        <activity android:name="com.mad41ismailia.weatherforcast.ui.activites.alarm.AlarmActivity" />
-        <activity android:name="com.mad41ismailia.weatherforcast.ui.activites.mainActivity.MainActivity">
+        <activity android:name="com.mad41ismailia.weatherforecast.ui.activites.alarm.AlarmActivity" />
+        <activity android:name="com.mad41ismailia.weatherforecast.ui.activites.mainActivity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

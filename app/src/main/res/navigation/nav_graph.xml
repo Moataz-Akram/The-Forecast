@@ -7,21 +7,21 @@
 
     <fragment
         android:id="@+id/today"
-        android:name="com.mad41ismailia.weatherforcast.ui.fragments.today.Today"
+        android:name="com.mad41ismailia.weatherforecast.ui.fragments.today.Today"
         android:label="today_fragment"
         tools:layout="@layout/today_fragment" />
     <fragment
         android:id="@+id/location"
-        android:name="com.mad41ismailia.weatherforcast.ui.fragments.location.Location"
+        android:name="com.mad41ismailia.weatherforecast.ui.fragments.location.Location"
         android:label="location_fragment"
         tools:layout="@layout/location_fragment" />
     <fragment
         android:id="@+id/alarmf"
-        android:name="com.mad41ismailia.weatherforcast.ui.fragments.alarm.Alarm"
+        android:name="com.mad41ismailia.weatherforecast.ui.fragments.alarm.Alarm"
         android:label="alarmf_fragment"
         tools:layout="@layout/alarm_fragment" />
     <fragment
         android:id="@+id/settings2"
-        android:name="com.mad41ismailia.weatherforcast.ui.fragments.settings.Settings"
+        android:name="com.mad41ismailia.weatherforecast.ui.fragments.settings.Settings"
         android:label="Settings" />
 </navigation>

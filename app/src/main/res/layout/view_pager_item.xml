@@ -55,7 +55,7 @@
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.471"
+                        app:layout_constraintHorizontal_bias=".5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.034" />
@@ -107,7 +107,7 @@
                         android:textColor="#000000"
                         android:textSize="20sp"
                         app:layout_constraintEnd_toStartOf="@+id/imgTempLottie"
-                        app:layout_constraintHorizontal_bias="0.511"
+                        app:layout_constraintHorizontal_bias=".5"
                         app:layout_constraintStart_toStartOf="@+id/txtNowTemp"
                         app:layout_constraintTop_toBottomOf="@+id/imgLottie" />
 
